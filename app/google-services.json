@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "984492062511",
+    "project_id": "pixel-post",
+    "storage_bucket": "pixel-post.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984492062511:android:6e4305058f3071501e53da",
+        "android_client_info": {
+          "package_name": "com.example.pixelpost"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfErx22WtYbHV6x7a5aJtGiZLkfbWLz9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
