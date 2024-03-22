@@ -6,4 +6,24 @@
     </style>
 
     <style name="Theme.PixelPost" parent="Base.Theme.PixelPost" />
+
+    <style name="roundedImageStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily" >rounded</item>
+        <item name="cornerSize">15%</item>
+    </style>
+    <style name="circleImageStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily" >rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="cornerCutImageStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily" >cut</item>
+        <item name="cornerSize">15%</item>
+    </style>
+
+    <style name="customImageStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily" >rounded</item>
+        <item name="cornerSizeBottomRight">35%</item>
+        <item name="cornerSizeBottomLeft">35%</item>
+    </style>
 </resources>
