@@ -13,6 +13,12 @@
         android:theme="@style/Theme.PixelPost"
         tools:targetApi="31">
         <activity
+            android:name=".View.Activity.SignUp02Activity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.SignUp01Activity"
+            android:exported="false" />
+        <activity
             android:name=".View.Activity.OnboardingActivity"
             android:exported="false" />
         <activity
@@ -32,7 +38,7 @@
             android:exported="false" />
         <activity
             android:name=".View.Activity.MainActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
     </application>
 
 </manifest>
