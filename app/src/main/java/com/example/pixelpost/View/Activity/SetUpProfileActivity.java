@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,28 +13,19 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pixelpost.R;
 
-public class SignUp02Activity extends AppCompatActivity {
-    ImageView btnBack;
-    Button btnContinue;
+public class SetUpProfileActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_sign_up02);
-        btnBack = findViewById(R.id.btnBack);
-        btnContinue = findViewById(R.id.btnContinue);
-
+        setContentView(R.layout.activity_set_up_profile);
+        Button btnContinue = findViewById(R.id.btnContinue);
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SignUp02Activity.this, SetUpProfileActivity.class);
+                Intent intent = new Intent(SetUpProfileActivity.this, MainActivity.class);
                 startActivity(intent);
-            }
-        });
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
             }
         });
     }

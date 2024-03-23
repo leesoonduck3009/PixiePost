@@ -5,22 +5,13 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Activity.SignUp02Activity">
+    tools:context=".View.Activity.SetUpProfileActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/black"
         >
-        <ImageView
-            android:id="@+id/btnBack"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/icon_back"
-            />
-
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
@@ -29,30 +20,34 @@
             android:layout_marginTop="250dp"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:text="What's your Password?" />
-
+            android:text="What's your name?" />
 
         <EditText
-            android:id="@+id/passwordEditText"
+            android:id="@+id/edtFirstName"
             android:layout_width="350dp"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:paddingVertical="14dp"
             android:paddingHorizontal="20dp"
-            android:inputType="textPassword"
+            android:ems="10"
+            android:hint="First name"
             android:textColorHint="#C0C0C0"
             android:textColor="#C0C0C0"
-            android:background="@drawable/edittext_bg"
-            android:hint="Enter password" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#A9A9A9"
-            android:gravity="center"
+            android:background="@drawable/edittext_bg" />
+        <EditText
+            android:id="@+id/edtLastName"
+            android:layout_width="350dp"
             android:layout_gravity="center"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Your password must be at least 8 characters long. "/>
+            android:paddingVertical="14dp"
+            android:paddingHorizontal="20dp"
+            android:ems="10"
+            android:hint="Last name"
+            android:textColorHint="#C0C0C0"
+            android:textColor="#C0C0C0"
+            android:background="@drawable/edittext_bg" />
         <Button
             android:id="@+id/btnContinue"
             android:layout_width="250dp"

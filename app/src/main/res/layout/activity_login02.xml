@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Activity.SignUp02Activity">
+    tools:context=".View.Activity.Login02Activity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,10 +26,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24dp"
-            android:layout_marginTop="250dp"
+            android:layout_marginTop="100dp"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:text="What's your Password?" />
+            android:text="Enter your Password?" />
 
 
         <EditText
@@ -44,15 +44,19 @@
             android:textColorHint="#C0C0C0"
             android:textColor="#C0C0C0"
             android:background="@drawable/edittext_bg"
-            android:hint="Enter password" />
-        <TextView
+            android:hint="Password" />
+
+        <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#A9A9A9"
-            android:gravity="center"
+            android:layout_height="30dp"
             android:layout_gravity="center"
+            android:background="@drawable/edittext_bg"
+            android:paddingHorizontal="20dp"
             android:layout_marginTop="20dp"
-            android:text="Your password must be at least 8 characters long. "/>
+            android:text="Forgot Password?"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="12dp"/>
         <Button
             android:id="@+id/btnContinue"
             android:layout_width="250dp"
