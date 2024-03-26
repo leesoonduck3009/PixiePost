@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="avatar_background_color">#ECECEC</color>
+    <color name="secondary_text_color">#5F5E5E</color>
+    <color name="primary_text_color">#FCFCFE</color>
+    <color name="background_conversation_color">#282828</color>
+    <color name="received_message_background">#FFFEFF</color>
+    <color name="sent_message_background">#F8D37F</color>
+    <color name="yellow">#F5BD40</color>
+    <color name="chat_conversation_background">#F4F3F4</color>
+
+
 </resources>
