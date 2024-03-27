@@ -56,18 +56,18 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_detail);
-        presenter = new ConversationDetailActivityPresenter(this);
-        conversationRecyclerView = findViewById(R.id.conversationRecyclerView);
-        bttBackConversation = findViewById(R.id.bttBackConversation);
-        textReceivedAccName = findViewById(R.id.textReceivedAccName);
-        bttSendMessage = findViewById(R.id.bttSendMessage);
-        imageProfile = findViewById(R.id.imageProfile);
-        progressBar = findViewById(R.id.progressBar);
-        inputMessage = findViewById(R.id.inputMessage);
-        listChatMessages = new ArrayList<>();
-        initData();
-        conversationRecyclerView.setAdapter(chatMessageAdapter);
-        setListener();
+//        presenter = new ConversationDetailActivityPresenter(this);
+//        conversationRecyclerView = findViewById(R.id.conversationRecyclerView);
+//        bttBackConversation = findViewById(R.id.bttBackConversation);
+//        textReceivedAccName = findViewById(R.id.textReceivedAccName);
+//        bttSendMessage = findViewById(R.id.bttSendMessage);
+//        imageProfile = findViewById(R.id.imageProfile);
+//        progressBar = findViewById(R.id.progressBar);
+//        inputMessage = findViewById(R.id.inputMessage);
+//        listChatMessages = new ArrayList<>();
+//        initData();
+//        conversationRecyclerView.setAdapter(chatMessageAdapter);
+//        setListener();
 
     }
     private void setListener()
