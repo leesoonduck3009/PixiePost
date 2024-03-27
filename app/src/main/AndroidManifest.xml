@@ -13,13 +13,25 @@
         android:theme="@style/Theme.PixelPost"
         tools:targetApi="31">
         <activity
-            android:name=".View.Activity.ConversationDetailActivity"
+            android:name=".View.Activity.Login02Activity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.ConversationListActivity"
+            android:name=".View.Activity.Login01Activity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.MainActivity"
+            android:name=".View.Activity.SetUpProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.SignUp02Activity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.SignUp01Activity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.OnboardingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.AnimationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,6 +39,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".View.Activity.ConversationDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.ConversationListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.MainActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

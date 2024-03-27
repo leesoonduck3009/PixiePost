@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.Activity.Login01Activity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/black"
+        >
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/icon_back"
+            />
+        <TextView
+            android:id="@+id/txtHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24dp"
+            android:layout_marginTop="100dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="#ffffff"
+            android:layout_marginBottom="20dp"
+            android:text="What's your Phone Number?" />
+
+        <LinearLayout
+            android:id="@+id/phoneNumberLayout"
+            android:layout_width="380dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_bg"
+            android:paddingVertical="6dp"
+            android:paddingHorizontal="4dp"
+            android:orientation="horizontal">
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/countryCodePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:ccp_contentColor="#ffffff"
+                app:ccp_defaultNameCode="VN" />
+
+            <EditText
+                android:id="@+id/phoneNumberEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#606060"
+                android:inputType="phone"
+                android:textColor="#ffffff"
+                android:textColorHint="#ffffff" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="380dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_bg"
+            android:paddingVertical="6dp"
+            android:paddingHorizontal="4dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/emailEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#606060"
+                android:paddingHorizontal="10dp"
+                android:textColor="#ffffff"
+                android:textColorHint="#ffffff"
+                android:hint="Enter your Email"
+                android:inputType="textEmailAddress" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_bg"
+            android:text="Sử dụng Email thay cho cách này"
+            android:textAllCaps="false"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:textColor="#ffffff"
+            android:paddingHorizontal="20dp"/>
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textColor="#505050"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:text="By tapping the Continue button, you agree to our Terms of Service and Privacy Policy."/>
+         <android.widget.Button
+            android:id="@+id/btnContinue"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="Continue"
+            android:layout_gravity="center"
+            android:textColor="#ffffff"
+            android:layout_marginTop="40dp"
+            android:paddingHorizontal="40dp"
+            android:textAllCaps="false"
+            android:background="@drawable/custom_button"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
