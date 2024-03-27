@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -39,16 +40,31 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_list);
-        presenter = new ConversationListActivityPresenter(this);
-        listConversationRecyclerView = findViewById(R.id.listConversationRecyclerView);
-        bttBackConversation = findViewById(R.id.bttBackConversation);
-        textViewNotConversation = findViewById(R.id.textViewNotConversation);
-        layoutNotConversation = findViewById(R.id.layoutNotConversation);
-        progressBar = findViewById(R.id.progressBar);
-        listConversations = new ArrayList<>();
-        conversationAdapter = new ConversationAdapter(listConversations, this);
-        count = 0;
-        presenter.onLoadingConversation();
+        ImageView btnBackConversationList = findViewById(R.id.btnBackConversationList);
+        Button btnGotoDetail = findViewById(R.id.btnGotoDetail);
+        btnBackConversationList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        btnGotoDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ConversationListActivity.this, ConversationDetailActivity.class);
+                startActivity(intent);
+            }
+        });
+//        presenter = new ConversationListActivityPresenter(this);
+//        listConversationRecyclerView = findViewById(R.id.listConversationRecyclerView);
+//        bttBackConversation = findViewById(R.id.bttBackConversation);
+//        textViewNotConversation = findViewById(R.id.textViewNotConversation);
+//        layoutNotConversation = findViewById(R.id.layoutNotConversation);
+//        progressBar = findViewById(R.id.progressBar);
+//        listConversations = new ArrayList<>();
+//        conversationAdapter = new ConversationAdapter(listConversations, this);
+//        count = 0;
+//        presenter.onLoadingConversation();
 
     }
     @Override
