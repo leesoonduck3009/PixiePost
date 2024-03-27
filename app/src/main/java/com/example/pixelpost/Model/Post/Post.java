@@ -1,5 +1,6 @@
 package com.example.pixelpost.Model.Post;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ public class Post {
     private String url;
     private String text;
     private String ownerId; // idOwner
-    private long timePosted; // timePost
+    private Date timePosted; // timePost
     private List<String> displayedUsers; // userHienThi
     private Map<String, String> lastReaction; // lastReaction
     //endregion
@@ -55,11 +56,11 @@ public class Post {
         this.ownerId = ownerId;
     }
 
-    public long getTimePosted() {
+    public Date getTimePosted() {
         return timePosted;
     }
 
-    public void setTimePosted(long timePosted) {
+    public void setTimePosted(Date timePosted) {
         this.timePosted = timePosted;
     }
 
@@ -85,7 +86,7 @@ public class Post {
         private String url;
         private String text;
         private String ownerId;
-        private long timePosted;
+        private Date timePosted;
         private List<String> displayedUsers;
         private Map<String, String> lastReaction;
 
@@ -109,7 +110,7 @@ public class Post {
             return this;
         }
 
-        public Builder setTimePosted(long timePosted) {
+        public Builder setTimePosted(Date timePosted) {
             this.timePosted = timePosted;
             return this;
         }
