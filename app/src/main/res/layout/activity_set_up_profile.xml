@@ -49,10 +49,10 @@
             android:textColor="#C0C0C0"
             android:background="@drawable/edittext_bg" />
         <android.widget.Button
-            android:id="@+id/btnContinue"
+            android:id="@+id/btnCreateAccount"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="Continue"
+            android:text="Create account"
             android:layout_gravity="center"
             android:textColor="#ffffff"
             android:layout_marginTop="40dp"

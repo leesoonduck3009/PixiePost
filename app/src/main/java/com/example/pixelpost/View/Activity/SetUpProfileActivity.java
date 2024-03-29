@@ -14,14 +14,18 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.pixelpost.R;
 
 public class SetUpProfileActivity extends AppCompatActivity {
-
+    Button btnCreateAccount ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_set_up_profile);
-        Button btnContinue = findViewById(R.id.btnContinue);
-        btnContinue.setOnClickListener(new View.OnClickListener() {
+        btnCreateAccount = findViewById(R.id.btnCreateAccount);
+        setListener();
+    }
+    private void setListener()
+    {
+        btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SetUpProfileActivity.this, MainActivity.class);

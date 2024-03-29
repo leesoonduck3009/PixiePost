@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pixelpost.R;
+import com.example.pixelpost.Utils.SupportClass.ValidateData;
 
 import java.util.Properties;
 
@@ -50,8 +51,16 @@ public class SignUp01Activity extends AppCompatActivity {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SignUp01Activity.this, SignUp02Activity.class);
-                startActivity(intent);
+                String email = editTextTextEmailAddress.getText().toString();
+                if(ValidateData.isValidEmail(email))
+                {
+                    Intent intent = new Intent(SignUp01Activity.this, OTPVerificationSignUpActivity.class);
+                    intent.putExtra("user_email", email);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(SignUp01Activity.this, "Vui lòng kiểm tra lại địa chỉ email", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {

@@ -14,7 +14,7 @@ import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 
 public class EmailSending {
-    public static void sendMail(String emailAddresss, String tittle, OnFinishSendingEmailListener listener)
+    public static void sendMail(String emailAddresss,String OTP, String tittle, OnFinishSendingEmailListener listener)
     {
         Properties properties = System.getProperties();
         properties.put("mail.smtp.host","smtp.gmail.com");
@@ -38,7 +38,7 @@ public class EmailSending {
                     "    </div>\n" +
                     "    <p style=\"font-size:1.1em\">Xin chào,</p>\n" +
                     "    <p>Đây là thư tự động gửi vào email. Vui lòng không trả lời thư này.<br> Dưới đây là mã OTP của bạn!</p>\n" +
-                    "    <h2 style=\"background: linear-gradient(0deg, #D69BEA, #77BAFB); margin: 0 auto; width: max-content; padding: 0 10px; color: #fff; border-radius: 4px;\">OTP</h2>\n" +
+                    "    <h2 style=\"background: linear-gradient(0deg, #D69BEA, #77BAFB); margin: 0 auto; width: max-content; padding: 0 10px; color: #fff; border-radius: 4px;\">"+ OTP + "</h2>\n" +
                     "    <p style=\"font-size:0.9em;\">Xin cảm ơn,<br />Pixel Post</p>\n" +
                     "    <hr style=\"border:none; border-top:1px solid #eee\" />\n" +
                     "    <div style=\"float:right; padding:8px 0; color:#aaa; font-size:0.8em; line-height:1; font-weight:300\">\n" +
