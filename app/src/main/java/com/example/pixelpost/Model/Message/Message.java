@@ -6,6 +6,7 @@ public class Message {
     //region Class Property
     private String id;
     private String senderId;
+    private String receiverId;
     private String text;
     private String imageUrl; // urlImage
     private String conversationId;
@@ -18,8 +19,17 @@ public class Message {
     public static final String FIELD_IMAGE_URL = "imageUrl";
     public static final String FIELD_CONVERSATION_ID = "conversationId";
     public static final String FIELD_TIME_SENT = "timeSent";
+    public static final String FIELD_RECEIVER_ID = "receiverId";
     //endregion
     //region Constructor, getters, and setters
+
+    public String getReceiverId() {
+        return receiverId;
+    }
+
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
+    }
 
     public String getId() {
         return id;
@@ -78,12 +88,17 @@ public class Message {
         private String imageUrl;
         private String conversationId;
         private Date timeSent;
+        private String receiverId;
 
         public Builder setId(String id) {
             this.id = id;
             return this;
         }
-
+        public Builder setReceiverId(String receiverId)
+        {
+            this.receiverId = receiverId;
+            return this;
+        }
         public Builder setSenderId(String senderId) {
             this.senderId = senderId;
             return this;
@@ -117,6 +132,7 @@ public class Message {
             message.imageUrl = this.imageUrl;
             message.conversationId = this.conversationId;
             message.timeSent = this.timeSent;
+            message.receiverId = this.receiverId;
             return message;
         }
     }

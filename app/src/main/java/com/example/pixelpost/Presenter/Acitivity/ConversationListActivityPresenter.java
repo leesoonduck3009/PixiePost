@@ -17,4 +17,13 @@ public class ConversationListActivityPresenter implements IConversationListActiv
         this.conversationModel = ConversationModel.getInstance();
     }
     //endregion
+    @Override
+    public void onLoadingConversation( ) {
+        conversationModel.LoadingConversation((conversation, e, type, isLastMessage) -> {
+            if(e==null)
+                view.onFinishLoadConversation(conversation, type, isLastMessage);
+            else
+                view.onLoadingFailed(e);
+        });
+    }
 }

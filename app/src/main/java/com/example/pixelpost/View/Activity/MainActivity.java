@@ -20,6 +20,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import android.Manifest;
 import android.util.Log;
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+      
         //Request camera permissions
         if(allPermissionsGranted()) {
             startCamera();
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void takePhoto() {
-
+      
     }
 
     private void captureVideo() {

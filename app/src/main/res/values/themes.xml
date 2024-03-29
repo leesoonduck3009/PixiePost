@@ -3,6 +3,7 @@
     <style name="Base.Theme.PixelPost" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@null</item>
     </style>
 
     <style name="Theme.PixelPost" parent="Base.Theme.PixelPost" />

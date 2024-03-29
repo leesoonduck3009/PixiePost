@@ -26,12 +26,12 @@
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
         android:gravity="center"
-        android:text="Taking an Image, freezing a moment reveals how rich reality truly is."/>
-    <Button
+        android:text="Hãy cùng nhau chia sẻ những bức ảnh, đóng băng mọi khoảnh khắc đáng nhớ của bạn."/>
+    <android.widget.Button
         android:id="@+id/btnSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create an Account"
+        android:text="Tạo một tài khoản"
         android:textColor="#ffffff"
         android:layout_marginTop="40dp"
         android:paddingHorizontal="40dp"
@@ -44,5 +44,5 @@
         android:textColor="#ffffff"
         android:gravity="center"
         android:layout_marginTop="20dp"
-        android:text="Login"/>
+        android:text="Đăng nhập"/>
 </LinearLayout>

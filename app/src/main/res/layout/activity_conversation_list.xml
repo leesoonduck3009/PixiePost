@@ -1,9 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Activity.ConversationListActivity">
+    android:background="@color/black"
+    android:animateLayoutChanges="true"
+    tools:context=".View.Activity.ConversationListActivity"
+    android:orientation="vertical"
+    android:id="@+id/conversation_activity"
+    >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:background="@color/black">
+
+        <ImageView
+            android:id="@+id/btnBackConversationList"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/icon_back"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:text="Tin nhắn"
+            android:gravity="center"
+            />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/imageProfile">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listConversationRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:padding="13dp"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+        <LinearLayout
+            android:id="@+id/layoutNotConversation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="250dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="-100dp"
+                android:background="@drawable/image_ic_not_conversation" />
+            <TextView
+                android:layout_marginTop="20dp"
+                android:id="@+id/textViewNotConversation"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Hãy tìm kiếm và nhắn tin cho những người bạn thân thiết của bạn nào !"
+                android:textColor="#A9A9A9"
+                android:textSize="16dp"
+                android:textAlignment="center"
+                android:visibility="visible"
+                />
+            <Button
+                android:id="@+id/btnGotoDetail"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chuyển qua màn hình detail"/>
+        </LinearLayout>
+
+    </FrameLayout>
+</LinearLayout>

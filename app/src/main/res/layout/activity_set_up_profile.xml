@@ -17,21 +17,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24dp"
-            android:layout_marginTop="250dp"
+            android:layout_marginTop="100dp"
+            android:textStyle="bold"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:text="What's your name?" />
+            android:text="Tên bạn là gì?" />
 
         <EditText
             android:id="@+id/edtFirstName"
             android:layout_width="350dp"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="60dp"
             android:paddingVertical="14dp"
             android:paddingHorizontal="20dp"
             android:ems="10"
-            android:hint="First name"
+            android:hint="Tên"
             android:textColorHint="#C0C0C0"
             android:textColor="#C0C0C0"
             android:background="@drawable/edittext_bg" />
@@ -44,18 +45,18 @@
             android:paddingVertical="14dp"
             android:paddingHorizontal="20dp"
             android:ems="10"
-            android:hint="Last name"
+            android:hint="Họ"
             android:textColorHint="#C0C0C0"
             android:textColor="#C0C0C0"
             android:background="@drawable/edittext_bg" />
-        <Button
+        <android.widget.Button
             android:id="@+id/btnContinue"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="Continue"
+            android:text="Tiếp tục"
             android:layout_gravity="center"
             android:textColor="#ffffff"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="60dp"
             android:paddingHorizontal="40dp"
             android:textAllCaps="false"
             android:background="@drawable/custom_button"/>

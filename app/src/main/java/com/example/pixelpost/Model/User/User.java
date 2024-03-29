@@ -1,9 +1,10 @@
 package com.example.pixelpost.Model.User;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
     //region Class Property
     private String id;
     private String phoneNumber; // sdt

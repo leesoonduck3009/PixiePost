@@ -28,7 +28,7 @@ public class SignUp02Activity extends AppCompatActivity {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SignUp02Activity.this, SetUpProfileActivity.class);
+                Intent intent = new Intent(SignUp02Activity.this, OTPVerificationSignUpActivity.class);
                 startActivity(intent);
             }
         });

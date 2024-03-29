@@ -30,7 +30,7 @@
             android:layout_gravity="center"
             android:textColor="#ffffff"
             android:layout_marginBottom="20dp"
-            android:text="What's your Phone Number?" />
+            android:text="Số điện thoại của bạn là gì?" />
 
         <LinearLayout
             android:id="@+id/phoneNumberLayout"
@@ -96,18 +96,18 @@
             android:textColor="#ffffff"
             android:paddingHorizontal="20dp"/>
         <TextView
-            android:layout_width="300dp"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:textColor="#505050"
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_marginTop="40dp"
-            android:text="By tapping the Continue button, you agree to our Terms of Service and Privacy Policy."/>
-        <Button
+            android:text="Bằng cách nhấn vào nút Tiếp tục, bạn đồng ý với chúng tôi Điều khoản dịch vụ và Chính sách quyền riêng tư"/>
+         <android.widget.Button
             android:id="@+id/btnContinue"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="Continue"
+            android:text="Tiếp tục"
             android:layout_gravity="center"
             android:textColor="#ffffff"
             android:layout_marginTop="40dp"
