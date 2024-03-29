@@ -83,12 +83,31 @@ public class UserModel implements IUserModel{
 
     @Override
     public void login(User user, OnUserOperationListener listener) {
-
+        initFirebase();
+        user.setPassword(PasswordUtils.hashPassword(user.getPassword()));
+        auth.signInWithEmailAndPassword(user.getEmail(),user.getPassword()).addOnCompleteListener(task -> {
+            if(task.isSuccessful())
+            {
+                db.collection(User.FIREBASE_COLLECTION_NAME).document(task.getResult().getUser().getUid()).get().addOnCompleteListener(
+                        taskUser->{
+                            if(taskUser.isSuccessful())
+                            {
+                                listener.onUserOperationCompleted(taskUser.getResult().toObject(User.class),null);
+                            }
+                            else
+                                listener.onUserOperationCompleted(null, taskUser.getException());
+                        }
+                );
+            }
+            else{
+                listener.onUserOperationCompleted(null, task.getException());
+            }
+        });
     }
 
     @Override
     public void changePassword(User user, String oldPassword, String newPassword, OnUserOperationListener listener) {
-
+        User user
     }
 
     @Override
