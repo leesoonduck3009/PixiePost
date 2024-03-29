@@ -18,4 +18,5 @@ public class UserModel implements IUserModel{
         return instance;
     }
     //endregion
+
 }
