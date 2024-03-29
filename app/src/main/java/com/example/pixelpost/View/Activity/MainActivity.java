@@ -12,6 +12,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.Recording;
 import androidx.camera.video.VideoCapture;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -42,13 +43,11 @@ public class MainActivity extends AppCompatActivity {
     private Recording recording;
     private ExecutorService cameraExecutor;
 
-    ProcessCameraProvider cameraProvider;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_main);
+        setContentView(viewBinding.getRoot());
 
         //Request camera permissions
         if(allPermissionsGranted()) {
@@ -65,15 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-
         cameraProviderFuture.addListener(() -> {
             try {
                 // Used to bind the lifecycle of cameras to the lifecycle owner
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-
                 // Preview
                 Preview preview = new Preview.Builder().build();
-                preview.setSurfaceProvider(viewBinding.previewView.getSurfaceProvider());
 
                 // Select back camera as a default
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
@@ -83,11 +79,11 @@ public class MainActivity extends AppCompatActivity {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview);
-            } catch (Exception exc) {
-                Log.e(TAG, "Use case binding failed", exc);
-            }
-        }, ContextCompat.getMainExecutor(this));
-
+                preview.setSurfaceProvider(viewBinding.previewView.getSurfaceProvider());
+                } catch (Exception exc) {
+                    Log.e(TAG, "Use case starting camera failed", exc);
+                }
+            }, ContextCompat.getMainExecutor(this));
     }
 
     private void takePhoto() {
@@ -152,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                                 "Permission request denied",
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        startCamera();
+                        //startCamera();
                     }
                 }
             });

@@ -5,28 +5,199 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Activity.MainActivity">
+    tools:context=".View.Activity.MainActivity"
+    android:background="@color/black2">
 
-     <androidx.camera.view.PreviewView
-         android:id="@+id/preview_view"
-         android:layout_width="match_parent"
-         android:layout_height="400dp"
-         app:layout_constraintTop_toTopOf="parent"
-         app:layout_constraintBottom_toTopOf="@id/image_capture_button"
-         app:implementationMode="compatible"
-         />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="30dp">
 
-    <Button
-        android:id="@+id/image_capture_button"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:elevation="2dp"
-        android:text="Take Photo"
-        app:layout_constraintTop_toBottomOf="@id/preview_view"
+        <ImageView
+            android:id="@+id/profile_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/header_button"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:src="@drawable/icon_profile"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/friend_btn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/friend_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/profile_btn"
+            app:layout_constraintEnd_toStartOf="@id/message_btn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center_vertical"
+            android:background="@drawable/header_button"
+            android:paddingHorizontal="8dp"
+            android:layout_marginHorizontal="30dp">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:src="@drawable/icon_friend"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10 người bạn"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:paddingRight="8dp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/message_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/header_button"
+            android:src="@drawable/icon_message"
+            android:gravity="center"
+            android:paddingVertical="12dp"
+            app:layout_constraintStart_toEndOf="@id/friend_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/preview_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/preview_view_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/footer"
+        android:clipToOutline="true"
+        android:layout_marginTop="30dp">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/preview_view"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            app:implementationMode="compatible"
+            android:foreground="@drawable/preview_view_background"
+            />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@drawable/custom_button"
-        />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="60dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/flash_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/icon_flash"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/image_capture_button_container"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <LinearLayout
+                android:id="@+id/image_capture_button_container"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/flash_btn"
+                app:layout_constraintEnd_toEndOf="@id/change_camera_btn"
+                android:background="@drawable/capture_btn_container"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/image_capture_button"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:elevation="2dp"
+                    android:background="@drawable/capture_btn"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/change_camera_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/icon_change"
+                app:layout_constraintStart_toEndOf="@id/image_capture_button_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="60dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:src="@drawable/history_test_img"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/boder_radius_img"
+                    android:clipToOutline="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lịch sử"
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:paddingRight="8dp"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="24dp"
+                android:src="@drawable/icon_arrow_down_2"
+                android:layout_marginTop="5dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
