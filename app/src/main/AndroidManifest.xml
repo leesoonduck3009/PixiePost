@@ -15,6 +15,15 @@
         android:theme="@style/Theme.PixelPost"
         tools:targetApi="31">
         <activity
+            android:name=".View.Activity.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.OTPVerificationForgorPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.OTPVerificationSignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".View.Activity.Login02Activity"
             android:exported="false" />
         <activity

@@ -22,6 +22,7 @@ public class Login02Activity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login02);
         ImageView btnBack = findViewById(R.id.btnBack);
+        Button btnForgotPassWord = findViewById(R.id.btnForgotPassWord);
         Button btnContinue = findViewById(R.id.btnContinue);
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,6 +35,13 @@ public class Login02Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        btnForgotPassWord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Login02Activity.this, OTPVerificationForgorPasswordActivity.class);
+                startActivity(intent);
             }
         });
     }
