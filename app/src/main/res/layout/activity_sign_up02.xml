@@ -29,7 +29,7 @@
             android:layout_marginTop="100dp"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:text="What's your Password?" />
+            android:text="Chọn một mật khẩu" />
 
 
         <EditText
@@ -44,20 +44,37 @@
             android:textColorHint="#C0C0C0"
             android:textColor="#C0C0C0"
             android:background="@drawable/edittext_bg"
-            android:hint="Enter password" />
-        <TextView
+            android:hint="Mật khẩu" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#A9A9A9"
+            android:orientation="horizontal"
             android:gravity="center"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:text="Your password must be at least 8 characters long. "/>
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#A9A9A9"
+                android:text="Mật khẩu phải có ít nhất " />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FF0000"
+                android:textStyle="bold"
+                android:text="8 ký tự" />
+
+
+
+        </LinearLayout>
         <android.widget.Button
             android:id="@+id/btnContinue"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="Continue"
+            android:text="Tiếp tục"
             android:layout_gravity="center"
             android:textColor="#ffffff"
             android:layout_marginTop="40dp"

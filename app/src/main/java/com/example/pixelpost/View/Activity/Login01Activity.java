@@ -45,12 +45,12 @@ public class Login01Activity extends AppCompatActivity {
                 if (phoneNumberLayout.getVisibility() == View.VISIBLE) {
                     phoneNumberLayout.setVisibility(View.GONE);
                     emailLayout.setVisibility(View.VISIBLE);
-                    txtHeader.setText("What's your Email?");
+                    txtHeader.setText("Email của bạn là gì?");
                     button.setText("Sử dụng Số điện thoại cho cách này");
                 } else {
                     phoneNumberLayout.setVisibility(View.VISIBLE);
                     emailLayout.setVisibility(View.GONE);
-                    txtHeader.setText("What's your Phone Number?");
+                    txtHeader.setText("Số điện thoại của bạn là gì?");
                     button.setText("Sử dụng Email cho cách này");
                 }
             }
