@@ -29,7 +29,7 @@
             android:layout_marginTop="100dp"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:text="Enter your Password?" />
+            android:text="Nhập mật khẩu của bạn" />
 
 
         <EditText
@@ -44,7 +44,7 @@
             android:textColorHint="#C0C0C0"
             android:textColor="#C0C0C0"
             android:background="@drawable/edittext_bg"
-            android:hint="Password" />
+            android:hint="Mật khẩu" />
 
         <Button
             android:id="@+id/btnForgotPassWord"
@@ -54,7 +54,7 @@
             android:background="@drawable/edittext_bg"
             android:paddingHorizontal="20dp"
             android:layout_marginTop="20dp"
-            android:text="Forgot Password?"
+            android:text="Quên mật khẩu?"
             android:textAllCaps="false"
             android:textColor="#ffffff"
             android:textSize="12dp"/>
@@ -67,7 +67,7 @@
             android:layout_marginTop="40dp"
             android:background="@drawable/custom_button"
             android:paddingHorizontal="40dp"
-            android:text="Continue"
+            android:text="Tiếp tục"
             android:textAllCaps="false"
             android:textColor="#ffffff" />
     </LinearLayout>

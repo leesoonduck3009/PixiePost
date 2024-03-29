@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="24sp"
-            android:text="OTP Verification"
+            android:text="Xác nhận OTP"
             android:textStyle="bold"
             android:textColor="#A9A9A9"/>
         <TextView

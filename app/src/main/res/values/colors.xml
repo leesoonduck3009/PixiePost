@@ -2,6 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="black2">#FF1C1E24</color>
+    <color name="grey">#FF4E5054</color>
     <color name="avatar_background_color">#606060</color>
     <color name="secondary_text_color">#5F5E5E</color>
     <color name="primary_text_color">#FCFCFE</color>
@@ -10,6 +12,5 @@
     <color name="sent_message_background">#F8D37F</color>
     <color name="yellow">#F5BD40</color>
     <color name="chat_conversation_background">#F4F3F4</color>
-
 
 </resources>
