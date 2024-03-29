@@ -29,7 +29,8 @@
             android:exported="false" />
         <activity
             android:name=".View.Activity.SetUpProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".View.Activity.SignUp02Activity"
             android:exported="false" />
@@ -57,6 +58,7 @@
         <activity
             android:name=".View.Activity.MainActivity"
             android:exported="false" />
+
     </application>
 
 </manifest>
