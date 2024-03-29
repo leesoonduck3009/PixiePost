@@ -1,10 +1,6 @@
 package com.example.pixelpost.Utils.SupportClass;
 
 
-Dưới đây là cách bạn có thể viết hàm để hash mật khẩu và hàm để giải hash mật khẩu:
-
-        java
-        Copy code
 import android.util.Log;
 
 import java.security.MessageDigest;
