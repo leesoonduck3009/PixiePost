@@ -86,7 +86,7 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
         conversation = (Conversation) intent.getParcelableExtra(Conversation.FIREBASE_COLLECTION_NAME);
         assert conversation != null;
         receiverUser = conversation.getRecieverUser();
-        textReceivedAccName.setText(conversation.getRecieverUser().getName());
+        textReceivedAccName.setText(conversation.getRecieverUser().getFirstName()+conversation.getRecieverUser().getLastName());
         Glide.with(getApplicationContext()).load(conversation.getRecieverUser().getAvatarUrl()).into(imageProfile);
         chatMessageAdapter = new MessageAdapter(listChatMessages, FirebaseAuth.getInstance().getCurrentUser().getUid());
         presenter.onLoadingMessage(conversation.getId());

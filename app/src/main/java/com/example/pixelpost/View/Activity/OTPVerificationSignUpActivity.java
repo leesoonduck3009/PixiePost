@@ -22,6 +22,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.EmailSending;
 
@@ -62,7 +63,7 @@ public class OTPVerificationSignUpActivity extends AppCompatActivity {
     private void getEmail()
     {
         Intent intent = getIntent();
-        userEmail = intent.getStringExtra("user_email");
+        userEmail = intent.getStringExtra(User.FIELD_EMAIL);
         generateOTPAndSendMail();
 
     }
@@ -161,7 +162,7 @@ public class OTPVerificationSignUpActivity extends AppCompatActivity {
                 if(isOTPValid(OTPInput,OTP))
                 {
                     Intent intent = new Intent(OTPVerificationSignUpActivity.this, SignUp02Activity.class);
-                    intent.putExtra("user_email",userEmail);
+                    intent.putExtra(User.FIELD_EMAIL,userEmail);
                     startActivity(intent);
                 }
                 else

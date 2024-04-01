@@ -17,6 +17,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.pixelpost.Contract.Activity.ISignUp01ActivityContract;
+import com.example.pixelpost.Model.User.User;
+import com.example.pixelpost.Presenter.Acitivity.SignUp01ActivityPresenter;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.ValidateData;
 
@@ -31,10 +34,11 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class SignUp01Activity extends AppCompatActivity {
+public class SignUp01Activity extends AppCompatActivity implements ISignUp01ActivityContract.View {
     Button btnContinue;
     ImageView btnBack;
     EditText editTextTextEmailAddress;
+    ISignUp01ActivityContract.Presenter presenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,7 @@ public class SignUp01Activity extends AppCompatActivity {
         btnContinue = findViewById(R.id.btnContinue);
         btnBack = findViewById(R.id.btnBack);
         editTextTextEmailAddress = this.findViewById(R.id.editTextTextEmailAddress);
+        presenter = new SignUp01ActivityPresenter(this);
         setListener();
     }
 
@@ -52,11 +57,10 @@ public class SignUp01Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String email = editTextTextEmailAddress.getText().toString();
+
                 if(ValidateData.isValidEmail(email))
                 {
-                    Intent intent = new Intent(SignUp01Activity.this, OTPVerificationSignUpActivity.class);
-                    intent.putExtra("user_email", email);
-                    startActivity(intent);
+                    presenter.checkEmail(email);
                 }
                 else{
                     Toast.makeText(SignUp01Activity.this, "Vui lòng kiểm tra lại địa chỉ email", Toast.LENGTH_SHORT).show();
@@ -69,5 +73,25 @@ public class SignUp01Activity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void isLegitEmail() {
+        String email = editTextTextEmailAddress.getText().toString();
+
+        Intent intent = new Intent(SignUp01Activity.this, OTPVerificationSignUpActivity.class);
+        intent.putExtra(User.FIELD_EMAIL, email);
+        startActivity(intent);
+    }
+
+    @Override
+    public void isNotLegitEmail() {
+        Toast.makeText(getApplicationContext(),"Tài khoản đã tồn tại",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void checkEmailFailed(Exception e) {
+        Log.e("check-email-failed",e.getMessage());
+        Toast.makeText(getApplicationContext(),"Lỗi đăng ký tài khoản", Toast.LENGTH_SHORT).show();
     }
 }

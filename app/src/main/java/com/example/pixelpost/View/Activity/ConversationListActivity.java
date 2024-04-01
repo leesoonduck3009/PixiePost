@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.pixelpost.Contract.Activity.IConversationListActivityContract;
 import com.example.pixelpost.Model.Conversation.Conversation;
+import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.ConversationListActivityPresenter;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.Listener.IConversationListener;
@@ -65,6 +66,12 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
 //        conversationAdapter = new ConversationAdapter(listConversations, this);
 //        count = 0;
 //        presenter.onLoadingConversation();
+          ArrayList<User> userList = new ArrayList<User>();
+        userList.add(new User.Builder().setFirstName("Hello").setLastName("World").build());
+        userList.add(new User.Builder().setFirstName("Hello1").setLastName("World5").build());
+        userList.add(new User.Builder().setFirstName("Hello2").setLastName("World6").build());
+        userList.add(new User.Builder().setFirstName("Hello3").setLastName("World7").build());
+        userList.add(new User.Builder().setFirstName("Hello4").setLastName("World8").build());
 
     }
     @Override

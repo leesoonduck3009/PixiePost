@@ -1,9 +1,12 @@
 package com.example.pixelpost.Utils.SupportClass;
+
+
 import android.util.Log;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Objects;
 
 public class PasswordUtils {
 
@@ -14,7 +17,7 @@ public class PasswordUtils {
             byte[] hashedBytes = md.digest(password.getBytes());
             return Base64.getEncoder().encodeToString(hashedBytes);
         } catch (NoSuchAlgorithmException e) {
-            Log.e("hash_password_log",e.getMessage());
+            Log.e("hash_password_log", Objects.requireNonNull(e.getMessage()));
             return null;
         }
     }
