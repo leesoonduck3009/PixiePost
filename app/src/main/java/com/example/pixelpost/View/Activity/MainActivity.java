@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView btnMessage;
 
+    private  ImageView profile_btn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +60,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(viewBinding.getRoot());
 
         btnMessage = findViewById(R.id.btnMessage);
+        profile_btn = findViewById(R.id.profile_btn);
+
         btnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ConversationListActivity.class);
+                startActivity(intent);
+            }
+        });
+        profile_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FriendFunctionActivity.class);
                 startActivity(intent);
             }
         });

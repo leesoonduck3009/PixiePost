@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:name="android.hardware.camera.any" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-
 
     <application
         android:allowBackup="true"
@@ -21,6 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PixelPost"
         tools:targetApi="31">
+        <activity
+            android:name=".View.Activity.FriendFunctionActivity"
+            android:exported="false" />
         <activity
             android:name=".View.Activity.ResetPasswordActivity"
             android:exported="false" />
@@ -38,8 +43,7 @@
             android:exported="false" />
         <activity
             android:name=".View.Activity.SetUpProfileActivity"
-            android:exported="false"
-            />
+            android:exported="false" />
         <activity
             android:name=".View.Activity.SignUp02Activity"
             android:exported="false" />
@@ -67,7 +71,6 @@
         <activity
             android:name=".View.Activity.MainActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>
