@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pixelpost.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class AnimationActivity extends AppCompatActivity {
 
@@ -23,7 +24,10 @@ public class AnimationActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(AnimationActivity.this, OnboardingActivity.class));
+                if(FirebaseAuth.getInstance().getCurrentUser()==null)
+                    startActivity(new Intent(AnimationActivity.this, OnboardingActivity.class));
+                else
+                    startActivity(new Intent(AnimationActivity.this, MainActivity.class));
             }
         },3000);
     }

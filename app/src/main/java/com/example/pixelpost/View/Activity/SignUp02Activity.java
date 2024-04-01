@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
 
 public class SignUp02Activity extends AppCompatActivity {
@@ -35,8 +36,8 @@ public class SignUp02Activity extends AppCompatActivity {
                 if(passwordEditText.getText().toString().length()>=8)
                 {
                     Intent intent = new Intent(SignUp02Activity.this, SetUpProfileActivity.class);
-                    intent.putExtra("user_email",getIntent().getStringExtra("user_email"));
-                    intent.putExtra("user_password",passwordEditText.getText().toString());
+                    intent.putExtra(User.FIELD_EMAIL,getIntent().getStringExtra(User.FIELD_EMAIL));
+                    intent.putExtra(User.FIELD_PASSWORD,passwordEditText.getText().toString());
                     startActivity(intent);
                 }
                 else{

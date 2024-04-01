@@ -15,5 +15,19 @@ public class SetUpProfileActivityPresenter implements ISetUpProfileActivityContr
     }
     @Override
     public void onCreatingAccount(User user) {
+        userModel.createUser(user,(user1, isUserExisted, e) -> {
+            if(e!=null)
+            {
+                view.onLoadingFailed(e);
+            }
+            else{
+                if(isUserExisted)
+                    view.onLoadingFailed(new Exception("Email này đã được sử dụng"));
+                else
+                {
+                    view.onCreateAccountSuccess(user1);
+                }
+            }
+        });
     }
 }

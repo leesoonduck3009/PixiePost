@@ -30,9 +30,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
+import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
 import com.example.pixelpost.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private ExecutorService cameraExecutor;
 
     private ImageView btnMessage;
+    private PreferenceManager preferenceManager;
 
     private  ImageView profile_btn;
 
@@ -58,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
-
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        checkLogin();
         btnMessage = findViewById(R.id.btnMessage);
         profile_btn = findViewById(R.id.profile_btn);
 
@@ -140,7 +145,16 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         cameraExecutor.shutdown();
     }
-
+    private void checkLogin()
+    {
+        if(FirebaseAuth.getInstance().getCurrentUser()==null)
+        {
+            preferenceManager.removeKey(User.FIREBASE_COLLECTION_NAME);
+            Intent intent = new Intent(getApplicationContext(), Login01Activity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
     private static final String TAG = "CameraXApp";
     private static final String FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
     private static final int REQUEST_CODE_PERMISSIONS = 10;
