@@ -1,4 +1,4 @@
-package com.example.pixelpost.View.Adapter;
+package com.example.pixelpost.View.Adapter.Conversation;
 
 import android.graphics.Color;
 import android.graphics.Typeface;

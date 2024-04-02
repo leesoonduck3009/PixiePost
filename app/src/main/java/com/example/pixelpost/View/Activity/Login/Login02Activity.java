@@ -1,4 +1,4 @@
-package com.example.pixelpost.View.Activity;
+package com.example.pixelpost.View.Activity.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,15 +10,14 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pixelpost.Contract.Activity.ILogin2ActivityContract;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.Login2ActivityPresenter;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
+import com.example.pixelpost.View.Activity.MainActivity;
+import com.example.pixelpost.View.Activity.ForgotPassword.OTPVerificationForgorPasswordActivity;
 
 public class Login02Activity extends AppCompatActivity implements ILogin2ActivityContract.View {
 

@@ -1,4 +1,4 @@
-package com.example.pixelpost.View.Activity;
+package com.example.pixelpost.View.Activity.Signup;
 
 import static com.example.pixelpost.Utils.SupportClass.OTPGenerator.generateOTP;
 import static com.example.pixelpost.Utils.SupportClass.OTPGenerator.isOTPValid;
@@ -18,16 +18,10 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.EmailSending;
-
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class OTPVerificationSignUpActivity extends AppCompatActivity {
 

@@ -2,7 +2,6 @@ package com.example.pixelpost.View.Activity;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.ActivityResultRegistry;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
@@ -12,8 +11,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.Recording;
 import androidx.camera.video.VideoCapture;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
@@ -21,18 +18,17 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
 import android.Manifest;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
+import com.example.pixelpost.View.Activity.Conversation.ConversationListActivity;
+import com.example.pixelpost.View.Activity.Login.Login01Activity;
 import com.example.pixelpost.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,8 +36,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

@@ -1,4 +1,4 @@
-package com.example.pixelpost.View.Activity;
+package com.example.pixelpost.View.Activity.Conversation;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
@@ -15,15 +15,13 @@ import android.widget.TextView;
 
 import com.example.pixelpost.Contract.Activity.IConversationListActivityContract;
 import com.example.pixelpost.Model.Conversation.Conversation;
-import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.ConversationListActivityPresenter;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.Listener.IConversationListener;
-import com.example.pixelpost.View.Adapter.ConversationAdapter;
+import com.example.pixelpost.View.Adapter.Conversation.ConversationAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class ConversationListActivity extends AppCompatActivity implements IConversationListActivityContract.View, IConversationListener {
     private IConversationListActivityContract.Presenter presenter;
@@ -56,22 +54,17 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
                 startActivity(intent);
             }
         });
-//        presenter = new ConversationListActivityPresenter(this);
-//        listConversationRecyclerView = findViewById(R.id.listConversationRecyclerView);
-//        bttBackConversation = findViewById(R.id.bttBackConversation);
-//        textViewNotConversation = findViewById(R.id.textViewNotConversation);
-//        layoutNotConversation = findViewById(R.id.layoutNotConversation);
-//        progressBar = findViewById(R.id.progressBar);
-//        listConversations = new ArrayList<>();
-//        conversationAdapter = new ConversationAdapter(listConversations, this);
-//        count = 0;
-//        presenter.onLoadingConversation();
-          ArrayList<User> userList = new ArrayList<User>();
-        userList.add(new User.Builder().setFirstName("Hello").setLastName("World").build());
-        userList.add(new User.Builder().setFirstName("Hello1").setLastName("World5").build());
-        userList.add(new User.Builder().setFirstName("Hello2").setLastName("World6").build());
-        userList.add(new User.Builder().setFirstName("Hello3").setLastName("World7").build());
-        userList.add(new User.Builder().setFirstName("Hello4").setLastName("World8").build());
+        presenter = new ConversationListActivityPresenter(this);
+        listConversationRecyclerView = findViewById(R.id.listConversationRecyclerView);
+        bttBackConversation = findViewById(R.id.bttBackConversation);
+        textViewNotConversation = findViewById(R.id.textViewNotConversation);
+        layoutNotConversation = findViewById(R.id.layoutNotConversation);
+        progressBar = findViewById(R.id.progressBar);
+        listConversations = new ArrayList<>();
+        conversationAdapter = new ConversationAdapter(listConversations, this);
+        count = 0;
+        presenter.onLoadingConversation();
+
 
     }
     @Override

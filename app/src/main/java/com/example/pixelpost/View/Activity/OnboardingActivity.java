@@ -8,11 +8,10 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pixelpost.R;
+import com.example.pixelpost.View.Activity.Login.Login01Activity;
+import com.example.pixelpost.View.Activity.Signup.SignUp01Activity;
 
 public class OnboardingActivity extends AppCompatActivity {
     Button btnSignUp;

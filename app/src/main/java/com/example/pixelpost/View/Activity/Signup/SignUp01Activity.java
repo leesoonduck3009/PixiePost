@@ -1,6 +1,4 @@
-package com.example.pixelpost.View.Activity;
-
-import static com.example.pixelpost.Utils.SupportClass.EmailSending.sendMail;
+package com.example.pixelpost.View.Activity.Signup;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,26 +11,12 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.pixelpost.Contract.Activity.ISignUp01ActivityContract;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.SignUp01ActivityPresenter;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.ValidateData;
-
-import java.util.Properties;
-
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 public class SignUp01Activity extends AppCompatActivity implements ISignUp01ActivityContract.View {
     Button btnContinue;

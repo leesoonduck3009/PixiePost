@@ -68,6 +68,7 @@ android {
         androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
         implementation("com.sun.mail:android-mail:1.6.7")
         implementation("com.sun.mail:android-activation:1.6.7")
+        implementation("com.google.zxing:core:3.4.1")
 
     }
 }

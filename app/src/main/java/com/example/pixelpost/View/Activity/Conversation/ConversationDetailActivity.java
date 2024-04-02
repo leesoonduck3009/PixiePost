@@ -1,11 +1,10 @@
-package com.example.pixelpost.View.Activity;
+package com.example.pixelpost.View.Activity.Conversation;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,15 +16,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.pixelpost.Contract.Activity.IConversationDetailActivityContract;
-import com.example.pixelpost.Contract.Activity.IConversationListActivityContract;
 import com.example.pixelpost.Model.Conversation.Conversation;
 import com.example.pixelpost.Model.Message.Message;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.ConversationDetailActivityPresenter;
 import com.example.pixelpost.R;
-import com.example.pixelpost.View.Adapter.MessageAdapter;
+import com.example.pixelpost.View.Adapter.Conversation.MessageAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.type.DateTime;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
@@ -42,7 +39,7 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
     private ImageView bttSendMessage;
     private ArrayList<Message> listChatMessages;
     private MessageAdapter messageAdapter;
-    private TextView textReceivedAccName;
+    private TextView textUser1;
     private Conversation conversation;
     private RoundedImageView imageProfile;
     private List<Bitmap> listBitmapImages;
@@ -56,18 +53,18 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_detail);
-//        presenter = new ConversationDetailActivityPresenter(this);
-//        conversationRecyclerView = findViewById(R.id.conversationRecyclerView);
-//        bttBackConversation = findViewById(R.id.bttBackConversation);
-//        textReceivedAccName = findViewById(R.id.textReceivedAccName);
-//        bttSendMessage = findViewById(R.id.bttSendMessage);
-//        imageProfile = findViewById(R.id.imageProfile);
-//        progressBar = findViewById(R.id.progressBar);
-//        inputMessage = findViewById(R.id.inputMessage);
-//        listChatMessages = new ArrayList<>();
-//        initData();
-//        conversationRecyclerView.setAdapter(chatMessageAdapter);
-//        setListener();
+        presenter = new ConversationDetailActivityPresenter(this);
+        conversationRecyclerView = findViewById(R.id.conversationRecyclerView);
+        bttBackConversation = findViewById(R.id.bttBackConversation);
+        textUser1 = findViewById(R.id.textUser1);
+        bttSendMessage = findViewById(R.id.bttSendMessage);
+        imageProfile = findViewById(R.id.imageProfile);
+        progressBar = findViewById(R.id.progressBar);
+        inputMessage = findViewById(R.id.inputMessage);
+        listChatMessages = new ArrayList<>();
+        initData();
+        conversationRecyclerView.setAdapter(chatMessageAdapter);
+        setListener();
 
     }
     private void setListener()
@@ -86,7 +83,7 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
         conversation = (Conversation) intent.getParcelableExtra(Conversation.FIREBASE_COLLECTION_NAME);
         assert conversation != null;
         receiverUser = conversation.getRecieverUser();
-        textReceivedAccName.setText(conversation.getRecieverUser().getFirstName()+conversation.getRecieverUser().getLastName());
+        textUser1.setText(conversation.getRecieverUser().getFirstName()+conversation.getRecieverUser().getLastName());
         Glide.with(getApplicationContext()).load(conversation.getRecieverUser().getAvatarUrl()).into(imageProfile);
         chatMessageAdapter = new MessageAdapter(listChatMessages, FirebaseAuth.getInstance().getCurrentUser().getUid());
         presenter.onLoadingMessage(conversation.getId());
