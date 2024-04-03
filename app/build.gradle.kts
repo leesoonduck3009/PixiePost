@@ -68,7 +68,13 @@ android {
         androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
         implementation("com.sun.mail:android-mail:1.6.7")
         implementation("com.sun.mail:android-activation:1.6.7")
-        implementation("com.google.zxing:core:3.4.1")
+        implementation("com.google.zxing:core:3.5.2")
+        // ViewModel and LiveData
+        implementation ("androidx.lifecycle:lifecycle-livedata:2.7.0")
+        implementation ("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
+
+        // Use this dependency to bundle the model with your app
+        implementation ("com.google.mlkit:barcode-scanning:17.2.0")
 
     }
 }
