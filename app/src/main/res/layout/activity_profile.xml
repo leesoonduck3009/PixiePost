@@ -204,7 +204,7 @@
                 android:layout_height="wrap_content"
                 android:text="Đổi mật khẩu"
                 android:textSize="18dp"
-                android:textColor="#C0C0C0"
+                android:textColor="#ffffff"
                 android:textAllCaps="false"
                 android:background="#484848"
                 android:layout_alignParentStart="true"
