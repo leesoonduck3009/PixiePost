@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.Activity.ProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/black">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:textColor="#ffffff"
+            android:text="Hồ sơ cá nhân" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/avatarImg"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:background="@drawable/background_avatar_profile" />
+            <ImageView
+                android:id="@+id/btnUpdateAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:paddingHorizontal="6dp"
+                android:layout_marginBottom="10dp"
+                android:layout_alignBottom="@+id/avatarImg"
+                android:background="@drawable/background_icon_messenger"
+                android:layout_alignEnd="@+id/avatarImg"
+                android:src="@drawable/baseline_photo_camera_24" />
+
+
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingStart="20dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_group" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:textColor="#C0C0C0"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="Họ " />
+        </LinearLayout>
+        <EditText
+            android:id="@+id/edtLastName"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:text="Le"
+            android:textSize="18dp"
+            android:textColor="#C0C0C0"
+            android:paddingVertical="14dp"
+            android:background="@drawable/edittext_bg"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingStart="20dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_person" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:textColor="#C0C0C0"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="Tên" />
+        </LinearLayout>
+        <EditText
+            android:id="@+id/edtFirstName"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:text="Quoc Dung"
+            android:textSize="18dp"
+            android:textColor="#C0C0C0"
+            android:paddingVertical="14dp"
+            android:background="@drawable/edittext_bg"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingStart="20dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_email" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:textColor="#C0C0C0"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="Email" />
+        </LinearLayout>
+        <EditText
+            android:id="@+id/edtEmail"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:text="ledungquoc2983@gmail.com"
+            android:textSize="18dp"
+            android:textColor="#C0C0C0"
+            android:paddingVertical="14dp"
+            android:background="@drawable/edittext_bg"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingStart="20dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_phone" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:textColor="#C0C0C0"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="Số điện thoại" />
+        </LinearLayout>
+        <EditText
+            android:id="@+id/edtPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:text="0914700123"
+            android:textSize="18dp"
+            android:textColor="#C0C0C0"
+            android:paddingVertical="14dp"
+            android:background="@drawable/edittext_bg"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingStart="20dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_sparkling" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:textColor="#ffffff"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="Các tính năng" />
+        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/btnChangePassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/background_button_dark"
+            android:paddingHorizontal="20dp"
+            android:layout_marginTop="10dp">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đổi mật khẩu"
+                android:textSize="18dp"
+                android:textColor="#C0C0C0"
+                android:textAllCaps="false"
+                android:background="#484848"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_next" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/btnLogOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/background_button_dark"
+            android:paddingHorizontal="20dp"
+            android:layout_marginTop="10dp">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đăng xuất"
+                android:textSize="18dp"
+                android:textColor="#B22222"
+                android:textAllCaps="false"
+                android:background="#484848"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_logout" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

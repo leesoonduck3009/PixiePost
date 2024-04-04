@@ -22,6 +22,7 @@ import android.view.View;
 import android.Manifest;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.pixelpost.Model.User.User;
@@ -48,8 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView btnMessage;
     private PreferenceManager preferenceManager;
-
     private  ImageView profile_btn;
+    private LinearLayout friend_btn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,15 @@ public class MainActivity extends AppCompatActivity {
         checkLogin();
         btnMessage = findViewById(R.id.btnMessage);
         profile_btn = findViewById(R.id.profile_btn);
+        friend_btn = findViewById(R.id.friend_btn);
 
+        friend_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FriendFunctionActivity.class);
+                startActivity(intent);
+            }
+        });
         btnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         profile_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, FriendFunctionActivity.class);
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
             }
         });
