@@ -15,6 +15,7 @@ import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.Listener.IAcceptUserListener;
 import com.example.pixelpost.Utils.Listener.IAddUserListener;
 import com.example.pixelpost.Utils.Listener.IRemoveUserListener;
+import com.example.pixelpost.View.Activity.QR.QRProfileActivity;
 import com.example.pixelpost.View.Adapter.ListExistingFriendAdapter;
 import com.example.pixelpost.View.Adapter.ListRecommendFriendAdapter;
 import com.example.pixelpost.View.Adapter.ListRequestFriendAdapter;

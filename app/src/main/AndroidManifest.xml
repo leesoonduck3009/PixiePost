@@ -24,10 +24,10 @@
         android:theme="@style/Theme.PixelPost"
         tools:targetApi="31">
         <activity
-            android:name=".View.Activity.QrScannerActivity"
+            android:name=".View.Activity.QR.QrScannerActivity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.QRProfileActivity"
+            android:name=".View.Activity.QR.QRProfileActivity"
             android:exported="false" />
         <activity
             android:name=".View.Activity.FriendFunctionActivity"

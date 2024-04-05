@@ -9,7 +9,12 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
+import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.common.InputImage;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -20,6 +25,7 @@ import java.util.Map;
 
 public class QRCode {
     public static final String QRCODE_STRING_GENERATED = "pixel-post: ";
+    public static boolean isFind = false;
     public static Bitmap generateQRwithLogo(Bitmap qrCodeBitmap, Bitmap logoBitmap) {
         Bitmap overlayBitmap = Bitmap.createBitmap(qrCodeBitmap.getWidth(), qrCodeBitmap.getHeight(), qrCodeBitmap.getConfig());
         Canvas canvas = new Canvas(overlayBitmap);
@@ -101,5 +107,33 @@ public class QRCode {
             return null;
         }
     }
-
+    public static void scanQRImage(InputImage inputImage, OnFinishScanQRListener listener)
+    {
+        BarcodeScannerOptions options = new BarcodeScannerOptions.Builder()
+                .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+                .build();
+        com.google.mlkit.vision.barcode.BarcodeScanner barcodeScanner = BarcodeScanning.getClient(options);
+        barcodeScanner.process(inputImage)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful())
+                    {
+                        for(Barcode barcode: task.getResult())
+                        {
+                            if(barcode!=null && !isFind )
+                            {
+                                String rawValue = barcode.getRawValue();
+                                listener.onCompleteSendQR(rawValue,null);
+                                return;
+                            }
+                        }
+                        listener.onCompleteSendQR("",null);
+                    }
+                    else{
+                        listener.onCompleteSendQR(null,task.getException());
+                    }
+                });
+    }
+    public interface OnFinishScanQRListener{
+        void onCompleteSendQR(String text, Exception e);
+    }
 }
