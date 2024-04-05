@@ -17,12 +17,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="20dp">
 
         <ImageView
             android:id="@+id/profile_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:background="@drawable/header_button"
             android:gravity="center"
             android:paddingVertical="10dp"
@@ -46,8 +46,8 @@
             android:layout_marginHorizontal="30dp">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:gravity="center"
                 android:paddingVertical="10dp"
                 android:src="@drawable/icon_friend"/>
@@ -64,8 +64,8 @@
 
         <ImageView
             android:id="@+id/btnMessage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:background="@drawable/header_button"
             android:src="@drawable/icon_message"
             android:gravity="center"
@@ -77,6 +77,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
     <FrameLayout
         android:id="@+id/preview_view_container"
         android:layout_width="match_parent"
@@ -85,7 +90,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/footer"
         android:clipToOutline="true"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="50dp">
 
         <androidx.camera.view.PreviewView
             android:id="@+id/preview_view"
@@ -106,7 +111,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginBottom="60dp">
+        android:layout_marginBottom="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -135,7 +140,7 @@
                 android:background="@drawable/capture_btn_container"
                 android:gravity="center">
 
-                <Button
+                <android.widget.Button
                     android:id="@+id/image_capture_button"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
@@ -162,7 +167,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:layout_marginTop="60dp">
+            android:layout_marginTop="40dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -176,7 +181,8 @@
                     android:src="@drawable/history_test_img"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/boder_radius_img"
-                    android:clipToOutline="true"/>
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -198,5 +204,6 @@
         </LinearLayout>
 
     </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
