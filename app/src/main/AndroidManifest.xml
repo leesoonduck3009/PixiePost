@@ -26,6 +26,8 @@
         <activity
             android:name=".View.Activity.QR.QrScannerActivity"
             android:exported="false" />
+        <activity android:name=".View.Activity.ProfileActivity"
+            android:exported="false"/>
         <activity
             android:name=".View.Activity.QR.QRProfileActivity"
             android:exported="false" />
