@@ -44,7 +44,7 @@ public class PostModel implements IPostModel{
         db.collection(Post.FIREBASE_COLLECTION_NAME).add(post).addOnCompleteListener(taskPost->{
             if(taskPost.isSuccessful())
             {
-                Storage.UploadImage(image,taskPost.getResult().getId(),(url, e) -> {
+                Storage.UploadImage(image,taskPost.getResult().getId(),Post.FIREBASE_COLLECTION_NAME,(url, e) -> {
                     if(e!=null)
                     {
                         post.setId(taskPost.getResult().getId());

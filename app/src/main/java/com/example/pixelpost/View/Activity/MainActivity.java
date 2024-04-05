@@ -2,7 +2,6 @@ package com.example.pixelpost.View.Activity;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.ActivityResultRegistry;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
@@ -12,8 +11,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.Recording;
 import androidx.camera.video.VideoCapture;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
@@ -21,24 +18,25 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
 import android.Manifest;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
+import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
+import com.example.pixelpost.View.Activity.Conversation.ConversationListActivity;
+import com.example.pixelpost.View.Activity.Login.Login01Activity;
 import com.example.pixelpost.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -50,18 +48,40 @@ public class MainActivity extends AppCompatActivity {
     private ExecutorService cameraExecutor;
 
     private ImageView btnMessage;
+    private PreferenceManager preferenceManager;
+    private  ImageView profile_btn;
+    private LinearLayout friend_btn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
-
+        preferenceManager = new PreferenceManager(getApplicationContext());
+        checkLogin();
         btnMessage = findViewById(R.id.btnMessage);
+        profile_btn = findViewById(R.id.profile_btn);
+        friend_btn = findViewById(R.id.friend_btn);
+
+        friend_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FriendFunctionActivity.class);
+                startActivity(intent);
+            }
+        });
         btnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ConversationListActivity.class);
+                startActivity(intent);
+            }
+        });
+        profile_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
             }
         });
@@ -129,7 +149,16 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         cameraExecutor.shutdown();
     }
-
+    private void checkLogin()
+    {
+        if(FirebaseAuth.getInstance().getCurrentUser()==null)
+        {
+            preferenceManager.removeKey(User.FIREBASE_COLLECTION_NAME);
+            Intent intent = new Intent(getApplicationContext(), Login01Activity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
     private static final String TAG = "CameraXApp";
     private static final String FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
     private static final int REQUEST_CODE_PERMISSIONS = 10;

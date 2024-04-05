@@ -2,12 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.camera.any" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-
 
     <application
         android:allowBackup="true"
@@ -20,29 +24,39 @@
         android:theme="@style/Theme.PixelPost"
         tools:targetApi="31">
         <activity
-            android:name=".View.Activity.ResetPasswordActivity"
+            android:name=".View.Activity.QR.QrScannerActivity"
+            android:exported="false" />
+        <activity android:name=".View.Activity.ProfileActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".View.Activity.QR.QRProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.OTPVerificationForgorPasswordActivity"
+            android:name=".View.Activity.FriendFunctionActivity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.OTPVerificationSignUpActivity"
+            android:name=".View.Activity.ForgotPassword.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.Login02Activity"
+            android:name=".View.Activity.ForgotPassword.OTPVerificationForgorPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.Login01Activity"
+            android:name=".View.Activity.Signup.OTPVerificationSignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.SetUpProfileActivity"
-            android:exported="false"
-            />
-        <activity
-            android:name=".View.Activity.SignUp02Activity"
+            android:name=".View.Activity.Login.Login02Activity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.SignUp01Activity"
+            android:name=".View.Activity.Login.Login01Activity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.Signup.SetUpProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.Signup.SignUp02Activity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.Signup.SignUp01Activity"
             android:exported="false" />
         <activity
             android:name=".View.Activity.OnboardingActivity"
@@ -57,15 +71,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".View.Activity.ConversationDetailActivity"
+            android:name=".View.Activity.Conversation.ConversationDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".View.Activity.ConversationListActivity"
+            android:name=".View.Activity.Conversation.ConversationListActivity"
             android:exported="false" />
         <activity
             android:name=".View.Activity.MainActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>

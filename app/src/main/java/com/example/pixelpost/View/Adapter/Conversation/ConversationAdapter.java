@@ -1,4 +1,4 @@
-package com.example.pixelpost.View.Adapter;
+package com.example.pixelpost.View.Adapter.Conversation;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -74,7 +74,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 Glide.with(binding.getRoot()).load(R.drawable.ic_basic_avatar).into(binding.imageProfile);
             else
                 Glide.with(binding.getRoot()).load(receiverUser.getAvatarUrl()).into(binding.imageProfile);
-            binding.textConversationName.setText(receiverUser.getName());
+            binding.textConversationName.setText(receiverUser.getFirstName()+ receiverUser.getLastName());
             if(conversation.getPersonNotSeenID() != null) {
                 if (conversation.getPersonNotSeenID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     binding.textRecentMessage.setTypeface(Typeface.DEFAULT_BOLD);
@@ -105,7 +105,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 messageDate = sdfDate.format(lastMessage.getTimeSent());
                 binding.textConversationDate.setText(messageDate);
             }
-            binding.textConversationName.setText(receiverUser.getName());
+            binding.textConversationName.setText(receiverUser.getFirstName()+ receiverUser.getLastName());
             binding.textRecentMessage.setText(lastMessage.getText());
             binding.getRoot().setOnClickListener(view -> {
                 conversationListener.onConversatonClick(conversation);

@@ -84,6 +84,7 @@ public class MessageModel implements IMessageModel{
 
     @Override
     public void ReceiveMessage(String conversationId, OnFinishReceiveMessageListener listener) {
+        initFirebase();
         db.collection(Message.FIREBASE_COLLECTION_NAME).whereEqualTo(Message.FIELD_CONVERSATION_ID,conversationId).limit(100).orderBy(Message.FIELD_TIME_SENT, Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
             AtomicInteger count = new AtomicInteger();

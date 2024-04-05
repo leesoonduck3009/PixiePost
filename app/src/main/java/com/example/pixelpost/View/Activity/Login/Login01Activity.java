@@ -1,4 +1,4 @@
-package com.example.pixelpost.View.Activity;
+package com.example.pixelpost.View.Activity.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,26 +11,25 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
 import com.hbb20.CountryCodePicker;
 
-public class Login01Activity extends AppCompatActivity {
-
+public class Login01Activity extends AppCompatActivity{
+    private EditText emailEditText;
+    private boolean isEmailLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login01);
-
+        isEmailLayout = false;
         CountryCodePicker countryCodePicker = findViewById(R.id.countryCodePicker);
         EditText phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
         String countryCode = countryCodePicker.getSelectedCountryCode();
         String phoneNumber = phoneNumberEditText.getText().toString();
-
+        emailEditText = findViewById(R.id.emailEditText);
         Button button = findViewById(R.id.button);
         Button btnContinue = findViewById(R.id.btnContinue);
         ImageView btnBack = findViewById(R.id.btnBack);
@@ -43,11 +42,13 @@ public class Login01Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (phoneNumberLayout.getVisibility() == View.VISIBLE) {
+                    isEmailLayout = true;
                     phoneNumberLayout.setVisibility(View.GONE);
                     emailLayout.setVisibility(View.VISIBLE);
                     txtHeader.setText("Email của bạn là gì?");
                     button.setText("Sử dụng Số điện thoại cho cách này");
                 } else {
+                    isEmailLayout = false;
                     phoneNumberLayout.setVisibility(View.VISIBLE);
                     emailLayout.setVisibility(View.GONE);
                     txtHeader.setText("Số điện thoại của bạn là gì?");
@@ -58,8 +59,14 @@ public class Login01Activity extends AppCompatActivity {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Login01Activity.this, Login02Activity.class);
-                startActivity(intent);
+                if(isEmailLayout)
+                {
+                    String email = emailEditText.getText().toString();
+                    Intent intent = new Intent(Login01Activity.this, Login02Activity.class);
+                    intent.putExtra(User.FIELD_EMAIL,email);
+                    startActivity(intent);
+                }
+
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {
