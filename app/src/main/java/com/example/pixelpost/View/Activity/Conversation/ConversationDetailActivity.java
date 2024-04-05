@@ -84,7 +84,10 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
         assert conversation != null;
         receiverUser = conversation.getRecieverUser();
         textUser1.setText(conversation.getRecieverUser().getFirstName()+conversation.getRecieverUser().getLastName());
-        Glide.with(getApplicationContext()).load(conversation.getRecieverUser().getAvatarUrl()).into(imageProfile);
+        if(conversation.getRecieverUser().getAvatarUrl()!=null || !conversation.getRecieverUser().getAvatarUrl().isEmpty() )
+            Glide.with(getApplicationContext()).load(conversation.getRecieverUser().getAvatarUrl()).into(imageProfile);
+        else
+            Glide.with(getApplicationContext()).load(R.drawable.avatar3).into(imageProfile);
         chatMessageAdapter = new MessageAdapter(listChatMessages, FirebaseAuth.getInstance().getCurrentUser().getUid());
         presenter.onLoadingMessage(conversation.getId());
     }

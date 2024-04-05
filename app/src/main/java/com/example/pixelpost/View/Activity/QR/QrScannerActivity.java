@@ -48,6 +48,7 @@ public class QrScannerActivity extends AppCompatActivity {
     private ImageView btnExit;
     private LinearLayout btnPutImage;
     private LinearLayout btnQRCode;
+    public static final String FROM_FRIEND_REQUEST_QR = "friend_request_qr";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -227,6 +228,7 @@ ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
                 } else {
                     if (text.startsWith(QRCode.QRCODE_STRING_GENERATED)) {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra(FROM_FRIEND_REQUEST_QR,true);
                         startActivity(intent);
                         finish();
                         QRCode.isFind = true;

@@ -30,6 +30,8 @@ import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
 import com.example.pixelpost.View.Activity.Conversation.ConversationListActivity;
 import com.example.pixelpost.View.Activity.Login.Login01Activity;
+import com.example.pixelpost.View.Activity.QR.QrScannerActivity;
+import com.example.pixelpost.View.Dialog.FriendRequestDialog;
 import com.example.pixelpost.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
 
         cameraExecutor = Executors.newSingleThreadExecutor();
+        checkFromFriendRequest();
     }
 
     private void startCamera() {
@@ -198,4 +201,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+    private void checkFromFriendRequest()
+    {
+        if(getIntent().getBooleanExtra(QrScannerActivity.FROM_FRIEND_REQUEST_QR,false))
+        {
+            User user = (User) preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME);
+            FriendRequestDialog.showDialog(this, user, FriendRequestDialog.FriendRequestDialogType.IS_FRIEND, new FriendRequestDialog.DialogClickListener() {
+                @Override
+                public void onAcceptFriendClick() {
+
+                }
+            });
+        }
+    }
 }
