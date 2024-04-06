@@ -25,7 +25,7 @@ public class FriendRequestDialog {
     private DialogClickListener dialogClickListener;
     private FriendRequestDialog(Context context,FriendRequestDialogType type)
     {
-        dialog = new Dialog(context);
+        dialog = new Dialog(context,R.style.AppTheme_Dialog_MyDialogTheme);
         dialog.setContentView(R.layout.layout_add_friend_dialog);
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -51,11 +51,11 @@ public class FriendRequestDialog {
         TextView txtViewName = friendRequestDialog.dialog.findViewById(R.id.txtViewName);
         switch (type){
             case IS_FRIEND:
-                imgViewAcceptBtn.setImageResource(R.drawable.ic_check);
+                imgViewAcceptBtn.setBackgroundResource(R.drawable.ic_check);
                 txtViewAcceptBtn.setText(R.string.isFriend);
                 break;
             case NOT_IS_FRIEND:
-                imgViewAcceptBtn.setImageResource(R.drawable.icon_add);
+                imgViewAcceptBtn.setBackgroundResource(R.drawable.icon_add);
                 txtViewAcceptBtn.setText(R.string.notIsFriend);
                 break;
         }
@@ -63,7 +63,7 @@ public class FriendRequestDialog {
             Glide.with(context).load(user.getAvatarUrl()).into(imgviewAvatar);
         else
             Glide.with(context).load(R.drawable.avatar3).into(imgviewAvatar);
-        String name =user.getFirstName() + user.getLastName();
+        String name = user.getLastName() + "" + user.getFirstName();
         txtViewName.setText(name);
         friendRequestDialog.dialog.show();
     }

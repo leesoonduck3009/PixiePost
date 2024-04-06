@@ -203,9 +203,13 @@ public class MainActivity extends AppCompatActivity {
             });
     private void checkFromFriendRequest()
     {
-        if(getIntent().getBooleanExtra(QrScannerActivity.FROM_FRIEND_REQUEST_QR,false))
+        Intent intent = getIntent();
+        if(intent.getBooleanExtra(QrScannerActivity.FROM_FRIEND_REQUEST_QR,false))
         {
+
             User user = (User) preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME);
+            String id = intent.getStringExtra("id");
+
             FriendRequestDialog.showDialog(this, user, FriendRequestDialog.FriendRequestDialogType.IS_FRIEND, new FriendRequestDialog.DialogClickListener() {
                 @Override
                 public void onAcceptFriendClick() {
