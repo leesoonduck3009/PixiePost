@@ -5,6 +5,8 @@ public interface IUserModel {
     void updateUser(User user, OnUserOperationListener listener);
     void login(User user, OnUserOperationListener listener);
     void getCurrentUser(OnUserOperationListener listener);
+    void getUserWithID(String id,OnUserOperationListener listener);
+
     void changePassword(User user, String oldPassword, String newPassword, OnUserOperationListener listener);
     void changeForgotPassword(String email, String newPassword, OnUserOperationListener listener);
     void logout(User user, OnUserOperationListener listener);

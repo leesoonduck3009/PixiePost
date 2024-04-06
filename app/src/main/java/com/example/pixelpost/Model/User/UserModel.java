@@ -14,8 +14,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class UserModel implements IUserModel{
@@ -43,6 +45,7 @@ public class UserModel implements IUserModel{
     public void createUser(User user, OnCreateUserListener listener) {
         initFirebase();
         user.setPassword(PasswordUtils.hashPassword(user.getPassword()));
+        user.setFriendList(new ArrayList<>());
         auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(task -> {
             if(task.isSuccessful())
             {
@@ -146,6 +149,28 @@ public class UserModel implements IUserModel{
         else{
             listener.onUserOperationCompleted(null,new Exception("Chưa đăng nhập"));
         }
+    }
+
+    @Override
+    public void getUserWithID(String id, OnUserOperationListener listener) {
+        initFirebase();
+        db.collection(User.FIREBASE_COLLECTION_NAME).document(id).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful())
+            {
+                DocumentSnapshot ds = task.getResult();
+                User user1 = new User.Builder()
+                        .setAvatarUrl(ds.getString(User.FIELD_AVATAR_URL))
+                        .setId(id)
+                        .setFriendList((ArrayList<String>) ds.get(User.FIELD_FRIEND_LIST))
+                        .setFirstName(ds.getString(User.FIELD_FIRST_NAME))
+                        .setLastName(ds.getString(User.FIELD_LAST_NAME))
+                        .build();
+                listener.onUserOperationCompleted(user1,null);
+            }
+            else{
+                listener.onUserOperationCompleted(null,task.getException());
+            }
+        });
     }
 
     @Override
