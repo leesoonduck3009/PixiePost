@@ -20,7 +20,6 @@ import com.example.pixelpost.View.Dialog.FriendRequestDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class ProfileActivity extends AppCompatActivity {
-    PreferenceManager preferenceManager;
     LinearLayout btnUpdateUserProfile;
     LinearLayout btnReportIssue;
 
@@ -35,13 +34,13 @@ public class ProfileActivity extends AppCompatActivity {
         reportIssueDialog = new BottomSheetDialog(this);
         createDialog();
 
-        preferenceManager = new PreferenceManager(getApplicationContext());
-        User user = (User) preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME);
-        FriendRequestDialog.showDialog(this, user, FriendRequestDialog.FriendRequestDialogType.IS_FRIEND, new FriendRequestDialog.DialogClickListener() {
-            @Override
-            public void onAcceptFriendClick() {
-            }
-        });
+//        preferenceManager = new PreferenceManager(getApplicationContext());
+//        User user = (User) preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME);
+//        FriendRequestDialog.showDialog(this, user, FriendRequestDialog.FriendRequestDialogType.IS_FRIEND, new FriendRequestDialog.DialogClickListener() {
+//            @Override
+//            public void onAcceptFriendClick() {
+//            }
+//        });
 
         btnUpdateUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
