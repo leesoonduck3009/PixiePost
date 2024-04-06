@@ -3,6 +3,7 @@ package com.example.pixelpost.View.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
@@ -16,17 +17,23 @@ import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
 import com.example.pixelpost.View.Activity.Login.Login01Activity;
 import com.example.pixelpost.View.Dialog.FriendRequestDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class ProfileActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
     LinearLayout btnUpdateUserProfile;
+    LinearLayout btnReportIssue;
 
+    BottomSheetDialog reportIssueDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
-        btnUpdateUserProfile= findViewById(R.id.btnUpdateUserProfile);
+        btnUpdateUserProfile = findViewById(R.id.btnUpdateUserProfile);
+        btnReportIssue = findViewById(R.id.btnReportIssue);
+        reportIssueDialog = new BottomSheetDialog(this);
+        createDialog();
 
         preferenceManager = new PreferenceManager(getApplicationContext());
         User user = (User) preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME);
@@ -43,6 +50,18 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        btnReportIssue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reportIssueDialog.show();
+            }
+        });
+        reportIssueDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+
+    private void createDialog() {
+        View view = getLayoutInflater().inflate(R.layout.dialog_report_issues, null, false);
+        reportIssueDialog.setContentView(view);
     }
 
 }
