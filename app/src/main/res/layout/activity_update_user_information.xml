@@ -12,15 +12,29 @@
         android:layout_height="match_parent"
         android:background="@color/black"
         android:orientation="vertical">
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginTop="20dp"
-            android:textColor="#ffffff"
-            android:text="Tài khoản cá nhân" />
+            android:layout_height="53dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/black">
+
+            <ImageView
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_back"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:text="Tài khoản cá nhân"
+                android:gravity="center"
+                />
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_gravity="center"
