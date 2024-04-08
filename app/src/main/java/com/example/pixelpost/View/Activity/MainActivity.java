@@ -12,6 +12,7 @@ import androidx.camera.video.Recorder;
 import androidx.camera.video.Recording;
 import androidx.camera.video.VideoCapture;
 import androidx.core.content.ContextCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,17 +26,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
 import com.example.pixelpost.View.Activity.Conversation.ConversationListActivity;
 import com.example.pixelpost.View.Activity.Login.Login01Activity;
+import com.example.pixelpost.View.Adapter.PostSliderAdapter;
 import com.example.pixelpost.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
     private  ImageView profile_btn;
     private LinearLayout friend_btn;
 
+    private ViewPager2 postSlider;
+    private List<Post> postList;
+    private PostSliderAdapter postSliderAdapter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +72,15 @@ public class MainActivity extends AppCompatActivity {
         btnMessage = findViewById(R.id.btnMessage);
         profile_btn = findViewById(R.id.profile_btn);
         friend_btn = findViewById(R.id.friend_btn);
+
+
+        //Post Slider
+        postSlider = findViewById(R.id.post_slider);
+        postList = new ArrayList<>();
+        initPost();
+        postSliderAdapter = new PostSliderAdapter(postList);
+//        postSlider.setAdapter(postSliderAdapter);
+//        postSliderAdapter.notifyDataSetChanged();
 
         friend_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +115,12 @@ public class MainActivity extends AppCompatActivity {
         viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
 
         cameraExecutor = Executors.newSingleThreadExecutor();
+    }
+
+    public void initPost(){
+        postList.add(new Post.Builder().setText("Đây là post 1").build());
+        postList.add(new Post.Builder().setText("Đây là post 2").build());
+        postList.add(new Post.Builder().setText("Đây là post 3").build());
     }
 
     private void startCamera() {
