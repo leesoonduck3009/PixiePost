@@ -3,9 +3,11 @@ package com.example.pixelpost.Model.FriendRequest;
 
 import com.example.pixelpost.Model.Conversation.Conversation;
 import com.example.pixelpost.Model.User.User;
+import com.example.pixelpost.Model.User.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -56,6 +58,61 @@ public class FriendRequestModel implements IFriendRequestModel{
     }
 
     @Override
+    public void checkFriendRequestSent(String id, OnFinishCheckFriendRequestListener listener) {
+        initFirebase();
+        db.collection(FriendRequest.FIREBASE_COLLECTION_NAME).whereEqualTo(FriendRequest.FIELD_SENDER_ID,user.getUid())
+                .whereEqualTo(FriendRequest.FIELD_RECEIVER_ID,id)
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        if(!task.getResult().getDocumentChanges().isEmpty())
+                        {
+                            UserModel.getInstance().getUserWithID(id, (user1, e) -> {
+                                if(e!=null)
+                                    listener.onFinishCheckFriendRequest(null,null,false,task.getException());
+                                else
+                                    listener.onFinishCheckFriendRequest(user1,null,true,null);
+                            });
+                        }
+                        else
+                            listener.onFinishCheckFriendRequest(null,null,false,null);
+                    }
+                    else {
+                        listener.onFinishCheckFriendRequest(null,null,false,task.getException());
+                    }
+                });
+        }
+
+    @Override
+    public void checkFriendRequestReceived(String id, OnFinishCheckFriendRequestListener listener) {
+        initFirebase();
+        db.collection(FriendRequest.FIREBASE_COLLECTION_NAME).whereEqualTo(FriendRequest.FIELD_RECEIVER_ID,user.getUid())
+                .whereEqualTo(FriendRequest.FIELD_SENDER_ID,id)
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        if(!task.getResult().getDocumentChanges().isEmpty())
+                        {
+                            DocumentSnapshot ds = task.getResult().getDocuments().get(0);
+                            FriendRequest friendRequest = new FriendRequest.Builder().setId(ds.getId())
+                                            .setReceiverId(ds.getString(FriendRequest.FIELD_RECEIVER_ID))
+                                                    .setSenderId(ds.getString(FriendRequest.FIELD_SENDER_ID))
+                                                            .setTimeSent(ds.getDate(FriendRequest.FIELD_TIME_SENT)).build();
+                            UserModel.getInstance().getUserWithID(id, (user1, e) -> {
+                                if(e!=null)
+                                    listener.onFinishCheckFriendRequest(null,null,false,task.getException());
+                                else
+                                    listener.onFinishCheckFriendRequest(user1,friendRequest,true,null);
+                            });
+                        }
+                        else
+                            listener.onFinishCheckFriendRequest(null,null,false,null);
+                    }
+                    else {
+                        listener.onFinishCheckFriendRequest(null,null,false,task.getException());
+                    }
+                });
+    }
+
+    @Override
     public void confirmFriendRequest(FriendRequest friendRequest, boolean isAccepted, OnFinishFriendRequestListener listener) {
         initFirebase();
         db.collection(FriendRequest.FIREBASE_COLLECTION_NAME).document(friendRequest.getId()).delete().addOnCompleteListener(taskDelete -> {
@@ -63,11 +120,19 @@ public class FriendRequestModel implements IFriendRequestModel{
             {
                 if(isAccepted)
                 {
-                    db.collection(User.FIELD_FRIEND_LIST).document(user.getUid()).update(User.FIELD_FRIEND_LIST, FieldValue.arrayUnion(friendRequest.getSenderId()))
+                    db.collection(User.FIREBASE_COLLECTION_NAME).document(user.getUid()).update(User.FIELD_FRIEND_LIST, FieldValue.arrayUnion(friendRequest.getSenderId()))
                             .addOnCompleteListener(task -> {
                                 if(task.isSuccessful())
                                 {
-
+                                    db.collection(User.FIREBASE_COLLECTION_NAME).document(friendRequest.getSenderId()).update(User.FIELD_FRIEND_LIST, FieldValue.arrayUnion(user.getUid()))
+                                        .addOnCompleteListener(task1 -> {
+                                                    if (task1.isSuccessful()) {
+                                                        listener.onFinishFriendRequest(null, null);
+                                                    }
+                                                    else{
+                                                        listener.onFinishFriendRequest(null,task.getException());
+                                                    }
+                                                });
                                 }
                                 else{
                                     listener.onFinishFriendRequest(null,task.getException());
@@ -86,7 +151,6 @@ public class FriendRequestModel implements IFriendRequestModel{
     @Override
     public void receiveFriendRequest(OnFinishReceivedFriendRequestListener listener) {
         initFirebase();
-
         db.collection(FriendRequest.FIREBASE_COLLECTION_NAME).whereEqualTo(FriendRequest.FIELD_RECEIVER_ID,user.getUid()).addSnapshotListener((value,e) -> {
             if(e!=null) {
                 AtomicInteger countFR = new AtomicInteger();
@@ -94,7 +158,12 @@ public class FriendRequestModel implements IFriendRequestModel{
                     listener.onFinishReceivedFriendRequest(null, null, true, null);
                 } else {
                     for (DocumentChange dc : value.getDocumentChanges()) {
-                        FriendRequest friendRequest = dc.getDocument().toObject(FriendRequest.class);
+                        DocumentSnapshot document = dc.getDocument();
+                        FriendRequest friendRequest = new FriendRequest.Builder()
+                                .setReceiverId(document.getString(FriendRequest.FIELD_RECEIVER_ID))
+                                .setSenderId(document.getString(FriendRequest.FIELD_SENDER_ID))
+                                .setTimeSent(document.getDate(FriendRequest.FIELD_TIME_SENT))
+                                .setId(document.getId()).build();
                         listener.onFinishReceivedFriendRequest(friendRequest, dc.getType(), countFR.incrementAndGet() == value.getDocumentChanges().size(),null);
                     }
                 }

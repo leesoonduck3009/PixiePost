@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
 import android.Manifest;
@@ -27,12 +28,22 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.pixelpost.Model.Post.Post;
+
+import com.example.pixelpost.Contract.Activity.IMainActivityContract;
+import com.example.pixelpost.Model.FriendRequest.FriendRequest;
+
 import com.example.pixelpost.Model.User.User;
+import com.example.pixelpost.Presenter.Acitivity.MainActivityPresenter;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
 import com.example.pixelpost.View.Activity.Conversation.ConversationListActivity;
 import com.example.pixelpost.View.Activity.Login.Login01Activity;
+
 import com.example.pixelpost.View.Adapter.PostSliderAdapter;
+
+import com.example.pixelpost.View.Activity.QR.QrScannerActivity;
+import com.example.pixelpost.View.Dialog.FriendRequestDialog;
+
 import com.example.pixelpost.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,10 +52,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IMainActivityContract.View {
     private ActivityMainBinding viewBinding;
     private ImageCapture imageCapture;
     private VideoCapture<Recorder> videoCapture;
@@ -56,11 +68,16 @@ public class MainActivity extends AppCompatActivity {
     private  ImageView profile_btn;
     private LinearLayout friend_btn;
 
+
     private ViewPager2 postSlider;
     private List<Post> postList;
     private PostSliderAdapter postSliderAdapter;
 
 
+
+
+    private IMainActivityContract.Presenter presenter;
+    private FriendRequestDialog tempFriendRequestDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         friend_btn = findViewById(R.id.friend_btn);
 
 
+
         //Post Slider
         postSlider = findViewById(R.id.post_slider);
         postList = new ArrayList<>();
@@ -81,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
         postSliderAdapter = new PostSliderAdapter(postList);
 //        postSlider.setAdapter(postSliderAdapter);
 //        postSliderAdapter.notifyDataSetChanged();
+
+
+        presenter = new MainActivityPresenter(this);
 
         friend_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
 
         cameraExecutor = Executors.newSingleThreadExecutor();
+        checkFromFriendRequest();
     }
 
     public void initPost(){
@@ -222,4 +244,75 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+    private void checkFromFriendRequest()
+    {
+        Intent intent = getIntent();
+        if(intent.getBooleanExtra(QrScannerActivity.FROM_FRIEND_REQUEST_QR,false))
+        {
+
+            String id = intent.getStringExtra("id");
+            if(Objects.equals(id, FirebaseAuth.getInstance().getCurrentUser().getUid()))
+            {
+                User user = (User) preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME);
+                FriendRequestDialog.showDialog(this, user,null, FriendRequestDialog.FriendRequestDialogType.IS_FRIEND, new FriendRequestDialog.DialogClickListener() {
+                    @Override
+                    public void onAcceptFriendClick(FriendRequestDialog dialog) {
+                    }
+                });
+            }
+            else
+                presenter.getUserFriendRequest(id);
+
+        }
+    }
+
+    @Override
+    public void getFriendRequestSuccess(User user,FriendRequest friendRequest, FriendRequestDialog.FriendRequestDialogType type) {
+            FriendRequestDialog.showDialog(this, user,friendRequest, type, new FriendRequestDialog.DialogClickListener() {
+                @Override
+                public void onAcceptFriendClick(FriendRequestDialog dialog) {
+                    if(dialog.getType() == FriendRequestDialog.FriendRequestDialogType.NOT_IS_FRIEND)
+                    {
+                        tempFriendRequestDialog = dialog;
+                        presenter.sendFriendRequest(user.getId());
+                    }
+                    if(dialog.getType() == FriendRequestDialog.FriendRequestDialogType.ACCEPT)
+                    {
+                        tempFriendRequestDialog = dialog;
+                        presenter.acceptFriendRequest(friendRequest);
+                    }
+                }
+            });
+    }
+
+    @Override
+    public void loadingFailed(Exception e) {
+        tempFriendRequestDialog.failedLoading();
+        Log.e("friend-request",e.getMessage());
+    }
+
+    @Override
+    public void sendFriendRequestSuccess(FriendRequest friendRequest) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Thực hiện các hành động sau 1 giây
+                // Ví dụ: ẩn ImageViewSuccess và đóng dialog
+                tempFriendRequestDialog.successLoading();
+                Toast.makeText(getApplicationContext(),"Kết bạn thành công", Toast.LENGTH_SHORT).show();
+            }
+        }, 1500);
+
+    }
+
+    @Override
+    public void confirmFriendRequestSucess() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tempFriendRequestDialog.successLoading();
+                Toast.makeText(getApplicationContext(),"Đã kết bạn thành công", Toast.LENGTH_SHORT).show();
+            }
+        }, 1500);
+    }
 }

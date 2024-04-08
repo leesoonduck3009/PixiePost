@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PixelPost</string>
+    <string name="isFriend">Bạn bè</string>
+    <string name="notIsFriend">Thêm bạn bè</string>
 </resources>

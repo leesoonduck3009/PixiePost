@@ -26,6 +26,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.CameraXViewModel;
 import com.example.pixelpost.Utils.SupportClass.QRCode;
@@ -48,6 +49,7 @@ public class QrScannerActivity extends AppCompatActivity {
     private ImageView btnExit;
     private LinearLayout btnPutImage;
     private LinearLayout btnQRCode;
+    public static final String FROM_FRIEND_REQUEST_QR = "friend_request_qr";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -227,6 +229,9 @@ ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
                 } else {
                     if (text.startsWith(QRCode.QRCODE_STRING_GENERATED)) {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra(FROM_FRIEND_REQUEST_QR,true);
+                        String id = text.substring(QRCode.QRCODE_STRING_GENERATED.length());
+                        intent.putExtra("id",id);
                         startActivity(intent);
                         finish();
                         QRCode.isFind = true;

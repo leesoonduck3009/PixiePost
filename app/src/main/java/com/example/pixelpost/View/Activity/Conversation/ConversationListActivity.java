@@ -26,7 +26,7 @@ import java.util.Collections;
 public class ConversationListActivity extends AppCompatActivity implements IConversationListActivityContract.View, IConversationListener {
     private IConversationListActivityContract.Presenter presenter;
     private RecyclerView listConversationRecyclerView;
-    private ImageView bttBackConversation;
+    private ImageView btnBackConversationList;
     private ConversationAdapter conversationAdapter;
     private ArrayList<Conversation> listConversations;
     private TextView textViewNotConversation;
@@ -39,7 +39,7 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_list);
-        ImageView btnBackConversationList = findViewById(R.id.btnBackConversationList);
+        btnBackConversationList = findViewById(R.id.btnBackConversationList);
         Button btnGotoDetail = findViewById(R.id.btnGotoDetail);
         btnBackConversationList.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +56,6 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
         });
         presenter = new ConversationListActivityPresenter(this);
         listConversationRecyclerView = findViewById(R.id.listConversationRecyclerView);
-        bttBackConversation = findViewById(R.id.bttBackConversation);
         textViewNotConversation = findViewById(R.id.textViewNotConversation);
         layoutNotConversation = findViewById(R.id.layoutNotConversation);
         progressBar = findViewById(R.id.progressBar);
