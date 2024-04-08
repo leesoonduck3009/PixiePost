@@ -60,7 +60,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     }
 
     class ConversationViewHolder extends RecyclerView.ViewHolder{
+
         ItemContainerConversationBinding binding;
+
         ConversationViewHolder(ItemContainerConversationBinding itemContainerConversationBinding)
         {
             super(itemContainerConversationBinding.getRoot());
