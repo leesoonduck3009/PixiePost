@@ -14,6 +14,7 @@ import androidx.camera.video.VideoCapture;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -23,6 +24,7 @@ import android.view.View;
 
 import android.Manifest;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -50,6 +52,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -73,9 +76,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     private List<Post> postList;
     private PostSliderAdapter postSliderAdapter;
 
-
-
-
     private IMainActivityContract.Presenter presenter;
     private FriendRequestDialog tempFriendRequestDialog;
 
@@ -90,15 +90,32 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         profile_btn = findViewById(R.id.profile_btn);
         friend_btn = findViewById(R.id.friend_btn);
 
-
-
         //Post Slider
         postSlider = findViewById(R.id.post_slider);
         postList = new ArrayList<>();
         initPost();
         postSliderAdapter = new PostSliderAdapter(postList);
-//        postSlider.setAdapter(postSliderAdapter);
-//        postSliderAdapter.notifyDataSetChanged();
+        postSlider.setAdapter(postSliderAdapter);
+        postSliderAdapter.notifyDataSetChanged();
+
+        postSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            LinearLayout post_footer = findViewById(R.id.post_footer);
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                int convertPixels =(int) getResources().getDisplayMetrics().density * 1;
+                if (position == 0) {
+                    post_footer.setTranslationY(convertPixels*300);
+                }
+                else {
+//                    ObjectAnimator animator = ObjectAnimator.ofFloat(post_footer, View.TRANSLATION_Y, 0);
+//                    animator.setDuration(100);
+//                    animator.start();
+                    post_footer.setTranslationY(0);
+                }
+            }
+        });
 
 
         presenter = new MainActivityPresenter(this);
@@ -133,40 +150,41 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         }
 
         // Set up the listeners for take photo buttons
-        viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
+        //viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
 
         cameraExecutor = Executors.newSingleThreadExecutor();
         checkFromFriendRequest();
     }
 
     public void initPost(){
-        postList.add(new Post.Builder().setText("Đây là post 1").build());
-        postList.add(new Post.Builder().setText("Đây là post 2").build());
-        postList.add(new Post.Builder().setText("Đây là post 3").build());
+        postList.add(null);
+        postList.add(new Post.Builder().setText("Đây là post 1").setTimePosted(new Date()).build());
+        postList.add(new Post.Builder().setText("Đây là post 2").setTimePosted(new Date()).build());
+        postList.add(new Post.Builder().setText("Đây là post 3").setTimePosted(new Date()).build());
     }
 
     private void startCamera() {
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-        cameraProviderFuture.addListener(() -> {
-            try {
-                // Used to bind the lifecycle of cameras to the lifecycle owner
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                // Preview
-                Preview preview = new Preview.Builder().build();
-
-                // Select back camera as a default
-                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
-
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll();
-
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(this, cameraSelector, preview);
-                preview.setSurfaceProvider(viewBinding.previewView.getSurfaceProvider());
-                } catch (Exception exc) {
-                    Log.e(TAG, "Use case starting camera failed", exc);
-                }
-            }, ContextCompat.getMainExecutor(this));
+//        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+//        cameraProviderFuture.addListener(() -> {
+//            try {
+//                // Used to bind the lifecycle of cameras to the lifecycle owner
+//                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+//                // Preview
+//                Preview preview = new Preview.Builder().build();
+//
+//                // Select back camera as a default
+//                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+//
+//                // Unbind use cases before rebinding
+//                cameraProvider.unbindAll();
+//
+//                // Bind use cases to camera
+//                cameraProvider.bindToLifecycle(this, cameraSelector, preview);
+//                preview.setSurfaceProvider(viewBinding.previewView.getSurfaceProvider());
+//                } catch (Exception exc) {
+//                    Log.e(TAG, "Use case starting camera failed", exc);
+//                }
+//            }, ContextCompat.getMainExecutor(this));
     }
 
     private void takePhoto() {
