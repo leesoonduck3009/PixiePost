@@ -3,6 +3,7 @@ package com.example.pixelpost.View.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,16 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.R;
+import com.example.pixelpost.databinding.ItemCameraBinding;
 import com.example.pixelpost.databinding.ItemPostBinding;
 import com.example.pixelpost.databinding.ListitemExistingFriendBinding;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class PostSliderAdapter extends RecyclerView.Adapter<PostSliderAdapter.PostSliderViewHolder> {
+public class PostSliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<Post> postList;
-
+    public static final int VIEW_POST = 2;
+    public static final int VIEW_CAMERA = 1;
 
     public PostSliderAdapter(List<Post> postList) {
         this.postList = postList;
@@ -27,15 +30,33 @@ public class PostSliderAdapter extends RecyclerView.Adapter<PostSliderAdapter.Po
 
     @NonNull
     @Override
-    public PostSliderAdapter.PostSliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PostSliderAdapter.PostSliderViewHolder(ItemPostBinding
-                .inflate(LayoutInflater.from(parent.getContext()),parent,false)
-        );
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_POST)
+            return new PostSliderAdapter.PostSliderViewHolder(ItemPostBinding
+                    .inflate(LayoutInflater.from(parent.getContext()),parent,false)
+            );
+        else if (viewType == VIEW_CAMERA)
+            return new PostSliderAdapter.CameraViewHolder(ItemCameraBinding
+                    .inflate(LayoutInflater.from(parent.getContext()),parent,false)
+            );
+        else
+            return null;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostSliderAdapter.PostSliderViewHolder holder, int position) {
-        holder.setData(postList.get(position));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (position == 0)
+            ((CameraViewHolder) holder).setData();
+        else
+            ((PostSliderViewHolder) holder).setData(postList.get(position));
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0)
+            return VIEW_CAMERA;
+        else
+            return VIEW_POST;
     }
 
     @Override
@@ -63,6 +84,17 @@ public class PostSliderAdapter extends RecyclerView.Adapter<PostSliderAdapter.Po
             Glide.with(binding.getRoot()).load(R.drawable.avatar3).into(binding.ownAvatar);
             binding.ownLastname.setText("Tâm");
         }
+    }
+
+    class CameraViewHolder extends RecyclerView.ViewHolder {
+        ItemCameraBinding binding;
+
+        CameraViewHolder(ItemCameraBinding itemCameraBinding) {
+            super(itemCameraBinding.getRoot());
+            binding = itemCameraBinding;
+        }
+
+        void setData(){};
     }
 
 }
