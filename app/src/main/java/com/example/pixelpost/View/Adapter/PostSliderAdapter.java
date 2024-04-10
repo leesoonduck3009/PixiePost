@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.R;
-import com.example.pixelpost.databinding.ItemCameraBinding;
+import com.example.pixelpost.databinding.CameraActivityBinding;
 import com.example.pixelpost.databinding.ItemPostBinding;
 import com.example.pixelpost.databinding.ListitemExistingFriendBinding;
 
@@ -35,27 +35,27 @@ public class PostSliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return new PostSliderAdapter.PostSliderViewHolder(ItemPostBinding
                     .inflate(LayoutInflater.from(parent.getContext()),parent,false)
             );
-        else if (viewType == VIEW_CAMERA)
-            return new PostSliderAdapter.CameraViewHolder(ItemCameraBinding
-                    .inflate(LayoutInflater.from(parent.getContext()),parent,false)
-            );
+//        else if (viewType == VIEW_CAMERA)
+//            return new PostSliderAdapter.CameraViewHolder(CameraActivityBinding
+//                    .inflate(LayoutInflater.from(parent.getContext()),parent,false)
+//            );
         else
             return null;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (position == 0)
-            ((CameraViewHolder) holder).setData();
-        else
+//        if (position == 0)
+//            ((CameraViewHolder) holder).setData();
+//        else
             ((PostSliderViewHolder) holder).setData(postList.get(position));
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0)
-            return VIEW_CAMERA;
-        else
+//        if (position == 0)
+//            return VIEW_CAMERA;
+//        else
             return VIEW_POST;
     }
 
@@ -86,15 +86,15 @@ public class PostSliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    class CameraViewHolder extends RecyclerView.ViewHolder {
-        ItemCameraBinding binding;
-
-        CameraViewHolder(ItemCameraBinding itemCameraBinding) {
-            super(itemCameraBinding.getRoot());
-            binding = itemCameraBinding;
-        }
-
-        void setData(){};
-    }
+//    class CameraViewHolder extends RecyclerView.ViewHolder {
+//        CameraActivityBinding binding;
+//
+//        CameraViewHolder(CameraActivityBinding cameraActivityBinding) {
+//            super(cameraActivityBinding.getRoot());
+//            binding = cameraActivityBinding;
+//        }
+//
+//        void setData(){};
+//    }
 
 }
