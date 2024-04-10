@@ -63,6 +63,7 @@ public class Login02Activity extends AppCompatActivity implements ILogin2Activit
     public void LoginSuccess(User user) {
         preferenceManager.putSerializable(User.FIREBASE_COLLECTION_NAME,user);
         Intent intent = new Intent(Login02Activity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
