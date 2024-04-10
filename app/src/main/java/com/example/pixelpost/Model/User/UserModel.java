@@ -1,6 +1,7 @@
 package com.example.pixelpost.Model.User;
 
 
+import com.example.pixelpost.Model.FriendRequest.FriendRequest;
 import com.example.pixelpost.Utils.Exception.PasswordException;
 import com.example.pixelpost.Utils.SupportClass.PasswordUtils;
 import com.example.pixelpost.Utils.SupportClass.Storage;
@@ -11,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -103,11 +105,12 @@ public class UserModel implements IUserModel{
                             if(taskUser.isSuccessful())
                             {
                                 DocumentSnapshot ds = taskUser.getResult();
+                                Object friendList = ds.get(User.FIELD_FRIEND_LIST);
                                 User user1 = new User.Builder().setEmail(ds.getString(User.FIELD_EMAIL))
                                                 .setAvatarUrl(ds.getString(User.FIELD_AVATAR_URL))
                                         .setId(taskUser.getResult().getId()).setFirstName(ds.getString(User.FIELD_FIRST_NAME))
                                         .setLastName(ds.getString(User.FIELD_LAST_NAME))
-                                        .setFriendList(ds.get(User.FIELD_FRIEND_LIST, ArrayList.class))
+                                        .setFriendList(friendList == null ? null : (ArrayList<String>) friendList)
                                         .setPhoneNumber(ds.getString(User.FIELD_PHONE_NUMBER)).build();
                                 listener.onUserOperationCompleted(user1,null);
                             }
@@ -131,11 +134,13 @@ public class UserModel implements IUserModel{
                         if(task.isSuccessful())
                         {
                             DocumentSnapshot ds = task.getResult();
+                            Object friendList = ds.get(User.FIELD_FRIEND_LIST);
+
                             User user1 = new User.Builder().setEmail(ds.getString(User.FIELD_EMAIL))
                                     .setAvatarUrl(ds.getString(User.FIELD_AVATAR_URL))
                                     .setId(task.getResult().getId()).setFirstName(ds.getString(User.FIELD_FIRST_NAME))
                                     .setLastName(ds.getString(User.FIELD_LAST_NAME))
-                                    .setFriendList(ds.get(User.FIELD_FRIEND_LIST, ArrayList.class))
+                                    .setFriendList(friendList == null ? null : (ArrayList<String>) friendList)
                                     .setPhoneNumber(ds.getString(User.FIELD_PHONE_NUMBER)).build();
                             listener.onUserOperationCompleted(user1,null);
                         }
@@ -171,6 +176,51 @@ public class UserModel implements IUserModel{
                 listener.onUserOperationCompleted(null,task.getException());
             }
         });
+    }
+
+    @Override
+    public void getListFriend(OnLoadingUserFriendListener listener) {
+        initFirebase();
+        if(this.user!=null){
+            db.collection(User.FIREBASE_COLLECTION_NAME).document(this.user.getUid()).addSnapshotListener((value, error) -> {
+                if(error!=null)
+                {
+                    listener.OnLoadingUserFriend(null,true,error);
+                }
+                else{
+                    listener.OnResetLoadingUser();
+                    ArrayList<String> friendList =(ArrayList<String>) value.get(User.FIELD_FRIEND_LIST);
+                    if(friendList!=null)
+                    {
+                        if(friendList.isEmpty())
+                            listener.OnLoadingUserFriend(null,true,null);
+                        else
+                            for(String friendId : friendList)
+                            {
+                                if(friendId!=null)
+                                    db.collection(User.FIREBASE_COLLECTION_NAME).document(friendId).get().addOnCompleteListener(
+                                            task -> {
+                                                if(task.isSuccessful())
+                                                {
+                                                    DocumentSnapshot ds = task.getResult();;
+                                                    User user1 = new User.Builder()
+                                                            .setAvatarUrl(ds.getString(User.FIELD_AVATAR_URL))
+                                                            .setId(ds.getId())
+                                                            .setFirstName(ds.getString(User.FIELD_FIRST_NAME))
+                                                            .setLastName(ds.getString(User.FIELD_LAST_NAME))
+                                                            .build();
+                                                    listener.OnLoadingUserFriend(user1,false,null);
+                                                }
+                                                else{
+                                                    listener.OnLoadingUserFriend(null,true,task.getException());
+                                                }
+                                            }
+                                    );
+                            }
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -249,10 +299,43 @@ public class UserModel implements IUserModel{
     }
 
     @Override
-    public void logout(User user, OnUserOperationListener listener) {
+    public void logout(OnUserOperationListener listener) {
         initFirebase();
         if(user!=null)
-            auth.signOut();
+        {
+            try{
+                auth.signOut();
+                listener.onUserOperationCompleted(null,null);
+            }
+            catch (Exception e)
+            {
+                listener.onUserOperationCompleted(null,e);
+            }
+        }
+    }
+
+    @Override
+    public void deleteFriend(User removedUser,OnUserOperationListener listener) {
+        initFirebase();
+        db.collection(User.FIREBASE_COLLECTION_NAME).document(user.getUid()).update(User.FIELD_FRIEND_LIST, FieldValue.arrayRemove(removedUser.getId()))
+                .addOnCompleteListener(
+                taskUserSend -> {
+                    if(taskUserSend.isSuccessful())
+                    {
+                        db.collection(User.FIREBASE_COLLECTION_NAME).document(removedUser.getId()).update(User.FIELD_FRIEND_LIST,FieldValue.arrayRemove(user.getUid()))
+                                .addOnCompleteListener(taskUserRemoved->{
+                                    if(taskUserRemoved.isSuccessful())
+                                    {
+                                        listener.onUserOperationCompleted(removedUser,null);
+                                    }
+                                    else
+                                        listener.onUserOperationCompleted(null,taskUserRemoved.getException());
+                                });
+                    }
+                    else
+                        listener.onUserOperationCompleted(null,taskUserSend.getException());
+                }
+        );
     }
 
     @Override

@@ -8,9 +8,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.pixelpost.Model.FriendRequest.FriendRequest;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.Listener.IAcceptUserListener;
+import com.example.pixelpost.Utils.Listener.IDenyUserListener;
 import com.example.pixelpost.Utils.Listener.IRemoveUserListener;
 import com.example.pixelpost.databinding.ListitemExistingFriendBinding;
 import com.example.pixelpost.databinding.ListitemRequestFriendBinding;
@@ -19,13 +21,15 @@ import java.util.List;
 
 public class ListRequestFriendAdapter extends RecyclerView.Adapter<ListRequestFriendAdapter.ListRequestFriendViewHolder> {
     private final List<User> userList;
+    private final List<FriendRequest> friendRequestList;
     private final IAcceptUserListener acceptUserListener;
-    private final IRemoveUserListener removeUserListener;
+    private final IDenyUserListener denyUserListener;
 
-    public ListRequestFriendAdapter(List<User> userList, IAcceptUserListener acceptUserListener, IRemoveUserListener removeUserListener) {
+    public ListRequestFriendAdapter(List<User> userList, List<FriendRequest> friendRequestList, IAcceptUserListener acceptUserListener, IDenyUserListener denyUserListener) {
         this.acceptUserListener=acceptUserListener;
-        this.removeUserListener = removeUserListener;
+        this.denyUserListener = denyUserListener;
         this.userList = userList;
+        this.friendRequestList = friendRequestList;
     }
 
     @NonNull
@@ -39,7 +43,7 @@ public class ListRequestFriendAdapter extends RecyclerView.Adapter<ListRequestFr
     @Override
     public void onBindViewHolder(@NonNull ListRequestFriendAdapter.ListRequestFriendViewHolder holder, int position) {
 
-        holder.setData(userList.get(position));
+        holder.setData(userList.get(position),friendRequestList.get(position));
     }
 
     @Override
@@ -53,7 +57,7 @@ public class ListRequestFriendAdapter extends RecyclerView.Adapter<ListRequestFr
             super(listitemRequestFriendBinding.getRoot());
             binding=listitemRequestFriendBinding;
         }
-        void setData(User user)
+        void setData(User user,FriendRequest friendRequest)
         {
             binding.listRequestFriendName.setText(user.getLastName() +" "+ user.getFirstName());
             if(user.getAvatarUrl()==null || user.getAvatarUrl().isEmpty())
@@ -63,13 +67,13 @@ public class ListRequestFriendAdapter extends RecyclerView.Adapter<ListRequestFr
             binding.btnAcceptFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    acceptUserListener.OnAcceptUserClick(user);
+                    acceptUserListener.OnAcceptUserClick(user,friendRequest);
                 }
             });
             binding.btnRejectFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    removeUserListener.OnRemoveUserClick(user);
+                    denyUserListener.OnDenyUserClick(user,friendRequest);
                 }
             });
         }

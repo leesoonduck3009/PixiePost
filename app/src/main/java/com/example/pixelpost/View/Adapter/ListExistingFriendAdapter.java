@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.pixelpost.Model.Conversation.Conversation;
+import com.example.pixelpost.Model.FriendRequest.FriendRequest;
 import com.example.pixelpost.Model.Message.Message;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
@@ -26,6 +27,7 @@ import java.util.List;
 
 public class ListExistingFriendAdapter extends RecyclerView.Adapter<ListExistingFriendAdapter.ListExistingFriendViewHolder>{
     private final List<User> userList;
+
     private final IRemoveUserListener removeUserListener;
 
     public ListExistingFriendAdapter(List<User> userList, IRemoveUserListener removeUserListener) {

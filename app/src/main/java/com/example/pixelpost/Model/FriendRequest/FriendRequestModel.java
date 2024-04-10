@@ -152,24 +152,56 @@ public class FriendRequestModel implements IFriendRequestModel{
     public void receiveFriendRequest(OnFinishReceivedFriendRequestListener listener) {
         initFirebase();
         db.collection(FriendRequest.FIREBASE_COLLECTION_NAME).whereEqualTo(FriendRequest.FIELD_RECEIVER_ID,user.getUid()).addSnapshotListener((value,e) -> {
-            if(e!=null) {
+            if(e==null) {
                 AtomicInteger countFR = new AtomicInteger();
                 if (value.isEmpty()) {
-                    listener.onFinishReceivedFriendRequest(null, null, true, null);
+                    listener.onFinishReceivedFriendRequest(null,null, null, true, null);
                 } else {
                     for (DocumentChange dc : value.getDocumentChanges()) {
                         DocumentSnapshot document = dc.getDocument();
-                        FriendRequest friendRequest = new FriendRequest.Builder()
-                                .setReceiverId(document.getString(FriendRequest.FIELD_RECEIVER_ID))
+                        FriendRequest friendRequest = new FriendRequest.Builder().setReceiverId(document.getString(FriendRequest.FIELD_RECEIVER_ID))
                                 .setSenderId(document.getString(FriendRequest.FIELD_SENDER_ID))
-                                .setTimeSent(document.getDate(FriendRequest.FIELD_TIME_SENT))
-                                .setId(document.getId()).build();
-                        listener.onFinishReceivedFriendRequest(friendRequest, dc.getType(), countFR.incrementAndGet() == value.getDocumentChanges().size(),null);
+                                .setTimeSent(document.getDate(FriendRequest.FIELD_TIME_SENT)).setId(document.getId()).build();
+                        UserModel.getInstance().getUserWithID(document.getString(FriendRequest.FIELD_SENDER_ID),(user1, e1) -> {
+                            if(e!=null)
+                                listener.onFinishReceivedFriendRequest(null,null,null,true,e);
+                            else
+                                listener.onFinishReceivedFriendRequest(user1, friendRequest,dc.getType(),countFR.incrementAndGet()== value.size(),null);
+                        });
                     }
                 }
             }
             else{
-                listener.onFinishReceivedFriendRequest(null,null,true,e);
+                listener.onFinishReceivedFriendRequest(null,null,null,true,e);
+            }
+        });
+    }
+
+    @Override
+    public void getSendingFriendRequest(OnFinishReceivedFriendRequestListener listener) {
+        initFirebase();
+        db.collection(FriendRequest.FIREBASE_COLLECTION_NAME).whereEqualTo(FriendRequest.FIELD_SENDER_ID,user.getUid()).addSnapshotListener((value,e) -> {
+            if(e==null) {
+                AtomicInteger countFR = new AtomicInteger();
+                if (value.isEmpty()) {
+                    listener.onFinishReceivedFriendRequest(null,null, null, true, null);
+                } else {
+                    for (DocumentChange dc : value.getDocumentChanges()) {
+                        DocumentSnapshot document = dc.getDocument();
+                        FriendRequest friendRequest = new FriendRequest.Builder().setReceiverId(document.getString(FriendRequest.FIELD_RECEIVER_ID))
+                                .setSenderId(document.getString(FriendRequest.FIELD_SENDER_ID))
+                                .setTimeSent(document.getDate(FriendRequest.FIELD_TIME_SENT)).setId(document.getId()).build();
+                        UserModel.getInstance().getUserWithID(document.getString(FriendRequest.FIELD_RECEIVER_ID),(user1, e1) -> {
+                            if(e!=null)
+                                listener.onFinishReceivedFriendRequest(null,null,null,true,e);
+                            else
+                                listener.onFinishReceivedFriendRequest(user1, friendRequest,dc.getType(),countFR.incrementAndGet()== value.size(),null);
+                        });
+                    }
+                }
+            }
+            else{
+                listener.onFinishReceivedFriendRequest(null,null,null,true,e);
             }
         });
     }

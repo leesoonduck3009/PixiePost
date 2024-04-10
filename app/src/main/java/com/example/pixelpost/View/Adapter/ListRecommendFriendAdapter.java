@@ -62,7 +62,7 @@ public class ListRecommendFriendAdapter  extends RecyclerView.Adapter<ListRecomm
             binding.btnAddNewFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addUserListener.OnAddUserClick(user);
+                    //addUserListener.OnAddUserClick(user);
                 }
             });
         }

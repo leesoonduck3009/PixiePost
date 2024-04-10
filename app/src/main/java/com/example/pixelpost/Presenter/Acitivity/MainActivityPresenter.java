@@ -88,4 +88,11 @@ public class MainActivityPresenter implements IMainActivityContract.Presenter {
         });
     }
 
+    @Override
+    public void getUserInformation() {
+        userModel.getCurrentUser((user, e) -> {
+            view.getUserInformation(user);
+        });
+    }
+
 }

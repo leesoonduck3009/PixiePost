@@ -10,10 +10,12 @@ public interface IMainActivityContract {
         void loadingFailed(Exception e);
         void sendFriendRequestSuccess(FriendRequest friendRequest);
         void confirmFriendRequestSucess();
+        void getUserInformation(User user);
     }
     interface Presenter{
         void getUserFriendRequest(String id);
         void sendFriendRequest(String id);
         void acceptFriendRequest(FriendRequest friendRequest);
+        void getUserInformation();
     }
 }

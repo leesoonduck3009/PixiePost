@@ -222,6 +222,12 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
             startActivity(intent);
             finish();
         }
+        else{
+            if(preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME)==null)
+            {
+                presenter.getUserInformation();
+            }
+        }
     }
     private static final String TAG = "CameraXApp";
     private static final String FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
@@ -319,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                 tempFriendRequestDialog.successLoading();
                 Toast.makeText(getApplicationContext(),"Kết bạn thành công", Toast.LENGTH_SHORT).show();
             }
-        }, 1500);
+        }, 500);
 
     }
 
@@ -332,5 +338,10 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                 Toast.makeText(getApplicationContext(),"Đã kết bạn thành công", Toast.LENGTH_SHORT).show();
             }
         }, 1500);
+    }
+
+    @Override
+    public void getUserInformation(User user) {
+        preferenceManager.putSerializable(User.FIREBASE_COLLECTION_NAME,user);
     }
 }

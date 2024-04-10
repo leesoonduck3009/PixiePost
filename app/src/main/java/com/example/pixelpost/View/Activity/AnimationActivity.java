@@ -28,6 +28,7 @@ public class AnimationActivity extends AppCompatActivity {
                     startActivity(new Intent(AnimationActivity.this, OnboardingActivity.class));
                 else
                     startActivity(new Intent(AnimationActivity.this, MainActivity.class));
+                finish();
             }
         },3000);
     }

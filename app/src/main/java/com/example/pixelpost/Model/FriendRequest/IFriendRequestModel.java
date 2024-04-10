@@ -15,8 +15,10 @@ public interface IFriendRequestModel {
     }
     void confirmFriendRequest(FriendRequest friendRequest, boolean isAccepted, OnFinishFriendRequestListener listener);
     void receiveFriendRequest(OnFinishReceivedFriendRequestListener listener);
+    void getSendingFriendRequest(OnFinishReceivedFriendRequestListener listener);
+
     interface OnFinishReceivedFriendRequestListener{
-        void onFinishReceivedFriendRequest(FriendRequest friendRequest, DocumentChange.Type type, boolean isLastFriendRequest, Exception e);
+        void onFinishReceivedFriendRequest(User friendRequestUser,FriendRequest friendRequest, DocumentChange.Type type, boolean isLastFriendRequest, Exception e);
     }
     interface OnFinishCheckFriendRequestListener{
         void onFinishCheckFriendRequest(User user,FriendRequest friendRequest, boolean isExisted, Exception e);
