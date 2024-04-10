@@ -11,6 +11,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.Recording;
 import androidx.camera.video.VideoCapture;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -20,13 +21,19 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 
 import android.Manifest;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.example.pixelpost.Model.Post.Post;
@@ -47,6 +54,7 @@ import com.example.pixelpost.View.Activity.QR.QrScannerActivity;
 import com.example.pixelpost.View.Dialog.FriendRequestDialog;
 
 import com.example.pixelpost.databinding.ActivityMainBinding;
+import com.example.pixelpost.databinding.CameraActivityBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -66,9 +74,12 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     private Recording recording;
     private ExecutorService cameraExecutor;
 
+    private ScrollView homeScrollView;
+    private GestureDetector gestureDetector;
+
     private ImageView btnMessage;
     private PreferenceManager preferenceManager;
-    private  ImageView profile_btn;
+    private ImageView profile_btn;
     private LinearLayout friend_btn;
 
 
@@ -84,6 +95,41 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         super.onCreate(savedInstanceState);
         viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
+
+        // Set up home slide layout
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        LinearLayout cameraContainer = findViewById(R.id.camera_container);
+        setLinearLayoutHeight(cameraContainer, displayMetrics.heightPixels);
+        ConstraintLayout postSliderContainer = findViewById(R.id.post_slider_container);
+        setConstrainLayoutHeight(postSliderContainer, displayMetrics.heightPixels);
+        homeScrollView = findViewById(R.id.home_scrollview);
+        gestureDetector = new GestureDetector(this, new SwipeGestureListener());
+//        homeScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+//
+//            @Override
+//            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//                float diffY = scrollY - oldScrollY;
+//                if (Math.abs(diffY) > 100) {
+//                    if (diffY > 0) {
+//                        // Swipe down, scroll up
+//                        animateScroll(-homeScrollView.getHeight());
+//                    } else {
+//                        // Swipe up, scroll down
+//                        animateScroll(homeScrollView.getHeight());
+//                    }
+//                }
+//            }
+//
+//
+//        });
+
+        homeScrollView.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
+
         preferenceManager = new PreferenceManager(getApplicationContext());
         checkLogin();
         btnMessage = findViewById(R.id.btnMessage);
@@ -98,25 +144,24 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         postSlider.setAdapter(postSliderAdapter);
         postSliderAdapter.notifyDataSetChanged();
 
-        postSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            LinearLayout post_footer = findViewById(R.id.post_footer);
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-                int convertPixels =(int) getResources().getDisplayMetrics().density * 1;
-                if (position == 0) {
-                    post_footer.setTranslationY(convertPixels*300);
-                }
-                else {
-//                    ObjectAnimator animator = ObjectAnimator.ofFloat(post_footer, View.TRANSLATION_Y, 0);
-//                    animator.setDuration(100);
-//                    animator.start();
-                    post_footer.setTranslationY(0);
-                }
-            }
-        });
-
+//        postSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+//            LinearLayout post_footer = findViewById(R.id.post_footer);
+//
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+//                int convertPixels =(int) getResources().getDisplayMetrics().density * 1;
+//                if (position == 0) {
+//                    post_footer.setTranslationY(convertPixels*300);
+//                }
+//                else {
+////                    ObjectAnimator animator = ObjectAnimator.ofFloat(post_footer, View.TRANSLATION_Y, 0);
+////                    animator.setDuration(100);
+////                    animator.start();
+//                    post_footer.setTranslationY(0);
+//                }
+//            }
+//        });
 
         presenter = new MainActivityPresenter(this);
 
@@ -149,46 +194,95 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
             requestPermissions();
         }
 
-        // Set up the listeners for take photo buttons
-        //viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
+        //Set up the listeners for take photo buttons
+        viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
 
         cameraExecutor = Executors.newSingleThreadExecutor();
         checkFromFriendRequest();
+
+//        Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+//        startActivity(intent);
+    }
+
+    private class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private static final int SWIPE_THRESHOLD = 100;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            float diffY = e2.getY() - e1.getY();
+            if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > 0) {
+                if (diffY > 0) {
+                    // Swipe down, scroll up
+                    animateScroll(-homeScrollView.getHeight());
+                } else {
+                    // Swipe up, scroll down
+                    animateScroll(homeScrollView.getHeight());
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+
+    private void animateScroll(final int distance) {
+        homeScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                homeScrollView.smoothScrollBy(0, distance);
+            }
+        });
+    }
+
+    private void setLinearLayoutHeight(LinearLayout linearLayout, int height) {
+        ViewGroup.LayoutParams layoutParams = linearLayout.getLayoutParams();
+        layoutParams.height = height;
+        linearLayout.setLayoutParams(layoutParams);
+    }
+
+    private void setConstrainLayoutHeight(ConstraintLayout constrainLayout, int height) {
+        ViewGroup.LayoutParams layoutParams = constrainLayout.getLayoutParams();
+        layoutParams.height = height;
+        constrainLayout.setLayoutParams(layoutParams);
     }
 
     public void initPost(){
-        postList.add(null);
         postList.add(new Post.Builder().setText("Đây là post 1").setTimePosted(new Date()).build());
         postList.add(new Post.Builder().setText("Đây là post 2").setTimePosted(new Date()).build());
         postList.add(new Post.Builder().setText("Đây là post 3").setTimePosted(new Date()).build());
+        postList.add(new Post.Builder().setText("Đây là post 4").setTimePosted(new Date()).build());
+        postList.add(new Post.Builder().setText("Đây là post 5").setTimePosted(new Date()).build());
+        postList.add(new Post.Builder().setText("Đây là post 6").setTimePosted(new Date()).build());
+        postList.add(new Post.Builder().setText("Đây là post 7").setTimePosted(new Date()).build());
+        postList.add(new Post.Builder().setText("Đây là post 8").setTimePosted(new Date()).build());
     }
 
     private void startCamera() {
-//        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-//        cameraProviderFuture.addListener(() -> {
-//            try {
-//                // Used to bind the lifecycle of cameras to the lifecycle owner
-//                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-//                // Preview
-//                Preview preview = new Preview.Builder().build();
-//
-//                // Select back camera as a default
-//                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
-//
-//                // Unbind use cases before rebinding
-//                cameraProvider.unbindAll();
-//
-//                // Bind use cases to camera
-//                cameraProvider.bindToLifecycle(this, cameraSelector, preview);
-//                preview.setSurfaceProvider(viewBinding.previewView.getSurfaceProvider());
-//                } catch (Exception exc) {
-//                    Log.e(TAG, "Use case starting camera failed", exc);
-//                }
-//            }, ContextCompat.getMainExecutor(this));
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+        cameraProviderFuture.addListener(() -> {
+            try {
+                // Used to bind the lifecycle of cameras to the lifecycle owner
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                // Preview
+                Preview preview = new Preview.Builder().build();
+
+                // Select back camera as a default
+                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll();
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview);
+                preview.setSurfaceProvider(viewBinding.previewView.getSurfaceProvider());
+                } catch (Exception exc) {
+                    Toast.makeText(this, "Starting camera failed", Toast.LENGTH_SHORT).show();
+                }
+            }, ContextCompat.getMainExecutor(this));
     }
 
     private void takePhoto() {
-      
+
     }
 
     private void captureVideo() {
@@ -211,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        cameraExecutor.shutdown();
+        //cameraExecutor.shutdown();
     }
     private void checkLogin()
     {
@@ -264,10 +358,12 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                                 "Permission request denied",
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        //startCamera();
+                        startCamera();
                     }
                 }
             });
+
+
     private void checkFromFriendRequest()
     {
         Intent intent = getIntent();
