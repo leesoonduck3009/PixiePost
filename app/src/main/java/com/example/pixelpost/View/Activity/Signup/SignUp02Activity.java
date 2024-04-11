@@ -41,6 +41,7 @@ public class SignUp02Activity extends AppCompatActivity {
                     intent.putExtra(User.FIELD_EMAIL,getIntent().getStringExtra(User.FIELD_EMAIL));
                     intent.putExtra(User.FIELD_PASSWORD,passwordEditText.getText().toString());
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_left);
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"Password không hợp lệ",Toast.LENGTH_SHORT).show();;

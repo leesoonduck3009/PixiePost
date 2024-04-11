@@ -65,6 +65,7 @@ public class Login01Activity extends AppCompatActivity{
                     Intent intent = new Intent(Login01Activity.this, Login02Activity.class);
                     intent.putExtra(User.FIELD_EMAIL,email);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_left);
                 }
 
             }

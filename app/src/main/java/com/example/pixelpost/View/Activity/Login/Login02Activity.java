@@ -67,7 +67,9 @@ public class Login02Activity extends AppCompatActivity implements ILogin2Activit
             @Override
             public void onClick(View view) {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
             }
+
         });
         btnForgotPassWord.setOnClickListener(new View.OnClickListener() {
             @Override
