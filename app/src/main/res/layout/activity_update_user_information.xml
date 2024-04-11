@@ -181,7 +181,7 @@
             android:textColor="#C0C0C0"
             android:paddingVertical="14dp"
             android:background="@drawable/edittext_bg"/>
-        <Button
+        <android.widget.Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Lưu"
