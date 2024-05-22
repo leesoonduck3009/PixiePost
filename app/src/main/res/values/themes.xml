@@ -9,29 +9,47 @@
     <style name="Theme.PixelPost" parent="Base.Theme.PixelPost" />
 
     <style name="roundedImageStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerFamily" >rounded</item>
+        <item name="cornerFamily">rounded</item>
         <item name="cornerSize">15%</item>
     </style>
+
     <style name="circleImageStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerFamily" >rounded</item>
+        <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
 
     <style name="cornerCutImageStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerFamily" >cut</item>
+        <item name="cornerFamily">cut</item>
         <item name="cornerSize">15%</item>
     </style>
 
     <style name="customImageStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerFamily" >rounded</item>
+        <item name="cornerFamily">rounded</item>
         <item name="cornerSizeBottomRight">35%</item>
         <item name="cornerSizeBottomLeft">35%</item>
     </style>
-    <style name="roundedImageViewRounded" >
-        <item name="cornerFamily" >rounded</item>
+
+    <style name="roundedImageViewRounded">
+        <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
-    <style name="customAvatar" >
+
+    <style name="customAvatar">
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Theme.PixelPost.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
+        <!-- Radius of the outer bound of widgets to make the rounded corners -->
+        <item name="appWidgetRadius">16dp</item>
+        <!--
+        Radius of the inner view's bound of widgets to make the rounded corners.
+        It needs to be 8dp or less than the value of appWidgetRadius
+        -->
+        <item name="appWidgetInnerRadius">8dp</item>
+    </style>
+
+    <style name="Theme.PixelPost.AppWidgetContainer" parent="Theme.PixelPost.AppWidgetContainerParent">
+        <!-- Apply padding to avoid the content of the widget colliding with the rounded corners -->
+        <item name="appWidgetPadding">16dp</item>
     </style>
 </resources>

@@ -39,6 +39,9 @@ android {
             viewBinding = true
         }
     }
+    buildFeatures {
+        viewBinding = true
+    }
 
     dependencies {
         val camerax_version = "1.3.2"
