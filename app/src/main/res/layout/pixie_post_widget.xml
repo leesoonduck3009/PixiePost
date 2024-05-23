@@ -1,19 +1,20 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/Widget.PixelPost.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Theme.PixelPost.AppWidgetContainer">
 
-    <TextView
-        android:id="@+id/appwidget_text"
+    <Button
+        android:id="@+id/btnOpenWidget"
         style="@style/Widget.PixelPost.AppWidget.InnerView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_margin="8dp"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:text="Click to open"
         android:textSize="24sp"
         android:textStyle="bold|italic" />
-</RelativeLayout>
+</LinearLayout>
