@@ -76,7 +76,6 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
             presenter.onSendingMessage(message);
             inputMessage.setText("");
         });
-
     }
     private void initData()
     {
