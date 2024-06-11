@@ -5,4 +5,5 @@ public interface IConversationModel {
     interface OnFinishLoadListener{
         void onFinishLoading(Conversation conversation, Exception e, int type, boolean isLastMessage);
     }
+    void loadConversationById(String conversationId,OnFinishLoadListener listener);
 }

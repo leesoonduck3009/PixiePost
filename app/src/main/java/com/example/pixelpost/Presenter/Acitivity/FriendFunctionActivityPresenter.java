@@ -4,6 +4,9 @@ import com.example.pixelpost.Contract.Activity.IFriendFunctionActivityContract;
 import com.example.pixelpost.Model.FriendRequest.FriendRequest;
 import com.example.pixelpost.Model.FriendRequest.FriendRequestModel;
 import com.example.pixelpost.Model.FriendRequest.IFriendRequestModel;
+import com.example.pixelpost.Model.Message.IMessageModel;
+import com.example.pixelpost.Model.Message.Message;
+import com.example.pixelpost.Model.Message.MessageModel;
 import com.example.pixelpost.Model.User.IUserModel;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Model.User.UserModel;
@@ -12,11 +15,13 @@ public class FriendFunctionActivityPresenter implements IFriendFunctionActivityC
     private IFriendFunctionActivityContract.View view;
     private IFriendRequestModel friendRequestModel;
     private IUserModel userModel;
+    private IMessageModel messageModel;
     public FriendFunctionActivityPresenter(IFriendFunctionActivityContract.View view)
     {
         this.view = view;
         friendRequestModel = FriendRequestModel.getInstance();
         userModel = UserModel.getInstance();
+        messageModel = MessageModel.getInstance();
     }
     @Override
     public void loadFriendRequest() {
@@ -88,6 +93,19 @@ public class FriendFunctionActivityPresenter implements IFriendFunctionActivityC
         friendRequestModel.confirmFriendRequest(friendRequest,false,(friendRequest1, e) -> {
             if(e!=null)
                 view.loadingFailed(e);
+        });
+    }
+
+    @Override
+    public void onChatToFriend(Message message) {
+        messageModel.SendMessage(message, new IMessageModel.OnFinishSendMessageListener() {
+            @Override
+            public void onFinishSendMessage(Message message, Exception e) {
+                if(e!=null)
+                    view.loadingFailed(e);
+                else
+                    view.chatToFrriend(message);
+            }
         });
     }
 }

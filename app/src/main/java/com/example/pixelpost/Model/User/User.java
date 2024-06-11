@@ -113,6 +113,7 @@ public class User implements Serializable {
         this.password = builder.password;
 
     }
+
     //endregion
     //region Builder class
     public static class Builder {

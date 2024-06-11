@@ -1,6 +1,7 @@
 package com.example.pixelpost.Presenter.Acitivity;
 
 import com.example.pixelpost.Contract.Activity.IConversationDetailActivityContract;
+import com.example.pixelpost.Model.Conversation.Conversation;
 import com.example.pixelpost.Model.Conversation.ConversationModel;
 import com.example.pixelpost.Model.Conversation.IConversationModel;
 import com.example.pixelpost.Model.Message.IMessageModel;
@@ -18,7 +19,7 @@ public class ConversationDetailActivityPresenter implements IConversationDetailA
     {
         this.view = view;
         this.conversationModel = ConversationModel.getInstance();
-        this.messageModel = MessageModel.getInstance();
+        this.messageModel = new MessageModel();
     }
     //endregion
 
@@ -37,6 +38,18 @@ public class ConversationDetailActivityPresenter implements IConversationDetailA
         messageModel.SendMessage(message, (message1, e) -> {
             if(e!=null)
                 view.onLoadingFailed(e);
+        });
+    }
+    @Override
+    public void onGettingConversation(String conversationId) {
+        conversationModel.loadConversationById(conversationId, new IConversationModel.OnFinishLoadListener() {
+            @Override
+            public void onFinishLoading(Conversation conversation, Exception e, int type, boolean isLastMessage) {
+                if(e!=null)
+                    view.onLoadingFailed(e);
+                else
+                    view.onGetConversation(conversation);
+            }
         });
     }
 }

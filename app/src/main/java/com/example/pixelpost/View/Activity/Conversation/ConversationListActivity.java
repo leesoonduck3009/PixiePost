@@ -61,6 +61,7 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
         progressBar = findViewById(R.id.progressBar);
         listConversations = new ArrayList<>();
         conversationAdapter = new ConversationAdapter(listConversations, this);
+        listConversationRecyclerView.setAdapter(conversationAdapter);
         count = 0;
         presenter.onLoadingConversation();
 
@@ -79,7 +80,7 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
     @Override
     public void onConversatonClick(Conversation conversation) {
         Intent intent = new Intent(getApplicationContext(),ConversationDetailActivity.class);
-        intent.putExtra(Conversation.FIREBASE_COLLECTION_NAME,conversation);
+        intent.putExtra(Conversation.FIREBASE_COLLECTION_NAME,conversation.getId());
         backFromConversationDetail = true;
         Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left).toBundle();
         startActivity(intent,bundle);
@@ -90,7 +91,10 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
         if(loadingConversationType == Conversation.ADD_LIST_CONVERSATION)
         {
             if(conversation!=null)
+            {
                 this.listConversations.add(conversation);
+                conversationAdapter.notifyDataSetChanged();
+            }
         }
         else if(loadingConversationType == Conversation.MODIFY_LIST_CONVERSATION)
         {
@@ -109,8 +113,8 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
             count++;
             if(count == 2)
             {
-                conversationAdapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+                layoutNotConversation.setVisibility(View.GONE);
                 listConversationRecyclerView.smoothScrollToPosition(0);
                 listConversationRecyclerView.setVisibility(View.VISIBLE);
             }

@@ -17,6 +17,7 @@ import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.Listener.IConversationListener;
 import com.example.pixelpost.Utils.Listener.IRemoveUserListener;
+import com.example.pixelpost.Utils.Listener.ISendMessageListener;
 import com.example.pixelpost.databinding.ItemContainerConversationBinding;
 import com.example.pixelpost.databinding.ListitemExistingFriendBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,10 +30,12 @@ public class ListExistingFriendAdapter extends RecyclerView.Adapter<ListExisting
     private final List<User> userList;
 
     private final IRemoveUserListener removeUserListener;
+    private final ISendMessageListener sendMessageListener;
 
-    public ListExistingFriendAdapter(List<User> userList, IRemoveUserListener removeUserListener) {
+    public ListExistingFriendAdapter(List<User> userList, IRemoveUserListener removeUserListener, ISendMessageListener sendMessageListener) {
         this.removeUserListener=removeUserListener;
         this.userList = userList;
+        this.sendMessageListener = sendMessageListener;
     }
 
     @NonNull
@@ -72,6 +75,9 @@ public class ListExistingFriendAdapter extends RecyclerView.Adapter<ListExisting
                 public void onClick(View view) {
                     removeUserListener.OnRemoveUserClick(user);
                 }
+            });
+            binding.listImage.setOnClickListener(v -> {
+                sendMessageListener.OnSendMessageClick(user);
             });
         }
 

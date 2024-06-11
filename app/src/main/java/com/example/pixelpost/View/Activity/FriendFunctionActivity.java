@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pixelpost.Contract.Activity.IFriendFunctionActivityContract;
 import com.example.pixelpost.Model.FriendRequest.FriendRequest;
+import com.example.pixelpost.Model.Message.Message;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.FriendFunctionActivityPresenter;
 import com.example.pixelpost.R;
@@ -20,19 +21,22 @@ import com.example.pixelpost.Utils.Listener.IAcceptUserListener;
 import com.example.pixelpost.Utils.Listener.IAddUserListener;
 import com.example.pixelpost.Utils.Listener.IDenyUserListener;
 import com.example.pixelpost.Utils.Listener.IRemoveUserListener;
+import com.example.pixelpost.Utils.Listener.ISendMessageListener;
+import com.example.pixelpost.View.Activity.Conversation.ConversationDetailActivity;
 import com.example.pixelpost.View.Activity.QR.QRProfileActivity;
 import com.example.pixelpost.View.Adapter.ListExistingFriendAdapter;
 import com.example.pixelpost.View.Adapter.ListRecommendFriendAdapter;
 import com.example.pixelpost.View.Adapter.ListRequestFriendAdapter;
 import com.example.pixelpost.View.Adapter.ListSendingFriendAdapter;
 import com.example.pixelpost.View.Dialog.CustomDialog;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FriendFunctionActivity extends AppCompatActivity implements IDenyUserListener, IFriendFunctionActivityContract.View, IRemoveUserListener, IAcceptUserListener, IAddUserListener {
+public class FriendFunctionActivity extends AppCompatActivity implements IDenyUserListener, IFriendFunctionActivityContract.View, IRemoveUserListener, IAcceptUserListener, IAddUserListener, ISendMessageListener {
     private RecyclerView recycleView_ListFriend;
     private RecyclerView recycleView_ListRequestFriend;
     private RecyclerView recycleView_ListRecommendFriend;
@@ -74,7 +78,7 @@ public class FriendFunctionActivity extends AppCompatActivity implements IDenyUs
         recycleView_ListSendingFriend.setLayoutManager(new LinearLayoutManager(this));
 
         InitUser();
-        listExistingFriendAdapter = new ListExistingFriendAdapter(friendUser, this);
+        listExistingFriendAdapter = new ListExistingFriendAdapter(friendUser, this,this);
         listRequestFriendAdapter = new ListRequestFriendAdapter(receivedUserFriendRequest,receivedFriendRequest, this,this);
         listRecommendFriendAdapter = new ListRecommendFriendAdapter(userList, this);
         listSendingFriendAdapter = new ListSendingFriendAdapter(sendingUserFriendRequest,sendingFriendRequest,this);
@@ -190,6 +194,13 @@ public class FriendFunctionActivity extends AppCompatActivity implements IDenyUs
     }
 
     @Override
+    public void chatToFrriend(Message message) {
+        Intent intent = new Intent(getApplicationContext(), ConversationDetailActivity.class);
+        startActivity(intent);
+        this.finish();
+    }
+
+    @Override
     public void OnDenyUserClick(User user, FriendRequest friendRequest) {
         presenter.denyFriendRequest(friendRequest);
     }
@@ -221,5 +232,13 @@ public class FriendFunctionActivity extends AppCompatActivity implements IDenyUs
     @Override
     public void OnAddUserClick(User user) {
         Toast.makeText(this, "Added User!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void OnSendMessageClick(User user) {
+        Message message = new Message.Builder().setText("Hello").build();
+        message.setReceiverId(user.getId());
+        message.setSenderId(FirebaseAuth.getInstance().getUid());
+        presenter.onChatToFriend(message);
     }
 }

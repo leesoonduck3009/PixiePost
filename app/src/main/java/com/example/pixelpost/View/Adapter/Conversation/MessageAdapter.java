@@ -62,14 +62,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public int getItemViewType(int position) {
         if(messages.get(position).getSenderId().equals(accountSenderId))
         {
-            if(messages.get(position).getImageUrl() != null || !messages.get(position).getImageUrl().isEmpty())
+            if(messages.get(position).getImageUrl() != null)
                 return VIEW_IMAGE_SENT;
             else
                 return VIEW_TEXT_SENT;
         }
         else
         {
-            if(messages.get(position).getImageUrl() != null || !messages.get(position).getImageUrl().isEmpty())
+            if(messages.get(position).getImageUrl() != null )
                 return VIEW_IMAGE_RECEIVED;
             else
                 return VIEW_TEXT_RECEIVED;

@@ -25,7 +25,7 @@ public class Conversation implements Serializable {
     //region Static variables for Firebase
     public static final String FIREBASE_COLLECTION_NAME = "conversation";
     public static final String FIELD_USER1_REF = "user1";
-    public static final String FIELD_USER2_REF = "user2;";
+    public static final String FIELD_USER2_REF = "user2";
     public static final String FIELD_LAST_MESSAGE_REF = "lastMessageRef";
     //endregion
     //region Static variables for TYPE;

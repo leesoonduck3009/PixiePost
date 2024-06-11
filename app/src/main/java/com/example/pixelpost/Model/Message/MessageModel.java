@@ -22,7 +22,10 @@ public class MessageModel implements IMessageModel{
     private FirebaseAuth auth;
     private FirebaseUser user;
     // Private constructor to prevent instantiation from outside
-    private MessageModel() {}
+    public MessageModel() {
+        initFirebase();
+
+    }
 
     // Static method to get the singleton instance
     public static MessageModel getInstance() {
@@ -43,7 +46,6 @@ public class MessageModel implements IMessageModel{
     }
     @Override
     public void SendMessage(Message message, OnFinishSendMessageListener listener) {
-        initFirebase();
         if(message.getConversationId()==null || message.getConversationId().isEmpty())
         {
             DocumentReference drUser1 = db.collection(User.FIREBASE_COLLECTION_NAME).document(message.getSenderId());
@@ -61,7 +63,7 @@ public class MessageModel implements IMessageModel{
                             taskMessage->{
                                 if(taskMessage.isSuccessful())
                                 {
-                                    db.collection(Conversation.FIREBASE_COLLECTION_NAME).document(conversationID).update(Conversation.FIELD_LAST_MESSAGE_REF, taskMessage.getResult().getPath()).addOnCompleteListener(taskConversation->{
+                                    db.collection(Conversation.FIREBASE_COLLECTION_NAME).document(conversationID).update(Conversation.FIELD_LAST_MESSAGE_REF, db.collection(Message.FIREBASE_COLLECTION_NAME).document(taskMessage.getResult().getId())).addOnCompleteListener(taskConversation->{
                                         if(taskConversation.isSuccessful())
                                         {
                                             listener.onFinishSendMessage(message,null);
@@ -80,12 +82,31 @@ public class MessageModel implements IMessageModel{
                     listener.onFinishSendMessage(message,task.getException());
             });
         }
+        else{
+            db.collection(Message.FIREBASE_COLLECTION_NAME).add(message).addOnCompleteListener(
+                    taskMessage->{
+                        if(taskMessage.isSuccessful())
+                        {
+                            db.collection(Conversation.FIREBASE_COLLECTION_NAME).document(message.getConversationId()).update(Conversation.FIELD_LAST_MESSAGE_REF, db.collection(Message.FIREBASE_COLLECTION_NAME).document(taskMessage.getResult().getId())).addOnCompleteListener(taskConversation->{
+                                if(taskConversation.isSuccessful())
+                                {
+                                    listener.onFinishSendMessage(message,null);
+                                }
+                                else
+                                    listener.onFinishSendMessage(null,taskConversation.getException());
+                            });
+                        }
+                        else{
+                            listener.onFinishSendMessage(null, taskMessage.getException());
+                        }
+                    }
+            );
+        }
     }
 
     @Override
     public void ReceiveMessage(String conversationId, OnFinishReceiveMessageListener listener) {
-        initFirebase();
-        db.collection(Message.FIREBASE_COLLECTION_NAME).whereEqualTo(Message.FIELD_CONVERSATION_ID,conversationId).limit(100).orderBy(Message.FIELD_TIME_SENT, Query.Direction.DESCENDING)
+        db.collection(Message.FIREBASE_COLLECTION_NAME).whereEqualTo(Message.FIELD_CONVERSATION_ID,conversationId)
                 .addSnapshotListener((value, error) -> {
             AtomicInteger count = new AtomicInteger();
 
@@ -98,8 +119,12 @@ public class MessageModel implements IMessageModel{
                     {
                         case ADDED:
                         case MODIFIED:
-                            Message message = documentChange.getDocument().toObject(Message.class);
+                            Message message = new Message();
+                            message.setText(documentChange.getDocument().getString(Message.FIELD_TEXT));
                             message.setId(documentChange.getDocument().getId());
+                            message.setTimeSent(documentChange.getDocument().getDate(Message.FIELD_TIME_SENT));
+                            message.setReceiverId(documentChange.getDocument().getString(Message.FIELD_RECEIVER_ID));
+                            message.setSenderId(documentChange.getDocument().getString(Message.FIELD_SENDER_ID));
                             listener.onFinishReceiveMessage(message, null, count.incrementAndGet() == value.getDocumentChanges().size() );
                             break;
                         case REMOVED:

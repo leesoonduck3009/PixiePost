@@ -1,6 +1,7 @@
 package com.example.pixelpost.Contract.Activity;
 
 import com.example.pixelpost.Model.FriendRequest.FriendRequest;
+import com.example.pixelpost.Model.Message.Message;
 import com.example.pixelpost.Model.User.User;
 import com.google.firebase.firestore.DocumentChange;
 
@@ -13,6 +14,7 @@ public interface IFriendFunctionActivityContract {
         void refreshFriend();
         void loadFriendSendingRequest(User user,FriendRequest friendRequest, DocumentChange.Type type, boolean isLastFriendUser);
         void loadingFailed(Exception e);
+        void chatToFrriend(Message message);
     }
     interface Presenter{
         void loadFriendRequest();
@@ -22,6 +24,6 @@ public interface IFriendFunctionActivityContract {
         void denyFriendRequest(FriendRequest friendRequest);
         void removeFriend(User user);
         void cancelSendFriendRequest(FriendRequest friendRequest);
-
+        void onChatToFriend(Message message);
     }
 }

@@ -74,23 +74,28 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
                     .setReceiverId(conversation.getRecieverUser().getId()).setText(inputMessage.getText().toString())
                     .setTimeSent(new Date()).setSenderId(FirebaseAuth.getInstance().getUid()).build();
             presenter.onSendingMessage(message);
+            inputMessage.setText("");
         });
 
     }
     private void initData()
     {
         Intent intent = getIntent();
-        conversation = (Conversation) intent.getParcelableExtra(Conversation.FIREBASE_COLLECTION_NAME);
-        assert conversation != null;
+            String conversationId = intent.getStringExtra(Conversation.FIREBASE_COLLECTION_NAME);
+            presenter.onGettingConversation(conversationId);
+    }
+    private void loadConversation(Conversation conversation){
         receiverUser = conversation.getRecieverUser();
         textUser1.setText(conversation.getRecieverUser().getFirstName()+conversation.getRecieverUser().getLastName());
-        if(conversation.getRecieverUser().getAvatarUrl()!=null || !conversation.getRecieverUser().getAvatarUrl().isEmpty() )
+        if(conversation.getRecieverUser().getAvatarUrl()!=null)
             Glide.with(getApplicationContext()).load(conversation.getRecieverUser().getAvatarUrl()).into(imageProfile);
         else
             Glide.with(getApplicationContext()).load(R.drawable.avatar3).into(imageProfile);
         chatMessageAdapter = new MessageAdapter(listChatMessages, FirebaseAuth.getInstance().getCurrentUser().getUid());
+        conversationRecyclerView.setAdapter(chatMessageAdapter);
         presenter.onLoadingMessage(conversation.getId());
     }
+
     @Override
     public void onFinishLoadMessage(Message message, boolean isLastMessage) {
         listChatMessages.add((message));
@@ -102,11 +107,18 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
         chatMessageAdapter.notifyItemRangeInserted(listChatMessages.size(), listChatMessages.size());
         conversationRecyclerView.scrollToPosition(listChatMessages.size() - 1);
         conversationRecyclerView.setVisibility(View.VISIBLE);
+
     }
 
     @Override
     public void onLoadingFailed(Exception ex) {
         Log.e("CONVERSATION_DETAIL",ex.getMessage().toString());
         Toast.makeText(getApplicationContext(),"Some thing when wrong",Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void onGetConversation(Conversation conversation) {
+        this.conversation = conversation;
+        loadConversation(conversation);
     }
 }
