@@ -6,11 +6,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pixelpost.Contract.Activity.IConversationListActivityContract;
@@ -22,6 +27,7 @@ import com.example.pixelpost.View.Adapter.Conversation.ConversationAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConversationListActivity extends AppCompatActivity implements IConversationListActivityContract.View, IConversationListener {
     private IConversationListActivityContract.Presenter presenter;
@@ -34,24 +40,40 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
     private ProgressBar progressBar;
     private int count;
     private boolean backFromConversationDetail = false;
+    private Animation anim_emoji;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_list);
         btnBackConversationList = findViewById(R.id.btnBackConversationList);
-        Button btnGotoDetail = findViewById(R.id.btnGotoDetail);
+        Button btnAniEmo = findViewById(R.id.btnAniEmo);
+        ImageView iconEmoji = findViewById(R.id.iconEmoji);
+        ArrayList<ImageView> cloneImageViews = new ArrayList<>();
+        anim_emoji = AnimationUtils.loadAnimation(this, R.anim.anim_emoji);
+        anim_emoji.setDuration(3000);
+
         btnBackConversationList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        btnGotoDetail.setOnClickListener(new View.OnClickListener() {
+        btnAniEmo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ConversationListActivity.this, ConversationDetailActivity.class);
-                startActivity(intent);
+                if (view == btnAniEmo) {
+                    // Tạo và áp dụng Animation cho các ImageView nhân bản
+                    runSingleThreadAnimation(200,80);
+                    runSingleThreadAnimation(70,50);
+                    runSingleThreadAnimation(0,100);
+                    runSingleThreadAnimation(-100,50);
+                    runSingleThreadAnimation(120,50);
+                    runSingleThreadAnimation(250,50);
+                    runSingleThreadAnimation(-200,50);
+
+                    //layoutNotConversation.addView(imageView1);
+                }
             }
         });
         presenter = new ConversationListActivityPresenter(this);
@@ -65,6 +87,39 @@ public class ConversationListActivity extends AppCompatActivity implements IConv
         presenter.onLoadingConversation();
 
 
+    }
+
+    private void runSingleThreadAnimation(int x, int y){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageView imageView1 = new ImageView(getApplicationContext());
+                        imageView1.setImageResource(R.drawable.image_icon1);
+                        imageView1.setX(x);
+                        imageView1.setY(y);
+                        imageView1.setLayoutParams(new ViewGroup.LayoutParams(50, 50));
+                        layoutNotConversation.addView(imageView1);
+                        imageView1.startAnimation(anim_emoji);
+                        Handler handler = new Handler();
+                        Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                layoutNotConversation.removeView(imageView1);
+                            }
+                        };
+
+                        handler.postDelayed(runnable, 3000);
+                    }
+                });
+
+
+            }
+        });
+        thread.start();
     }
     @Override
     public void onResume() {
