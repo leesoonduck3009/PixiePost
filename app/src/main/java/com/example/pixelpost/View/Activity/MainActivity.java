@@ -3,21 +3,26 @@ package com.example.pixelpost.View.Activity;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.Recording;
 import androidx.camera.video.VideoCapture;
+import androidx.camera.view.PreviewView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
-
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,35 +34,26 @@ import android.view.View;
 import android.Manifest;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
-
 import com.example.pixelpost.Model.Post.Post;
-
 import com.example.pixelpost.Contract.Activity.IMainActivityContract;
 import com.example.pixelpost.Model.FriendRequest.FriendRequest;
-
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.MainActivityPresenter;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
 import com.example.pixelpost.View.Activity.Conversation.ConversationListActivity;
 import com.example.pixelpost.View.Activity.Login.Login01Activity;
-
 import com.example.pixelpost.View.Adapter.PostSliderAdapter;
-
 import com.example.pixelpost.View.Activity.QR.QrScannerActivity;
 import com.example.pixelpost.View.Dialog.FriendRequestDialog;
-
 import com.example.pixelpost.databinding.ActivityMainBinding;
-import com.example.pixelpost.databinding.CameraActivityBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
-
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -68,34 +64,39 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements IMainActivityContract.View {
+    // Binding
     private ActivityMainBinding viewBinding;
-    private ImageCapture imageCapture;
-    private VideoCapture<Recorder> videoCapture;
-    private Recording recording;
-    private ExecutorService cameraExecutor;
 
+    // Camera
+    private PreviewView previewView;
+    private ImageCapture imageCapture;
+    private CameraSelector cameraSelector;
+    private Bitmap capturedImage;
+    private ExecutorService cameraExecutor;
+    private ProcessCameraProvider cameraProvider;
+
+    // Slider
     private ScrollView homeScrollView;
     private GestureDetector gestureDetector;
+    private ViewPager2 postSlider;
+    private List<Post> postList;
+    private PostSliderAdapter postSliderAdapter;
 
+    // Other
     private ImageView btnMessage;
     private PreferenceManager preferenceManager;
     private ImageView profile_btn;
     private LinearLayout friend_btn;
 
-
-    private ViewPager2 postSlider;
-    private List<Post> postList;
-    private PostSliderAdapter postSliderAdapter;
-
     private IMainActivityContract.Presenter presenter;
     private FriendRequestDialog tempFriendRequestDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
 
+        /// Slider
         // Set up home slide layout
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -105,24 +106,14 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         setConstrainLayoutHeight(postSliderContainer, displayMetrics.heightPixels);
         homeScrollView = findViewById(R.id.home_scrollview);
         gestureDetector = new GestureDetector(this, new SwipeGestureListener());
-//        homeScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-//
-//            @Override
-//            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                float diffY = scrollY - oldScrollY;
-//                if (Math.abs(diffY) > 100) {
-//                    if (diffY > 0) {
-//                        // Swipe down, scroll up
-//                        animateScroll(-homeScrollView.getHeight());
-//                    } else {
-//                        // Swipe up, scroll down
-//                        animateScroll(homeScrollView.getHeight());
-//                    }
-//                }
-//            }
-//
-//
-//        });
+        homeScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                float diffY = scrollY - oldScrollY;
+                postSlider.setUserInputEnabled(!(diffY < 0));
+            }
+        });
 
         homeScrollView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -138,31 +129,17 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
 
         //Post Slider
         postSlider = findViewById(R.id.post_slider);
+
         postList = new ArrayList<>();
+
         initPost();
         postSliderAdapter = new PostSliderAdapter(postList);
+
         postSlider.setAdapter(postSliderAdapter);
         postSliderAdapter.notifyDataSetChanged();
 
-//        postSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-//            LinearLayout post_footer = findViewById(R.id.post_footer);
-//
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-//                int convertPixels =(int) getResources().getDisplayMetrics().density * 1;
-//                if (position == 0) {
-//                    post_footer.setTranslationY(convertPixels*300);
-//                }
-//                else {
-////                    ObjectAnimator animator = ObjectAnimator.ofFloat(post_footer, View.TRANSLATION_Y, 0);
-////                    animator.setDuration(100);
-////                    animator.start();
-//                    post_footer.setTranslationY(0);
-//                }
-//            }
-//        });
 
+        /// Other
         presenter = new MainActivityPresenter(this);
 
         friend_btn.setOnClickListener(new View.OnClickListener() {
@@ -186,8 +163,12 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                 startActivity(intent);
             }
         });
-      
+
+        /// Camera
         //Request camera permissions
+        cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+        imageCapture = new ImageCapture.Builder().setFlashMode(ImageCapture.FLASH_MODE_OFF).build();
+
         if(allPermissionsGranted()) {
             startCamera();
         } else {
@@ -196,32 +177,51 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
 
         //Set up the listeners for take photo buttons
         viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
+        viewBinding.changeCameraBtn.setOnClickListener(v -> flipCam());
+        viewBinding.flashBtn.setOnClickListener(v -> changeFlash());
+        viewBinding.cancelCreatePost.setOnClickListener(v -> cancelCreatePost());
 
         cameraExecutor = Executors.newSingleThreadExecutor();
         checkFromFriendRequest();
-
-//        Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-//        startActivity(intent);
     }
 
+
+    /// Slider-related func
     private class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+        private static final int SWIPE_THRESHOLD = 0;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 0;
 
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            float diffY = e2.getY() - e1.getY();
-            if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > 0) {
-                if (diffY > 0) {
-                    // Swipe down, scroll up
-                    animateScroll(-homeScrollView.getHeight());
-                } else {
-                    // Swipe up, scroll down
-                    animateScroll(homeScrollView.getHeight());
+        public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) throws NullPointerException {
+            try {
+                float diffY = e2.getY() - e1.getY();
+
+                if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > 0) {
+                    if (diffY > 0 && velocityY > 0) {
+                        // Swipe down, scroll up
+
+                        animateScroll(-homeScrollView.getHeight());
+                    } else {
+                        // Swipe up, scroll down
+                        animateScroll(homeScrollView.getHeight());
+                    }
+                    return true;
                 }
-                return true;
+                return false;
+            } catch (Exception e) {
+                float diffY = e1.getY();
+                if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > 0) {
+                    if (diffY > 0 && velocityY > 0) {
+                        // Swipe down, scroll up
+                        animateScroll(-homeScrollView.getHeight());
+                    } else {
+                        // Swipe up, scroll down
+                        animateScroll(homeScrollView.getHeight());
+                    }
+                    return true;
+                }
+                return false;
             }
-            return false;
         }
     }
 
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     }
 
     public void initPost(){
-        postList.add(new Post.Builder().setText("Đây là post 1").setTimePosted(new Date()).build());
+        postList.add(new Post.Builder().setText("Đây là post 1").setTimePosted(new Date()).setUrl("https://file.hstatic.net/1000159991/file/doremon-min_d7fba7f7f60a41a0af6e67dcaeb75634_grande.jpg").build());
         postList.add(new Post.Builder().setText("Đây là post 2").setTimePosted(new Date()).build());
         postList.add(new Post.Builder().setText("Đây là post 3").setTimePosted(new Date()).build());
         postList.add(new Post.Builder().setText("Đây là post 4").setTimePosted(new Date()).build());
@@ -257,36 +257,161 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         postList.add(new Post.Builder().setText("Đây là post 8").setTimePosted(new Date()).build());
     }
 
+    /// Camera-related func
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(() -> {
             try {
                 // Used to bind the lifecycle of cameras to the lifecycle owner
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                // Preview
-                Preview preview = new Preview.Builder().build();
-
-                // Select back camera as a default
-                CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
-
-                // Unbind use cases before rebinding
-                cameraProvider.unbindAll();
-
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(this, cameraSelector, preview);
-                preview.setSurfaceProvider(viewBinding.previewView.getSurfaceProvider());
+                cameraProvider = cameraProviderFuture.get();
+                bindCamera();
                 } catch (Exception exc) {
                     Toast.makeText(this, "Starting camera failed", Toast.LENGTH_SHORT).show();
                 }
             }, ContextCompat.getMainExecutor(this));
     }
 
-    private void takePhoto() {
+    private void bindCamera() {
+        // Preview
+        Preview preview = new Preview.Builder().build();
 
+        // Unbind use cases before rebinding
+        cameraProvider.unbindAll();
+
+        // Bind use cases to camera
+        cameraProvider.bindToLifecycle(this, this.cameraSelector, preview, this.imageCapture);
+        preview.setSurfaceProvider(viewBinding.previewView.getSurfaceProvider());
     }
 
-    private void captureVideo() {
+    private void flipCam() {
+        if (this.cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
+            this.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+            startCamera();
+        } else {
+            this.cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+            startCamera();
+        }
+    }
 
+    private void changeFlash() {
+        if (imageCapture.getFlashMode() == ImageCapture.FLASH_MODE_ON) {
+            imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
+            viewBinding.flashBtn.setImageResource(R.drawable.ic_flash_on);
+        } else {
+            imageCapture.setFlashMode(ImageCapture.FLASH_MODE_ON);
+            viewBinding.flashBtn.setImageResource(R.drawable.icon_flash);
+        }
+    }
+
+    public void pauseCamera() {
+        if (this.cameraProvider != null) {
+            cameraProvider.unbindAll();
+        }
+    }
+
+    public void resumeCamera() {
+        if (this.cameraProvider != null) {
+            bindCamera();
+        }
+    }
+
+    private void takePhoto() {
+        ImageCapture imageCapture = this.imageCapture;
+        if (imageCapture == null) {
+            return;
+        }
+
+        imageCapture.takePicture(
+                ContextCompat.getMainExecutor(this),
+                new ImageCapture.OnImageCapturedCallback() {
+                    @Override
+                    public void onError(ImageCaptureException exc) {
+                        Log.e(TAG, "Photo capture failed: " + exc.getMessage(), exc);
+                    }
+
+                    @Override
+                    public void onCaptureSuccess(ImageProxy imageProxy) {
+                        ByteBuffer buffer = imageProxy.getPlanes()[0].getBuffer();
+                        byte[] bytes = new byte[buffer.remaining()];
+                        buffer.get(bytes);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        int rotationDegrees = imageProxy.getImageInfo().getRotationDegrees();
+                        Bitmap rotatedBitmap = rotateBitmap(bitmap, rotationDegrees);
+                        capturedImage = rotatedBitmap;
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                viewBinding.capturedImage.setImageBitmap(capturedImage);
+                                viewBinding.previewViewContainer.setVisibility(View.INVISIBLE);
+
+                                viewBinding.changeCameraBtn.setVisibility(View.INVISIBLE);
+                                viewBinding.changeCameraBtn.setClickable(false);
+
+                                viewBinding.flashBtn.setVisibility(View.INVISIBLE);
+                                viewBinding.flashBtn.setClickable(false);
+
+                                viewBinding.imageCaptureButton.setVisibility(View.INVISIBLE);
+                                viewBinding.imageCaptureButton.setClickable(false);
+
+                                viewBinding.historyPost.setVisibility(View.INVISIBLE);
+                                viewBinding.historyPost.setClickable(false);
+
+                                viewBinding.capturedImageContainer.setVisibility(View.VISIBLE);
+                                viewBinding.historyPost.setClickable(true);
+
+                                viewBinding.cancelCreatePost.setVisibility(View.VISIBLE);
+                                viewBinding.cancelCreatePost.setClickable(true);
+
+                                viewBinding.createPostBtn.setVisibility(View.VISIBLE);
+                                viewBinding.createPostBtn.setClickable(true);
+
+                                pauseCamera();
+                            }
+                        });
+
+                        imageProxy.close();
+
+                        String msg = "Photo capture succeeded";
+                        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, msg);
+                    }
+                }
+        );
+    }
+
+    private Bitmap rotateBitmap(Bitmap bitmap, int rotationDegrees) {
+        if (rotationDegrees == 0) {
+            return bitmap;
+        }
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotationDegrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    private void cancelCreatePost() {
+        viewBinding.changeCameraBtn.setVisibility(View.VISIBLE);
+        viewBinding.changeCameraBtn.setClickable(true);
+
+        viewBinding.flashBtn.setVisibility(View.VISIBLE);
+        viewBinding.flashBtn.setClickable(true);
+
+        viewBinding.imageCaptureButton.setVisibility(View.VISIBLE);
+        viewBinding.imageCaptureButton.setClickable(true);
+
+        viewBinding.historyPost.setVisibility(View.VISIBLE);
+        viewBinding.historyPost.setClickable(true);
+
+        viewBinding.capturedImageContainer.setVisibility(View.INVISIBLE);
+        viewBinding.historyPost.setClickable(false);
+
+        viewBinding.cancelCreatePost.setVisibility(View.INVISIBLE);
+        viewBinding.cancelCreatePost.setClickable(false);
+
+        viewBinding.createPostBtn.setVisibility(View.INVISIBLE);
+        viewBinding.createPostBtn.setClickable(false);
+
+        resumeCamera();
     }
 
     private void requestPermissions() {
@@ -305,8 +430,10 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //cameraExecutor.shutdown();
+        cameraExecutor.shutdown();
     }
+
+    /// Other func
     private void checkLogin()
     {
         if(FirebaseAuth.getInstance().getCurrentUser()==null)
