@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.pixelpost.Model.Post.Post;
@@ -63,6 +64,7 @@ public class PostSliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public int getItemCount() {
         return postList.size();
     }
+
 
     class PostSliderViewHolder extends RecyclerView.ViewHolder {
 
