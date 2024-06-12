@@ -110,6 +110,7 @@
                     android:src="@drawable/icon_next" />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/btnWidgetGuide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -215,6 +216,7 @@
                     android:src="@drawable/icon_next" />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/btnChangePassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"

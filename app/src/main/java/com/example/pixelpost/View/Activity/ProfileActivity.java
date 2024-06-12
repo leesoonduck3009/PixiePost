@@ -33,6 +33,10 @@ import com.google.android.material.imageview.ShapeableImageView;
 
 public class ProfileActivity extends AppCompatActivity implements IProfileActivityContract.View {
     LinearLayout btnUpdateUserProfile;
+
+    LinearLayout btnChangePassword;
+
+    LinearLayout btnWidgetGuide;
     LinearLayout btnReportIssue;
     private LinearLayout btnLogout;
     private LinearLayout btnQRCode;
@@ -49,6 +53,9 @@ public class ProfileActivity extends AppCompatActivity implements IProfileActivi
         setContentView(R.layout.activity_profile);
         presenter = new ProfileActivityPresenter(this);
         btnUpdateUserProfile = findViewById(R.id.btnUpdateUserProfile);
+        btnChangePassword = findViewById(R.id.btnChangePassword);
+        btnWidgetGuide = findViewById(R.id.btnWidgetGuide);
+
         btnReportIssue = findViewById(R.id.btnReportIssue);
         btnLogout = findViewById(R.id.btnLogout);
         reportIssueDialog = new BottomSheetDialog(this);
@@ -92,6 +99,22 @@ public class ProfileActivity extends AppCompatActivity implements IProfileActivi
             @Override
             public void onClick(View view) {
                 reportIssueDialog.show();
+            }
+        });
+
+        btnWidgetGuide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfileActivity.this, WidgetGuilds.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_left);
+            }
+        });
+        btnChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfileActivity.this, ChangePassword.class);
+                startActivity(intent);
             }
         });
         reportIssueDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
