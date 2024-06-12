@@ -49,9 +49,6 @@
         </receiver>
 
         <activity
-            android:name=".View.Activity.CameraActivity"
-            android:exported="false" />
-        <activity
             android:name=".View.Activity.UpdateUserInformationActivity"
             android:exported="false" />
         <activity
@@ -110,6 +107,9 @@
             android:exported="false" />
         <activity
             android:name=".View.Activity.MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".View.Activity.CreatePostActivity"
             android:exported="false" />
     </application>
 

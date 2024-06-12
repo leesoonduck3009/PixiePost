@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.Activity.MainActivity"
+    android:background="@color/black2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:id="@+id/camera_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <FrameLayout
+                        android:visibility="visible"
+                        android:id="@+id/captured_image_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/preview_view_background"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/footer"
+                        android:clipToOutline="true"
+                        android:layout_marginTop="50dp">
+
+                        <ImageView
+                            android:scaleType="centerCrop"
+                            android:id="@+id/captured_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="400dp"
+                            android:foreground="@drawable/preview_view_background"/>
+
+                    </FrameLayout>
+
+                    <EditText
+                        android:textAlignment="center"
+                        android:id="@+id/post_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@id/captured_image_container"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:inputType="text"
+                        android:text="Thêm một tin nhắn"
+                        android:textSize="16dp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/bg_post_content"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_marginBottom="20dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/footer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_marginBottom="20dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <!--                            After capture-->
+                            <ImageView
+                                android:visibility="visible"
+                                android:clickable="false"
+                                android:id="@+id/cancel_create_post"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:background="@drawable/icon_x_exit"
+                                android:backgroundTint="@color/white"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/create_post_btn"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                            <LinearLayout
+                                android:visibility="visible"
+                                android:clickable="false"
+                                android:id="@+id/create_post_btn"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:background="@drawable/circle_image"
+                                android:backgroundTint="@color/grey"
+                                android:gravity="center"
+                                android:paddingTop="4dp"
+                                android:paddingRight="4dp">
+
+                                <ImageView
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:elevation="2dp"
+                                    android:background="@drawable/ic_send"/>
+
+                            </LinearLayout>
+
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <LinearLayout
+                            android:visibility="invisible"
+                            android:id="@+id/history_post"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:layout_marginTop="40dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/history_test_img"
+                                    android:layout_marginRight="10dp"
+                                    android:background="@drawable/boder_radius_img"
+                                    android:clipToOutline="true"
+                                    android:scaleType="centerCrop"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Lịch sử"
+                                    android:textColor="@color/white"
+                                    android:textSize="16dp"
+                                    android:textStyle="bold"
+                                    android:paddingRight="8dp"/>
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/icon_arrow_down_2"
+                                android:layout_marginTop="5dp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

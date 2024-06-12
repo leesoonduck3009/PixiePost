@@ -27,6 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +35,8 @@ import android.view.View;
 import android.Manifest;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -53,6 +56,11 @@ import com.example.pixelpost.View.Dialog.FriendRequestDialog;
 import com.example.pixelpost.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +68,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -120,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                 return gestureDetector.onTouchEvent(event);
             }
         });
-
         preferenceManager = new PreferenceManager(getApplicationContext());
         checkLogin();
         btnMessage = findViewById(R.id.btnMessage);
@@ -175,16 +183,25 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
             requestPermissions();
         }
 
+        //Set up other button
+        viewBinding.historyPost.setOnClickListener(v -> animateScroll(homeScrollView.getHeight()));
+        viewBinding.btnCaptureBottom.setOnClickListener(v -> {
+            postSlider.setCurrentItem(0);
+            animateScroll(-homeScrollView.getHeight());
+        });
+
         //Set up the listeners for take photo buttons
         viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
         viewBinding.changeCameraBtn.setOnClickListener(v -> flipCam());
         viewBinding.flashBtn.setOnClickListener(v -> changeFlash());
-        viewBinding.cancelCreatePost.setOnClickListener(v -> cancelCreatePost());
+        viewBinding.heartEmojiBtn.setOnClickListener(v -> runEmojiAnimation(R.drawable.ic_heart));
+        viewBinding.hahaEmojiBtn.setOnClickListener(v -> runEmojiAnimation(R.drawable.ic_haha));
+        viewBinding.sadEmojiBtn.setOnClickListener(v -> runEmojiAnimation(R.drawable.ic_sad));
+        viewBinding.angryEmojiBtn.setOnClickListener(v -> runEmojiAnimation(R.drawable.ic_angry));
 
         cameraExecutor = Executors.newSingleThreadExecutor();
         checkFromFriendRequest();
     }
-
 
     /// Slider-related func
     private class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -296,22 +313,10 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     private void changeFlash() {
         if (imageCapture.getFlashMode() == ImageCapture.FLASH_MODE_ON) {
             imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
-            viewBinding.flashBtn.setImageResource(R.drawable.ic_flash_on);
+            viewBinding.flashBtn.setImageResource(R.drawable.icon_flash);
         } else {
             imageCapture.setFlashMode(ImageCapture.FLASH_MODE_ON);
-            viewBinding.flashBtn.setImageResource(R.drawable.icon_flash);
-        }
-    }
-
-    public void pauseCamera() {
-        if (this.cameraProvider != null) {
-            cameraProvider.unbindAll();
-        }
-    }
-
-    public void resumeCamera() {
-        if (this.cameraProvider != null) {
-            bindCamera();
+            viewBinding.flashBtn.setImageResource(R.drawable.ic_flash_on);
         }
     }
 
@@ -342,38 +347,33 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                viewBinding.capturedImage.setImageBitmap(capturedImage);
-                                viewBinding.previewViewContainer.setVisibility(View.INVISIBLE);
+                                try {
+                                    File cacheDir = getCacheDir();
+                                    File file = new File(cacheDir, "bitmap.png");
+                                    FileOutputStream fos = new FileOutputStream(file);
+                                    capturedImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                    fos.close();
 
-                                viewBinding.changeCameraBtn.setVisibility(View.INVISIBLE);
-                                viewBinding.changeCameraBtn.setClickable(false);
-
-                                viewBinding.flashBtn.setVisibility(View.INVISIBLE);
-                                viewBinding.flashBtn.setClickable(false);
-
-                                viewBinding.imageCaptureButton.setVisibility(View.INVISIBLE);
-                                viewBinding.imageCaptureButton.setClickable(false);
-
-                                viewBinding.historyPost.setVisibility(View.INVISIBLE);
-                                viewBinding.historyPost.setClickable(false);
-
-                                viewBinding.capturedImageContainer.setVisibility(View.VISIBLE);
-                                viewBinding.historyPost.setClickable(true);
-
-                                viewBinding.cancelCreatePost.setVisibility(View.VISIBLE);
-                                viewBinding.cancelCreatePost.setClickable(true);
-
-                                viewBinding.createPostBtn.setVisibility(View.VISIBLE);
-                                viewBinding.createPostBtn.setClickable(true);
-
-                                pauseCamera();
+                                    Intent intent = new Intent(MainActivity.this, CreatePostActivity.class);
+                                    intent.putExtra("bitmapPath", file.getAbsolutePath());
+                                    startActivity(intent);
+                                    overridePendingTransition(0, 0);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+//                                String filePath = saveBitmapToFile(capturedImage);
+//                                if (filePath != null) {
+//                                    Intent intent = new Intent(MainActivity.this, CreatePostActivity.class);
+//                                    intent.putExtra("image_path", filePath);
+//                                    startActivity(intent);
+//                                    overridePendingTransition(0, 0);
+//                                }
                             }
                         });
 
                         imageProxy.close();
 
                         String msg = "Photo capture succeeded";
-                        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
                         Log.d(TAG, msg);
                     }
                 }
@@ -389,29 +389,17 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    private void cancelCreatePost() {
-        viewBinding.changeCameraBtn.setVisibility(View.VISIBLE);
-        viewBinding.changeCameraBtn.setClickable(true);
+    private String saveBitmapToFile(Bitmap bitmap) {
+        File filesDir = getFilesDir();
+        File imageFile = new File(filesDir, "saved_image.png");
 
-        viewBinding.flashBtn.setVisibility(View.VISIBLE);
-        viewBinding.flashBtn.setClickable(true);
-
-        viewBinding.imageCaptureButton.setVisibility(View.VISIBLE);
-        viewBinding.imageCaptureButton.setClickable(true);
-
-        viewBinding.historyPost.setVisibility(View.VISIBLE);
-        viewBinding.historyPost.setClickable(true);
-
-        viewBinding.capturedImageContainer.setVisibility(View.INVISIBLE);
-        viewBinding.historyPost.setClickable(false);
-
-        viewBinding.cancelCreatePost.setVisibility(View.INVISIBLE);
-        viewBinding.cancelCreatePost.setClickable(false);
-
-        viewBinding.createPostBtn.setVisibility(View.INVISIBLE);
-        viewBinding.createPostBtn.setClickable(false);
-
-        resumeCamera();
+        try (FileOutputStream fos = new FileOutputStream(imageFile)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            return imageFile.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void requestPermissions() {
@@ -431,6 +419,61 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     protected void onDestroy() {
         super.onDestroy();
         cameraExecutor.shutdown();
+    }
+
+    /// Emoji animation
+    private void runEmojiAnimation(int res) {
+        // Tạo và áp dụng Animation cho các ImageView nhân bản
+        Random random = new Random();
+        int randomX;
+        int randomY;
+        int randomD;
+        float randomR;
+        int randomS;
+        for(int i = 0; i < 15; i++) {
+            randomX = random.nextInt(700 - (-200) + 1) - 200;
+            randomY = random.nextInt(2000 - 100 + 1) + 100;
+            randomD = random.nextInt(3000 - 900 + 1) + 900;
+            randomR = (float) (-60 + (120 * random.nextDouble()));
+            randomS = random.nextInt(100 - 60 + 1) + 60;
+            runSingleThreadAnimation(randomX, randomY, res, randomD, randomR, randomS);
+        }
+    }
+
+    private void runSingleThreadAnimation(int x, int y, int resource, int duration, float rotation, int size){
+        Animation anim_emoji = AnimationUtils.loadAnimation(this, R.anim.anim_emoji);
+        anim_emoji.setDuration(duration);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageView imageView1 = new ImageView(getApplicationContext());
+                        imageView1.setImageResource(resource);
+                        imageView1.setX(x);
+                        imageView1.setY(y);
+                        imageView1.setRotation(rotation);
+                        imageView1.setLayoutParams(new ViewGroup.LayoutParams(size, size));
+                        viewBinding.mainContainer.addView(imageView1);
+                        imageView1.startAnimation(anim_emoji);
+                        Handler handler = new Handler();
+                        Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                viewBinding.mainContainer.removeView(imageView1);
+                            }
+                        };
+
+                        handler.postDelayed(runnable, duration);
+                    }
+                });
+
+
+            }
+        });
+        thread.start();
     }
 
     /// Other func
