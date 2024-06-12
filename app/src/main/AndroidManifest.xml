@@ -23,6 +23,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PixelPost"
         tools:targetApi="31">
+        <activity
+            android:name=".View.Activity.WidgetGuilds3"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.WidgetGuilds2"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.WidgetGuilds"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.ChangePassword"
+            android:exported="false" />
+
         <receiver
             android:name=".View.Widget.PixiePostWidget"
             android:exported="false">

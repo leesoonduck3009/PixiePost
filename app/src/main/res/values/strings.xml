@@ -5,4 +5,10 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
+
+    <string name="widget_heding1">Nhấn và giữ một khoảng trống trên Màn hình chính của bạn</string>
+    <string name="widget_heding2">Chạm vào nút Tiện ích để thêm một tiện ích mới</string>
+    <string name="widget_heding3">Tìm "PixiePost" và thêm tiện ích</string>
+    <string name="widget_heding4">Giữ và ké để sắp xếp và đổi kích cỡ</string>
+
 </resources>
