@@ -1,5 +1,7 @@
 package com.example.pixelpost.Model.Message;
 
+import com.example.pixelpost.Model.Post.Post;
+
 public interface IMessageModel {
     void SendMessage(Message message, OnFinishSendMessageListener listener);
     interface  OnFinishSendMessageListener{
@@ -7,6 +9,6 @@ public interface IMessageModel {
     }
     void ReceiveMessage(String conversationId, OnFinishReceiveMessageListener listener);
     interface OnFinishReceiveMessageListener{
-        void onFinishReceiveMessage(Message message, Exception e, boolean islastMessage);
+        void onFinishReceiveMessage(Message message, Post post,  Exception e, boolean islastMessage);
     }
 }

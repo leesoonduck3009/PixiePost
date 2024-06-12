@@ -12,7 +12,7 @@ public class Post {
     private String ownerId; // idOwner
     private Date timePosted; // timePost
     private List<String> displayedUsers; // userHienThi
-    private Map<String, String> lastReaction; // lastReaction
+    private String lastReaction; // lastReaction
     //endregion
     //region Static variables for Firebase
     public static final String FIELD_URL = "url";
@@ -72,11 +72,11 @@ public class Post {
         this.displayedUsers = displayedUsers;
     }
 
-    public Map<String, String> getLastReaction() {
+    public String getLastReaction() {
         return lastReaction;
     }
 
-    public void setLastReaction(Map<String, String> lastReaction) {
+    public void setLastReaction(String lastReaction) {
         this.lastReaction = lastReaction;
     }
     //endregion
@@ -88,7 +88,7 @@ public class Post {
         private String ownerId;
         private Date timePosted;
         private List<String> displayedUsers;
-        private Map<String, String> lastReaction;
+        private String lastReaction;
 
         public Builder setId(String id) {
             this.id = id;
@@ -120,7 +120,7 @@ public class Post {
             return this;
         }
 
-        public Builder setLastReaction(Map<String, String> lastReaction) {
+        public Builder setLastReaction(String lastReaction) {
             this.lastReaction = lastReaction;
             return this;
         }

@@ -8,7 +8,7 @@ public class Message {
     private String senderId;
     private String receiverId;
     private String text;
-    private String imageUrl; // urlImage
+    private String postId; // urlImage
     private String conversationId;
     private Date timeSent;
     //endregion
@@ -16,7 +16,7 @@ public class Message {
     public static final String FIREBASE_COLLECTION_NAME = "messsage";
     public static final String FIELD_SENDER_ID = "senderId";
     public static final String FIELD_TEXT = "text";
-    public static final String FIELD_IMAGE_URL = "imageUrl";
+    public static final String FIELD_POST_ID = "postId";
     public static final String FIELD_CONVERSATION_ID = "conversationId";
     public static final String FIELD_TIME_SENT = "timeSent";
     public static final String FIELD_RECEIVER_ID = "receiverId";
@@ -55,12 +55,12 @@ public class Message {
         this.text = text;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getPostId() {
+        return postId;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public String getConversationId() {
@@ -85,7 +85,7 @@ public class Message {
         private String id;
         private String senderId;
         private String text;
-        private String imageUrl;
+        private String postId;
         private String conversationId;
         private Date timeSent;
         private String receiverId;
@@ -109,8 +109,8 @@ public class Message {
             return this;
         }
 
-        public Builder setImageUrl(String imageUrl) {
-            this.imageUrl = imageUrl;
+        public Builder setPostId(String postId) {
+            this.postId = postId;
             return this;
         }
 
@@ -129,7 +129,7 @@ public class Message {
             message.id = this.id;
             message.senderId = this.senderId;
             message.text = this.text;
-            message.imageUrl = this.imageUrl;
+            message.postId = this.postId;
             message.conversationId = this.conversationId;
             message.timeSent = this.timeSent;
             message.receiverId = this.receiverId;

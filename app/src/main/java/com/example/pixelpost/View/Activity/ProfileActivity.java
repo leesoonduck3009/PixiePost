@@ -25,6 +25,7 @@ import com.example.pixelpost.Presenter.Acitivity.ProfileActivityPresenter;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
 import com.example.pixelpost.View.Activity.Login.Login01Activity;
+import com.example.pixelpost.View.Activity.QR.QRProfileActivity;
 import com.example.pixelpost.View.Dialog.CustomDialog;
 import com.example.pixelpost.View.Dialog.FriendRequestDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -34,6 +35,7 @@ public class ProfileActivity extends AppCompatActivity implements IProfileActivi
     LinearLayout btnUpdateUserProfile;
     LinearLayout btnReportIssue;
     private LinearLayout btnLogout;
+    private LinearLayout btnQRCode;
     private IProfileActivityContract.Presenter presenter;
     private TextView txtViewName;
     private User currentUser;
@@ -53,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity implements IProfileActivi
         txtViewName = findViewById(R.id.txtViewName);
         btnBack = findViewById(R.id.btnBack);
         avatarImg = findViewById(R.id.avatarImg);
+        btnQRCode = findViewById(R.id.btnQRCode);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatarImg.setClipToOutline(true);
             avatarImg.setOutlineProvider(new ViewOutlineProvider() {
@@ -80,6 +83,10 @@ public class ProfileActivity extends AppCompatActivity implements IProfileActivi
         });
         btnBack.setOnClickListener(v -> {
             this.finish();
+        });
+        btnQRCode.setOnClickListener(v->{
+            Intent intent = new Intent(getApplicationContext(), QRProfileActivity.class);
+            startActivity(intent);
         });
         btnReportIssue.setOnClickListener(new View.OnClickListener() {
             @Override

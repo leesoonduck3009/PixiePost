@@ -1,6 +1,7 @@
 package com.example.pixelpost.Model.Message;
 
 import com.example.pixelpost.Model.Conversation.Conversation;
+import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.Model.User.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -111,7 +112,7 @@ public class MessageModel implements IMessageModel{
             AtomicInteger count = new AtomicInteger();
 
             if(error!=null)
-                listener.onFinishReceiveMessage(null, error, false);
+                listener.onFinishReceiveMessage(null,null, error, false);
             else{
                 for(DocumentChange documentChange: value.getDocumentChanges())
                 {
@@ -125,7 +126,14 @@ public class MessageModel implements IMessageModel{
                             message.setTimeSent(documentChange.getDocument().getDate(Message.FIELD_TIME_SENT));
                             message.setReceiverId(documentChange.getDocument().getString(Message.FIELD_RECEIVER_ID));
                             message.setSenderId(documentChange.getDocument().getString(Message.FIELD_SENDER_ID));
-                            listener.onFinishReceiveMessage(message, null, count.incrementAndGet() == value.getDocumentChanges().size() );
+                            message.setPostId(documentChange.getDocument().getString(Message.FIELD_POST_ID));
+                            if(message.getPostId()!=null)
+                            {
+                                getPostByMessage(message,count, value.getDocumentChanges().size(),listener);
+                            }
+                            else {
+                                listener.onFinishReceiveMessage(message,null, null, count.incrementAndGet() == value.getDocumentChanges().size() );
+                            }
                             break;
                         case REMOVED:
                             break;
@@ -134,6 +142,20 @@ public class MessageModel implements IMessageModel{
             }
 
         });
+    }
+    private void getPostByMessage(Message message, AtomicInteger count, int total, OnFinishReceiveMessageListener listener){
+        db.collection(Post.FIREBASE_COLLECTION_NAME).document(message.getPostId()).get().addOnCompleteListener(
+                task -> {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot ds = task.getResult();
+                        Post post = new Post.Builder().setTimePosted(ds.getDate(Post.FIELD_TIME_POSTED)).setId(ds.getId()).setDisplayedUsers((ArrayList<String>) ds.get(Post.FIELD_DISPLAYED_USERS))
+                                        .setOwnerId(ds.getString(Post.FIELD_OWNER_ID)).setUrl(ds.getString(Post.FIELD_URL)).setText(ds.getString(Post.FIELD_TEXT)).setLastReaction(ds.getString(Post.FIELD_LAST_REACTION)).build();
+                        listener.onFinishReceiveMessage(message,post,null,count.incrementAndGet() == total);
+                    }
+                    else
+                        listener.onFinishReceiveMessage(message,null,task.getException(),true);
+                }
+        );
     }
     //endregion
 }

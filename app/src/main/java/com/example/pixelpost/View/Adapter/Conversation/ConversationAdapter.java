@@ -73,7 +73,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             User receiverUser = conversation.getRecieverUser();
             Message lastMessage = conversation.getLastMessage();
             if(receiverUser.getAvatarUrl()==null || receiverUser.getAvatarUrl().isEmpty())
-                Glide.with(binding.getRoot()).load(R.drawable.ic_basic_avatar).into(binding.imageProfile);
+                Glide.with(binding.getRoot()).load(R.drawable.avatar3).into(binding.imageProfile);
             else
                 Glide.with(binding.getRoot()).load(receiverUser.getAvatarUrl()).into(binding.imageProfile);
             binding.textConversationName.setText(receiverUser.getFirstName()+ receiverUser.getLastName());

@@ -119,7 +119,7 @@ public class ConversationModel implements IConversationModel {
                                                 List<Task<DocumentSnapshot>> arrayListTask = new ArrayList<>();
                                                 Task<DocumentSnapshot> taskMessage =  db.document(conversation.getLastMessageRef().getPath()).get();
                                                 Task<DocumentSnapshot> taskUser;
-                                                if(conversation.getUser2().getId() == auth.getCurrentUser().getUid())
+                                                if(conversation.getUser2().getId().equals(auth.getCurrentUser().getUid()))
                                                 {
                                                     taskUser =  db.document(conversation.getUser1().getPath()).get();
                                                 }

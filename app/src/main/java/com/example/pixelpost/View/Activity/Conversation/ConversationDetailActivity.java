@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.example.pixelpost.Contract.Activity.IConversationDetailActivityContract;
 import com.example.pixelpost.Model.Conversation.Conversation;
 import com.example.pixelpost.Model.Message.Message;
+import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.ConversationDetailActivityPresenter;
 import com.example.pixelpost.R;
@@ -29,7 +31,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class ConversationDetailActivity extends AppCompatActivity implements IConversationDetailActivityContract.View {
     private IConversationDetailActivityContract.Presenter presenter;
@@ -47,7 +51,7 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
     private User receiverUser;
     private ProgressBar progressBar;
     private MessageAdapter chatMessageAdapter;
-
+    private HashMap<String, Post> postItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
         imageProfile = findViewById(R.id.imageProfile);
         progressBar = findViewById(R.id.progressBar);
         inputMessage = findViewById(R.id.inputMessage);
+        postItem = new HashMap<>();
         listChatMessages = new ArrayList<>();
         initData();
         conversationRecyclerView.setAdapter(chatMessageAdapter);
@@ -90,18 +95,20 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
             Glide.with(getApplicationContext()).load(conversation.getRecieverUser().getAvatarUrl()).into(imageProfile);
         else
             Glide.with(getApplicationContext()).load(R.drawable.avatar3).into(imageProfile);
-        chatMessageAdapter = new MessageAdapter(listChatMessages, FirebaseAuth.getInstance().getCurrentUser().getUid());
+        chatMessageAdapter = new MessageAdapter(listChatMessages, Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(),postItem,receiverUser);
         conversationRecyclerView.setAdapter(chatMessageAdapter);
         presenter.onLoadingMessage(conversation.getId());
     }
 
     @Override
-    public void onFinishLoadMessage(Message message, boolean isLastMessage) {
+    public void onFinishLoadMessage(Message message, Post post, boolean isLastMessage) {
         listChatMessages.add((message));
         if (isLastMessage) {
             progressBar.setVisibility(View.GONE);
             conversationRecyclerView.setVisibility(View.VISIBLE);
         }
+        if(post!=null)
+            postItem.put(message.getPostId(),post);
         Collections.sort(listChatMessages, Comparator.comparing(Message::getTimeSent));
         chatMessageAdapter.notifyItemRangeInserted(listChatMessages.size(), listChatMessages.size());
         conversationRecyclerView.scrollToPosition(listChatMessages.size() - 1);

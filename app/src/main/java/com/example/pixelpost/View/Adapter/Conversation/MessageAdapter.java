@@ -16,25 +16,36 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.pixelpost.Model.Message.Message;
+import com.example.pixelpost.Model.Post.Post;
+import com.example.pixelpost.Model.User.User;
+import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.StringFormat;
+import com.example.pixelpost.databinding.ItemContainerImageMessageBinding;
 import com.example.pixelpost.databinding.ItemContainerReceivedMessageBinding;
 import com.example.pixelpost.databinding.ItemContainerSentMessageBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private final List<Message> messages;
     private List<Boolean> listIsShowTime;
+    private HashMap<String, Post> postItem;
+    private User otherUser;
     private final String accountSenderId;
     private Context context;
     public static final int VIEW_TEXT_SENT=1;
     public static final int VIEW_TEXT_RECEIVED=2;
     public static final int VIEW_IMAGE_SENT = 3;
     public static final int VIEW_IMAGE_RECEIVED = 4;
-    public MessageAdapter(List<Message> messages, String accountSenderId) {
+    public MessageAdapter(List<Message> messages, String accountSenderId, HashMap<String, Post> postItem, User otherUser) {
         this.messages = messages;
         this.accountSenderId = accountSenderId;
+        this.postItem = postItem;
+        this.otherUser= otherUser;
         listIsShowTime = new ArrayList<>();
     }
 
@@ -46,7 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         else if (viewType == VIEW_TEXT_RECEIVED)
             return new ReceivedMessageViewHolder(ItemContainerReceivedMessageBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false));
         else
-            return null;
+            return new ImageMessageViewHolder(ItemContainerImageMessageBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false));
     }
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
@@ -56,20 +67,23 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
         else if(getItemViewType(position) == VIEW_TEXT_RECEIVED)
             ((ReceivedMessageViewHolder) holder).setData((messages.get(position)));
+        else
+            ((ImageMessageViewHolder) holder).setData(postItem.get(messages.get(position).getPostId()), otherUser);
+
 
     }
     @Override
     public int getItemViewType(int position) {
         if(messages.get(position).getSenderId().equals(accountSenderId))
         {
-            if(messages.get(position).getImageUrl() != null)
+            if(messages.get(position).getPostId() != null)
                 return VIEW_IMAGE_SENT;
             else
                 return VIEW_TEXT_SENT;
         }
         else
         {
-            if(messages.get(position).getImageUrl() != null )
+            if(messages.get(position).getPostId() != null )
                 return VIEW_IMAGE_RECEIVED;
             else
                 return VIEW_TEXT_RECEIVED;
@@ -151,6 +165,25 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     binding.textDateTime.setVisibility(View.VISIBLE);
             });
             binding.textDateTime.setText(StringFormat.getReadableDateTime(message.getTimeSent()));
+        }
+    }
+    static class ImageMessageViewHolder extends RecyclerView.ViewHolder{
+        private ItemContainerImageMessageBinding itemContainerImageMessageBinding;
+        ImageMessageViewHolder(ItemContainerImageMessageBinding itemContainerImageMessageBinding) {
+            super(itemContainerImageMessageBinding.getRoot());
+            this.itemContainerImageMessageBinding = itemContainerImageMessageBinding;
+        }
+        void setData(Post post, User user){
+            if(user.getAvatarUrl()!=null)
+                Glide.with(itemContainerImageMessageBinding.getRoot()).load(user.getAvatarUrl()).into(itemContainerImageMessageBinding.avatarImg);
+            else
+                Glide.with(itemContainerImageMessageBinding.getRoot()).load(R.drawable.avatar3).into(itemContainerImageMessageBinding.avatarImg);
+            Glide.with(itemContainerImageMessageBinding.getRoot()).load(post.getUrl()).into(itemContainerImageMessageBinding.image);
+            if(Objects.equals(post.getOwnerId(), Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()))
+                itemContainerImageMessageBinding.userName.setText("Bạn");
+            else
+                itemContainerImageMessageBinding.userName.setText(user.getFirstName() + " " + user.getLastName());
+            itemContainerImageMessageBinding.postTimeUpload.setText(StringFormat.getReadableDateTime(post.getTimePosted()));
         }
     }
 

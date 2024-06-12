@@ -25,11 +25,11 @@ public class ConversationDetailActivityPresenter implements IConversationDetailA
 
     @Override
     public void onLoadingMessage(String conversationId) {
-        messageModel.ReceiveMessage(conversationId, (message, e, islastMessage) -> {
+        messageModel.ReceiveMessage(conversationId, (message, post, e, islastMessage) -> {
             if(e!=null)
                 view.onLoadingFailed(e);
             else
-                view.onFinishLoadMessage(message, islastMessage);
+                view.onFinishLoadMessage(message, post, islastMessage);
         });
     }
 
