@@ -185,11 +185,14 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:orientation="vertical"
                     android:layout_marginBottom="20dp"
-                    android:visibility="visible">
+                    >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:id="@+id/inputContainer"
+                        android:visibility="visible"
+                        >
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/send_message_emoji_container"

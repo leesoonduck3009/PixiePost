@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.DragEvent;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -37,10 +38,15 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.pixelpost.Model.Conversation.Conversation;
+import com.example.pixelpost.Model.Message.Message;
 import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.Contract.Activity.IMainActivityContract;
 import com.example.pixelpost.Model.FriendRequest.FriendRequest;
@@ -48,6 +54,7 @@ import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.MainActivityPresenter;
 import com.example.pixelpost.R;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
+import com.example.pixelpost.View.Activity.Conversation.ConversationDetailActivity;
 import com.example.pixelpost.View.Activity.Conversation.ConversationListActivity;
 import com.example.pixelpost.View.Activity.Login.Login01Activity;
 import com.example.pixelpost.View.Adapter.PostSliderAdapter;
@@ -65,6 +72,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     private ImageView profile_btn;
     private LinearLayout friend_btn;
     private User currentUser;
+    private int currentPosition = 0;
 
     private IMainActivityContract.Presenter presenter;
     private FriendRequestDialog tempFriendRequestDialog;
@@ -146,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         //initPost();
         postSliderAdapter = new PostSliderAdapter(postList);
         postSlider.setAdapter(postSliderAdapter);
-        presenter.getPost();
         postSliderAdapter.notifyDataSetChanged();
 
 
@@ -173,8 +182,37 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                 startActivity(intent);
             }
         });
-
-
+        postSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                currentPosition = position;
+                if(Objects.equals(postList.get(position).getOwnerId(), FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                {
+                    viewBinding.inputContainer.setVisibility(View.GONE);
+                }
+                else
+                    viewBinding.inputContainer.setVisibility(View.VISIBLE);
+            }
+        });
+        viewBinding.sendMessagePostFooter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // Xử lý sự kiện ở đây
+                    String inputText =  viewBinding.sendMessagePostFooter.getText().toString();
+                    // Ví dụ: Hiển thị Toast
+                    Post currentPost = postList.get(currentPosition);
+                    Message message = new Message.Builder().setSenderId(currentUser.getId()).setReceiverId(currentPost.getOwnerId())
+                            .setPostId(currentPost.getId()).setTimeSent(new Date()).build();
+                    presenter.sendMessagePost(message, currentPost.getOwnerUser());
+                    viewBinding.sendMessagePostFooter.setEnabled(false);
+                    return true;
+                }
+                return false;
+            }
+            }
+        );
 
         //Set up other button
         viewBinding.historyPost.setOnClickListener(v -> animateScroll(homeScrollView.getHeight()));
@@ -256,16 +294,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         constrainLayout.setLayoutParams(layoutParams);
     }
 
-    public void initPost(){
-//        postList.add(new Post.Builder().setText("Đây là post 1").setTimePosted(new Date()).setUrl("https://file.hstatic.net/1000159991/file/doremon-min_d7fba7f7f60a41a0af6e67dcaeb75634_grande.jpg").build());
-//        postList.add(new Post.Builder().setText("Đây là post 2").setTimePosted(new Date()).build());
-//        postList.add(new Post.Builder().setText("Đây là post 3").setTimePosted(new Date()).build());
-//        postList.add(new Post.Builder().setText("Đây là post 4").setTimePosted(new Date()).build());
-//        postList.add(new Post.Builder().setText("Đây là post 5").setTimePosted(new Date()).build());
-//        postList.add(new Post.Builder().setText("Đây là post 6").setTimePosted(new Date()).build());
-//        postList.add(new Post.Builder().setText("Đây là post 7").setTimePosted(new Date()).build());
-//        postList.add(new Post.Builder().setText("Đây là post 8").setTimePosted(new Date()).build());
-    }
 
     /// Camera-related func
     private void startCamera() {
@@ -485,6 +513,9 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
             {
                 presenter.getUserInformation();
             }
+            else{
+                presenter.getPost();
+            }
         }
     }
     private static final String TAG = "CameraXApp";
@@ -605,10 +636,12 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         user.setId(FirebaseAuth.getInstance().getCurrentUser().getUid());
         currentUser = user;
         preferenceManager.putSerializable(User.FIREBASE_COLLECTION_NAME,user);
+        presenter.getPost();
     }
 
     @Override
     public void onGettingPost(Post post, DocumentChange.Type type) {
+        viewBinding.postSliderContainer.setVisibility(View.VISIBLE);
         if(Objects.equals(post.getOwnerId(), currentUser.getId()))
             post.setOwnerUser(currentUser);
         if(type == DocumentChange.Type.ADDED)
@@ -623,13 +656,36 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                 }
             }
         }
+        Collections.sort(postList, Comparator.comparing(Post::getTimePosted));
         postSliderAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onGetPostFailed(Exception e) {
-        Log.e("Load post failed",e.getMessage());
+        Log.e("Load_post_failed",e.getMessage());
         Toast.makeText(getApplicationContext(), "Load post failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSendMessageSuccess(String conversationId) {
+        Intent intent = new Intent(getApplicationContext(), ConversationDetailActivity.class);
+        intent.putExtra(Conversation.FIREBASE_COLLECTION_NAME, conversationId);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onSendMessagePostSuccess(String conversationId) {
+        Message message = new Message.Builder().setText(viewBinding.sendMessagePostFooter.getText().toString())
+                        .setSenderId(currentUser.getId()).setReceiverId(postList.get(currentPosition).getOwnerId())
+                        .setTimeSent(new Date()).setConversationId(conversationId).build();
+        presenter.sendMessage(message, postList.get(currentPosition).getOwnerUser());
+    }
+
+    @Override
+    public void onSendMessageFailed(Exception e) {
+        Toast.makeText(getApplicationContext(), "Send message failed", Toast.LENGTH_SHORT).show();
+        Log.e("send_message", e.getMessage());
+        viewBinding.sendMessagePostFooter.setEnabled(true);
     }
 
     @Override

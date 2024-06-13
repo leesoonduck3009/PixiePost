@@ -23,6 +23,7 @@ import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.ConversationDetailActivityPresenter;
 import com.example.pixelpost.R;
+import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
 import com.example.pixelpost.View.Adapter.Conversation.MessageAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -50,6 +51,7 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
     private EditText inputMessage;
     private User receiverUser;
     private ProgressBar progressBar;
+    private User currentUser;
     private MessageAdapter chatMessageAdapter;
     private HashMap<String, Post> postItem;
 
@@ -70,10 +72,14 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
         initData();
         conversationRecyclerView.setAdapter(chatMessageAdapter);
         setListener();
-
+        PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
+        currentUser = (User) preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME);
     }
     private void setListener()
     {
+        bttBackConversation.setOnClickListener(v -> {
+            this.finish();
+        });
         bttSendMessage.setOnClickListener(v->{
             Message message = new Message.Builder().setConversationId(conversation.getId())
                     .setReceiverId(conversation.getRecieverUser().getId()).setText(inputMessage.getText().toString())
@@ -107,10 +113,14 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
             progressBar.setVisibility(View.GONE);
             conversationRecyclerView.setVisibility(View.VISIBLE);
         }
-        if(post!=null)
+        if(post!=null){
+            if(Objects.equals(post.getOwnerId(), FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                post.setOwnerUser(currentUser);
             postItem.put(message.getPostId(),post);
+
+        }
         Collections.sort(listChatMessages, Comparator.comparing(Message::getTimeSent));
-        chatMessageAdapter.notifyItemRangeInserted(listChatMessages.size(), listChatMessages.size());
+        chatMessageAdapter.notifyDataSetChanged();
         conversationRecyclerView.scrollToPosition(listChatMessages.size() - 1);
         conversationRecyclerView.setVisibility(View.VISIBLE);
 

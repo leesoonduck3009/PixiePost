@@ -68,7 +68,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         else if(getItemViewType(position) == VIEW_TEXT_RECEIVED)
             ((ReceivedMessageViewHolder) holder).setData((messages.get(position)));
         else
-            ((ImageMessageViewHolder) holder).setData(postItem.get(messages.get(position).getPostId()), otherUser);
+            ((ImageMessageViewHolder) holder).setData(postItem.get(messages.get(position).getPostId()), postItem.get(messages.get(position).getPostId()).getOwnerUser());
 
 
     }

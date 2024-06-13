@@ -4,10 +4,14 @@ import com.example.pixelpost.Contract.Activity.IMainActivityContract;
 import com.example.pixelpost.Model.FriendRequest.FriendRequest;
 import com.example.pixelpost.Model.FriendRequest.FriendRequestModel;
 import com.example.pixelpost.Model.FriendRequest.IFriendRequestModel;
+import com.example.pixelpost.Model.Message.IMessageModel;
+import com.example.pixelpost.Model.Message.Message;
+import com.example.pixelpost.Model.Message.MessageModel;
 import com.example.pixelpost.Model.Post.IPostModel;
 import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.Model.Post.PostModel;
 import com.example.pixelpost.Model.User.IUserModel;
+import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Model.User.UserModel;
 import com.example.pixelpost.View.Dialog.FriendRequestDialog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,13 +26,42 @@ public class MainActivityPresenter implements IMainActivityContract.Presenter {
     private IUserModel userModel;
     private IFriendRequestModel friendRequestModel;
     private IPostModel postModel;
+    private IMessageModel messageModel;
     public MainActivityPresenter(IMainActivityContract.View view)
     {
         this.view = view;
         userModel = UserModel.getInstance();
         postModel = PostModel.getInstance();
+        messageModel = MessageModel.getInstance();
         friendRequestModel = FriendRequestModel.getInstance();
     }
+
+    @Override
+    public void sendMessagePost(Message message, User user) {
+        messageModel.SendMessage(message, new IMessageModel.OnFinishSendMessageListener() {
+            @Override
+            public void onFinishSendMessage(Message message, Exception e) {
+                if(e== null)
+                    view.onSendMessagePostSuccess(message.getConversationId());
+                else
+                    view.onSendMessageFailed(e);
+            }
+        });
+    }
+
+    @Override
+    public void sendMessage(Message message, User user) {
+        messageModel.SendMessage(message, new IMessageModel.OnFinishSendMessageListener() {
+            @Override
+            public void onFinishSendMessage(Message message, Exception e) {
+                if(e== null)
+                    view.onSendMessageSuccess(message.getConversationId());
+                else
+                    view.onSendMessageFailed(e);
+            }
+        });
+    }
+
     @Override
     public void getUserFriendRequest(String id) {
         friendRequestModel.checkFriendRequestSent(id,(user,friendRequest,isExisted, e) -> {

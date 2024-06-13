@@ -1,6 +1,8 @@
 package com.example.pixelpost.Contract.Activity;
 
+import com.example.pixelpost.Model.Conversation.Conversation;
 import com.example.pixelpost.Model.FriendRequest.FriendRequest;
+import com.example.pixelpost.Model.Message.Message;
 import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.View.Dialog.FriendRequestDialog;
@@ -15,8 +17,14 @@ public interface IMainActivityContract {
         void getUserInformation(User user);
         void onGettingPost(Post post, DocumentChange.Type type);
         void onGetPostFailed(Exception e);
+        void onSendMessageSuccess(String conversationId);
+        void onSendMessagePostSuccess(String conversationId);
+        void onSendMessageFailed(Exception e);
+
     }
     interface Presenter{
+        void sendMessagePost(Message message, User user);
+        void sendMessage(Message message, User user);
         void getUserFriendRequest(String id);
         void sendFriendRequest(String id);
         void acceptFriendRequest(FriendRequest friendRequest);

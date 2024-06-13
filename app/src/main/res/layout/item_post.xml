@@ -54,9 +54,12 @@
 
         <ImageView
             android:id="@+id/own_avatar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/avatar3"/>
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:background="@drawable/background_avatar"
+            />
 
         <TextView
             android:id="@+id/own_lastname"

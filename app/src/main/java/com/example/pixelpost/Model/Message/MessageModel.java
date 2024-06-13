@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,62 +50,100 @@ public class MessageModel implements IMessageModel{
     public void SendMessage(Message message, OnFinishSendMessageListener listener) {
         if(message.getConversationId()==null || message.getConversationId().isEmpty())
         {
-            DocumentReference drUser1 = db.collection(User.FIREBASE_COLLECTION_NAME).document(message.getSenderId());
-            DocumentReference drUser2 = db.collection(User.FIREBASE_COLLECTION_NAME).document(message.getReceiverId());
-            Conversation conversation = new Conversation.Builder().setPersonNotSeenID(message.getSenderId())
-                    .setUser1Ref(drUser1)
-                            .setUser2Ref(drUser2).setPersonNotSeenID(message.getReceiverId()).build();
-            db.collection(Conversation.FIREBASE_COLLECTION_NAME).add(conversation).addOnCompleteListener(task -> {
-                if(task.isSuccessful())
-                {
-                    String conversationID = task.getResult().getId();
-                    message.setConversationId(conversationID);
-                    conversation.setId(conversationID);
-                    db.collection(Message.FIREBASE_COLLECTION_NAME).add(message).addOnCompleteListener(
-                            taskMessage->{
-                                if(taskMessage.isSuccessful())
-                                {
-                                    db.collection(Conversation.FIREBASE_COLLECTION_NAME).document(conversationID).update(Conversation.FIELD_LAST_MESSAGE_REF, db.collection(Message.FIREBASE_COLLECTION_NAME).document(taskMessage.getResult().getId())).addOnCompleteListener(taskConversation->{
-                                        if(taskConversation.isSuccessful())
+            Task<QuerySnapshot> task1 = db.collection(Conversation.FIREBASE_COLLECTION_NAME)
+                    .whereEqualTo(Conversation.FIELD_USER1_REF, db.collection(User.FIREBASE_COLLECTION_NAME).document(message.getSenderId()))
+                    .whereEqualTo(Conversation.FIELD_USER2_REF, db.collection(User.FIREBASE_COLLECTION_NAME).document(message.getReceiverId()))
+                    .get();
+            task1.addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    if (task.getResult().isEmpty()) {
+                        // Nếu không tìm thấy, kiểm tra user1 = userReceived và user2 = userSend
+                        Task<QuerySnapshot> task2 = db.collection(Conversation.FIREBASE_COLLECTION_NAME)
+                                .whereEqualTo(Conversation.FIELD_USER2_REF, db.collection(User.FIREBASE_COLLECTION_NAME).document(message.getSenderId()))
+                                .whereEqualTo(Conversation.FIELD_USER1_REF, db.collection(User.FIREBASE_COLLECTION_NAME).document(message.getReceiverId()))
+                                .get();
+                        task2.addOnCompleteListener(taskInner -> {
+                            if (taskInner.isSuccessful()) {
+                                if (taskInner.getResult().isEmpty()) {
+                                    // Nếu cả hai trường hợp đều không tìm thấy, tạo mới
+                                    DocumentReference drUser1 = db.collection(User.FIREBASE_COLLECTION_NAME).document(message.getSenderId());
+                                    DocumentReference drUser2 = db.collection(User.FIREBASE_COLLECTION_NAME).document(message.getReceiverId());
+                                    Conversation conversation = new Conversation.Builder().setPersonNotSeenID(message.getSenderId())
+                                            .setUser1Ref(drUser1)
+                                            .setUser2Ref(drUser2).setPersonNotSeenID(message.getReceiverId()).build();
+                                    db.collection(Conversation.FIREBASE_COLLECTION_NAME).add(conversation).addOnCompleteListener(taskCreate -> {
+                                        if(taskCreate.isSuccessful())
                                         {
-                                            listener.onFinishSendMessage(message,null);
+                                            String conversationID = taskCreate.getResult().getId();
+                                            message.setConversationId(conversationID);
+                                            conversation.setId(conversationID);
+                                            db.collection(Message.FIREBASE_COLLECTION_NAME).add(message).addOnCompleteListener(
+                                                    taskMessage->{
+                                                        if(taskMessage.isSuccessful())
+                                                        {
+                                                            db.collection(Conversation.FIREBASE_COLLECTION_NAME).document(conversationID).update(Conversation.FIELD_LAST_MESSAGE_REF, db.collection(Message.FIREBASE_COLLECTION_NAME).document(taskMessage.getResult().getId())).addOnCompleteListener(taskConversation->{
+                                                                if(taskConversation.isSuccessful())
+                                                                {
+                                                                    listener.onFinishSendMessage(message,null);
+                                                                }
+                                                                else
+                                                                    listener.onFinishSendMessage(null,taskConversation.getException());
+                                                            });
+                                                        }
+                                                        else{
+                                                            listener.onFinishSendMessage(null, taskMessage.getException());
+                                                        }
+                                                    }
+                                            );
                                         }
                                         else
-                                            listener.onFinishSendMessage(null,taskConversation.getException());
+                                            listener.onFinishSendMessage(message,task.getException());
                                     });
+                                } else {
+                                    // Đã tìm thấy cặp user1 = userReceived và user2 = userSend
+                                    message.setConversationId(taskInner.getResult().getDocuments().get(0).getId());
+                                    sendMesageToFirestore(message,listener);
                                 }
-                                else{
-                                    listener.onFinishSendMessage(null, taskMessage.getException());
-                                }
+                            } else {
+                                // Lỗi khi kiểm tra user1 = userReceived và user2 = userSend
+                                listener.onFinishSendMessage(null, taskInner.getException());
                             }
-                    );
+                        });
+                    } else {
+                        // Đã tìm thấy cặp user1 = userSend và user2 = userReceived
+                        message.setConversationId(task.getResult().getDocuments().get(0).getId());
+                        sendMesageToFirestore(message,listener);
+                    }
+                } else {
+                    // Lỗi khi kiểm tra user1 = userSend và user2 = userReceived
+                    listener.onFinishSendMessage(null, task.getException());
                 }
-                else
-                    listener.onFinishSendMessage(message,task.getException());
             });
         }
         else{
-            db.collection(Message.FIREBASE_COLLECTION_NAME).add(message).addOnCompleteListener(
-                    taskMessage->{
-                        if(taskMessage.isSuccessful())
-                        {
-                            db.collection(Conversation.FIREBASE_COLLECTION_NAME).document(message.getConversationId()).update(Conversation.FIELD_LAST_MESSAGE_REF, db.collection(Message.FIREBASE_COLLECTION_NAME).document(taskMessage.getResult().getId())).addOnCompleteListener(taskConversation->{
-                                if(taskConversation.isSuccessful())
-                                {
-                                    listener.onFinishSendMessage(message,null);
-                                }
-                                else
-                                    listener.onFinishSendMessage(null,taskConversation.getException());
-                            });
-                        }
-                        else{
-                            listener.onFinishSendMessage(null, taskMessage.getException());
-                        }
-                    }
-            );
+            sendMesageToFirestore(message,listener);
         }
     }
-
+    private void sendMesageToFirestore(Message message, OnFinishSendMessageListener listener){
+        db.collection(Message.FIREBASE_COLLECTION_NAME).add(message).addOnCompleteListener(
+                taskMessage->{
+                    if(taskMessage.isSuccessful())
+                    {
+                        db.collection(Conversation.FIREBASE_COLLECTION_NAME).document(message.getConversationId()).update(Conversation.FIELD_LAST_MESSAGE_REF, db.collection(Message.FIREBASE_COLLECTION_NAME).document(taskMessage.getResult().getId())).addOnCompleteListener(taskConversation->{
+                            if(taskConversation.isSuccessful())
+                            {
+                                listener.onFinishSendMessage(message,null);
+                            }
+                            else
+                                listener.onFinishSendMessage(null,taskConversation.getException());
+                        });
+                    }
+                    else{
+                        listener.onFinishSendMessage(null, taskMessage.getException());
+                    }
+                }
+        );
+    }
     @Override
     public void ReceiveMessage(String conversationId, OnFinishReceiveMessageListener listener) {
         db.collection(Message.FIREBASE_COLLECTION_NAME).whereEqualTo(Message.FIELD_CONVERSATION_ID,conversationId)

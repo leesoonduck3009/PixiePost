@@ -102,10 +102,10 @@ public class PostModel implements IPostModel{
                             Post post = new Post.Builder().setText(ds.getString(Post.FIELD_TEXT))
                                     .setTimePosted(ds.getDate(Post.FIELD_TIME_POSTED))
                                     .setDisplayedUsers(displayUser == null ? null : (ArrayList<String>) displayUser)
-                                    .setUrl(Post.FIELD_URL)
-                                    .setOwnerId(Post.FIELD_OWNER_ID)
+                                    .setUrl(ds.getString(Post.FIELD_URL))
+                                    .setOwnerId(ds.getString(Post.FIELD_OWNER_ID))
                                     .setId(ds.getId())
-                                    .setLastReaction(Post.FIELD_LAST_REACTION).build();
+                                    .setLastReaction(ds.getString(Post.FIELD_LAST_REACTION)).build();
                             if(!Objects.equals(post.getOwnerId(), auth.getCurrentUser().getUid())){
                                 loadUser(post,dc.getType(),listener);
                             }
@@ -120,12 +120,19 @@ public class PostModel implements IPostModel{
         }));
     }
     private void loadUser(Post post, DocumentChange.Type type,OnFinishReceiveListener listener){
-        db.collection(User.FIREBASE_COLLECTION_NAME).document(post.getId()).get().addOnCompleteListener(
+        db.collection(User.FIREBASE_COLLECTION_NAME).document(post.getOwnerId()).get().addOnCompleteListener(
                 task -> {
                     if(!task.isSuccessful()){
                         listener.onFinishReceivePost(null,null,task.getException());
                     }
                     else{
+                        DocumentSnapshot ds = task.getResult();
+                        User user1 = new User.Builder().setEmail(ds.getString(User.FIELD_EMAIL))
+                                .setAvatarUrl(ds.getString(User.FIELD_AVATAR_URL))
+                                .setId(task.getResult().getId()).setFirstName(ds.getString(User.FIELD_FIRST_NAME))
+                                .setLastName(ds.getString(User.FIELD_LAST_NAME))
+                                .setPhoneNumber(ds.getString(User.FIELD_PHONE_NUMBER)).build();
+                        post.setOwnerUser(user1);
                         listener.onFinishReceivePost(post,type,null);
                     }
                 }
