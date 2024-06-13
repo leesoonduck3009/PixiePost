@@ -30,7 +30,7 @@
             android:layout_gravity="center"
             android:textColor="#ffffff"
             android:layout_marginBottom="20dp"
-            android:text="Số điện thoại của bạn là gì?" />
+            android:text="Email của bạn là gì?" />
 
         <LinearLayout
             android:id="@+id/phoneNumberLayout"
@@ -40,7 +40,8 @@
             android:background="@drawable/edittext_bg"
             android:paddingVertical="6dp"
             android:paddingHorizontal="4dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <com.hbb20.CountryCodePicker
                 android:id="@+id/countryCodePicker"
@@ -69,7 +70,7 @@
             android:paddingVertical="6dp"
             android:paddingHorizontal="4dp"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <EditText
                 android:id="@+id/emailEditText"
@@ -94,7 +95,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="50dp"
             android:textColor="#ffffff"
-            android:paddingHorizontal="20dp"/>
+            android:paddingHorizontal="20dp"
+            android:visibility="gone"/>
         <TextView
             android:layout_width="400dp"
             android:layout_height="wrap_content"

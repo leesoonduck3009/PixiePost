@@ -44,7 +44,7 @@
             android:background="@drawable/bg_image_widget"
             android:gravity="center_vertical"
             android:padding="7dp"
-            android:text="bài đăng số 10"
+            android:text=""
             android:textColor="#0E1217"
             android:textSize="13sp" />
     </RelativeLayout>
