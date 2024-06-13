@@ -137,6 +137,7 @@ public class UpdateUserInformationActivity extends AppCompatActivity implements 
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
         });
+
     }
     private void showLoading(boolean isLoading) {
         if (isLoading) {

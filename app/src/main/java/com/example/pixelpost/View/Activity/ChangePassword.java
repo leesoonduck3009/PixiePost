@@ -3,6 +3,10 @@ package com.example.pixelpost.View.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,6 +35,7 @@ public class ChangePassword extends AppCompatActivity implements IChangePassword
     private EditText edtNewPasswordAgain;
     private Button btnSave;
     private User currentUser;
+    private boolean isPasswordVisible = false;
 
     private IChangePasswordActivityContract.Presenter presenter;
     @Override
@@ -55,7 +60,10 @@ public class ChangePassword extends AppCompatActivity implements IChangePassword
         loadUser();
         setListener();
 
+
+
     }
+
     private void loadUser(){
         PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
         currentUser = (User) preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME);
@@ -77,8 +85,19 @@ public class ChangePassword extends AppCompatActivity implements IChangePassword
             }
 
             presenter.changePassword(currentUser, oldPassword, newPassword);
-
-
+        });
+        edtOldPassword.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    int drawableRightWidth = edtOldPassword.getCompoundDrawables()[2].getBounds().width();
+                    if (event.getRawX() >= (edtOldPassword.getRight() - drawableRightWidth)) {
+                        togglePasswordVisibility();
+                        return true;
+                    }
+                }
+                return false;
+            }
         });
     }
 
@@ -92,5 +111,19 @@ public class ChangePassword extends AppCompatActivity implements IChangePassword
     @Override
     public void changePasswordFailed(Exception e) {
         Toast.makeText(ChangePassword.this, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
+    }
+
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            // Ẩn mật khẩu
+            edtOldPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            edtOldPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_eye_off, 0);
+        } else {
+            // Hiển thị mật khẩu
+            edtOldPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            edtOldPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_eye_fill, 0);
+        }
+        edtOldPassword.setSelection(edtOldPassword.getText().length());
+        isPasswordVisible = !isPasswordVisible;
     }
 }
