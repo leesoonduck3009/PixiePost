@@ -38,6 +38,7 @@
             android:background="@drawable/bg_post_content"
             android:paddingHorizontal="12dp"
             android:paddingVertical="8dp"
+            android:textStyle="bold"
             android:layout_marginBottom="20dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -58,6 +59,7 @@
             android:layout_height="24dp"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
+
             android:background="@drawable/background_avatar"
             />
 

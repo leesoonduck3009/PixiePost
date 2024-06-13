@@ -18,6 +18,9 @@ import androidx.camera.view.PreviewView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
+
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -45,6 +48,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pixelpost.Model.Conversation.Conversation;
 import com.example.pixelpost.Model.Message.Message;
 import com.example.pixelpost.Model.Post.Post;
@@ -54,7 +59,9 @@ import com.example.pixelpost.Model.PostReaction.PostReaction;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.MainActivityPresenter;
 import com.example.pixelpost.R;
+import com.example.pixelpost.Utils.SupportClass.CustomScrollView;
 import com.example.pixelpost.Utils.SupportClass.PreferenceManager;
+import com.example.pixelpost.Utils.Widget.WidgetUpdateService;
 import com.example.pixelpost.View.Activity.Conversation.ConversationDetailActivity;
 import com.example.pixelpost.View.Activity.Conversation.ConversationListActivity;
 import com.example.pixelpost.View.Activity.Login.Login01Activity;
@@ -62,6 +69,7 @@ import com.example.pixelpost.View.Adapter.PostSliderAdapter;
 import com.example.pixelpost.View.Activity.QR.QrScannerActivity;
 import com.example.pixelpost.View.Dialog.FriendRequestDialog;
 import com.example.pixelpost.databinding.ActivityMainBinding;
+import com.example.pixelpost.View.Widget.PixiePostWidget;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -96,15 +104,14 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     private ProcessCameraProvider cameraProvider;
 
     // Slider
-    private ScrollView homeScrollView;
+    private CustomScrollView homeScrollView;
     private GestureDetector gestureDetector;
     private ViewPager2 postSlider;
     private List<Post> postList;
     private PostSliderAdapter postSliderAdapter;
-
+    private  PreferenceManager preferenceManager;
     // Other
     private ImageView btnMessage;
-    private PreferenceManager preferenceManager;
     private ImageView profile_btn;
     private LinearLayout friend_btn;
     private User currentUser;
@@ -117,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         super.onCreate(savedInstanceState);
         viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
-
         /// Slider
         // Set up home slide layout
         presenter = new MainActivityPresenter(this);
@@ -129,6 +135,8 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         setConstrainLayoutHeight(postSliderContainer, displayMetrics.heightPixels);
         homeScrollView = findViewById(R.id.home_scrollview);
         gestureDetector = new GestureDetector(this, new SwipeGestureListener());
+        preferenceManager = new PreferenceManager(getApplicationContext());
+
         homeScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
 
             @Override
@@ -137,9 +145,9 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                 postSlider.setUserInputEnabled(!(diffY < 0));
             }
         });
-
         homeScrollView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
+                v.performClick();
                 return gestureDetector.onTouchEvent(event);
             }
         });
@@ -159,7 +167,8 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         postSlider.setAdapter(postSliderAdapter);
         postSliderAdapter.notifyDataSetChanged();
 
-
+        // Khởi động service để cập nhật widget
+        startService(new Intent(this, WidgetUpdateService.class));
         /// Other
 
         friend_btn.setOnClickListener(new View.OnClickListener() {
@@ -285,7 +294,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                 if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > 0) {
                     if (diffY > 0 && velocityY > 0) {
                         // Swipe down, scroll up
-
                         animateScroll(-homeScrollView.getHeight());
                     } else {
                         // Swipe up, scroll down
@@ -734,7 +742,15 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         if(Objects.equals(post.getOwnerId(), currentUser.getId()))
             post.setOwnerUser(currentUser);
         if(type == DocumentChange.Type.ADDED)
+        {
             postList.add(post);
+            viewBinding.historyPost.setVisibility(View.VISIBLE);
+            viewBinding.postSliderContainer.setVisibility(View.VISIBLE);
+            Collections.sort(postList, Comparator.comparing(Post::getTimePosted).reversed());
+            preferenceManager.putSerializable(Post.FIREBASE_COLLECTION_NAME,postList.get(0));
+            Glide.with(getApplicationContext()).load(postList.get(0).getUrl()).apply(new RequestOptions().placeholder(R.drawable.loading_image)).into(viewBinding.historyImage);
+            // Gọi phương thức cập nhật widget
+        }
         else
         {
             for(int i=0;i<postList.size();i++) {
@@ -746,9 +762,13 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
                 }
             }
         }
-        Collections.sort(postList, Comparator.comparing(Post::getTimePosted));
+
         postSliderAdapter.notifyDataSetChanged();
-        setActionReaction();
+
+        if(Objects.equals(post.getOwnerId(), FirebaseAuth.getInstance().getCurrentUser().getUid()))
+        {
+            setActionReaction();
+        }
     }
 
     @Override

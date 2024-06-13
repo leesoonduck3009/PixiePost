@@ -2,11 +2,12 @@ package com.example.pixelpost.Model.Post;
 
 import com.example.pixelpost.Model.User.User;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class Post {
+public class Post implements Serializable {
     //region Class Property
     private String id;
     private String url;

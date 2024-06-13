@@ -1,20 +1,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.PixelPost.AppWidget.Container"
     android:layout_width="200dp"
     android:layout_height="200dp"
-    android:theme="@style/Theme.PixelPost.AppWidgetContainer">
-
-    <Button
-        android:id="@+id/btnOpenWidget"
-        style="@style/Widget.PixelPost.AppWidget.InnerView"
+    android:gravity="center"
+    android:theme="@style/Theme.PixelPost.AppWidgetContainer"
+    android:background="#00FFFFFF"
+    >
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:layout_gravity="center"
-        android:textColor="@color/white"
-        android:text="Click to open"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_chat_image"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/anh_phong_canh"
+            android:id="@+id/imgViewMain"/>
+
+        <ImageView
+            android:id="@+id/imageViewAvatar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="13dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/background_avatar"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatar3" />
+
+        <TextView
+            android:id="@+id/textView_title"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="9dp"
+            android:layout_marginBottom="18dp"
+            android:layout_toEndOf="@+id/imageViewAvatar"
+            android:background="@drawable/bg_image_widget"
+            android:gravity="center_vertical"
+            android:padding="7dp"
+            android:text="bài đăng số 10"
+            android:textColor="#0E1217"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
 </LinearLayout>

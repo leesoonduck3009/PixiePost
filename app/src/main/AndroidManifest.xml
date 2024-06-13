@@ -48,6 +48,10 @@
                 android:resource="@xml/pixie_post_widget_info" />
         </receiver>
 
+        <receiver android:name=".Utils.Widget.WidgetUpdateReceiver" />
+
+        <service android:name=".Utils.Widget.WidgetUpdateService" />
+
         <activity
             android:name=".View.Activity.UpdateUserInformationActivity"
             android:exported="false" />
