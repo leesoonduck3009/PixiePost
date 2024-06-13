@@ -46,9 +46,16 @@ public class PixiePostWidget extends AppWidgetProvider {
             userBitmap = Glide.with(context).asBitmap().load(R.drawable.avatar3)
                     .override(100, 100).submit().get();
         Log.d("target","Success");
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
         views.setImageViewBitmap(R.id.imgViewMain, mBitmap);
         views.setTextViewText(R.id.textView_title, post.getText());
         views.setImageViewBitmap(R.id.imageViewAvatar, userBitmap);
+        views.setOnClickPendingIntent(R.id.imgViewMain, pendingIntent);
+        views.setOnClickPendingIntent(R.id.textView_title, pendingIntent);
+        views.setOnClickPendingIntent(R.id.imageViewAvatar, pendingIntent);
+
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -56,12 +63,15 @@ public class PixiePostWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int i=0; i < appWidgetIds.length; i++) {
+
             int appWidgetId = appWidgetIds[i];
+
             try {
                 updateAppWidget(context,appWidgetManager, appWidgetId);
             } catch (ExecutionException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
         }
     }
 
