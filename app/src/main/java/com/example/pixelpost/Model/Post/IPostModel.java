@@ -12,4 +12,5 @@ public interface IPostModel {
         void onFinishReceivePost(Post post, DocumentChange.Type postType, Exception e);
 
     }
+    void sendReactionPost(String reaction, String postId);
 }

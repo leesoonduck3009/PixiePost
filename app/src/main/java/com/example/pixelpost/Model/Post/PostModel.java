@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -119,6 +120,13 @@ public class PostModel implements IPostModel{
             }
         }));
     }
+
+    @Override
+    public void sendReactionPost(String reaction, String postId) {
+        initFirebase();
+        db.collection(Post.FIREBASE_COLLECTION_NAME).document(postId).update(Post.FIELD_LAST_REACTION,reaction);
+    }
+
     private void loadUser(Post post, DocumentChange.Type type,OnFinishReceiveListener listener){
         db.collection(User.FIREBASE_COLLECTION_NAME).document(post.getOwnerId()).get().addOnCompleteListener(
                 task -> {

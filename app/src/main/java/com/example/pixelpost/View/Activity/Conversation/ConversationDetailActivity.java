@@ -123,7 +123,6 @@ public class ConversationDetailActivity extends AppCompatActivity implements ICo
         chatMessageAdapter.notifyDataSetChanged();
         conversationRecyclerView.scrollToPosition(listChatMessages.size() - 1);
         conversationRecyclerView.setVisibility(View.VISIBLE);
-
     }
 
     @Override

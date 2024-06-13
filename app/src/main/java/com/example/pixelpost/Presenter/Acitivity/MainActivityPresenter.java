@@ -50,6 +50,11 @@ public class MainActivityPresenter implements IMainActivityContract.Presenter {
     }
 
     @Override
+    public void sendReaction(String reaction, String postId) {
+        postModel.sendReactionPost(reaction,postId);
+    }
+
+    @Override
     public void sendMessage(Message message, User user) {
         messageModel.SendMessage(message, new IMessageModel.OnFinishSendMessageListener() {
             @Override

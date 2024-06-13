@@ -10,8 +10,12 @@ public class PostReaction {
     private List<Map<String, String>> reactionList; // reactlist
     //endregion
     //region Static variables for Firebase
-    public static final String FIELD_POST_ID = "postId";
-    public static final String FIELD_REACT_LIST = "reactionList";
+    //public static final String FIELD_POST_ID = "postId";
+    public static final String HEART = "heart";
+    public static final String HAHA = "haha";
+    public static final String ANGRY = "angry";
+    public static final String SAD = "sad";
+    //public static final String FIELD_REACT_LIST = "reactionList";
     public static final String FIREBASE_COLLECTION_NAME = "post_reaction";
     //endregion
     //region Constructor, getters, and setters

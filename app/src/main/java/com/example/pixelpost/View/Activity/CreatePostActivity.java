@@ -87,13 +87,7 @@ public class CreatePostActivity extends AppCompatActivity implements ICreatePost
     private void setListener(){
         viewBinding.createPostBtn.setOnClickListener(v->{
             enableSending();
-            List<String> exisedPeople = currentUser.getFriendList();
-            exisedPeople.add(currentUser.getId());
-            Post post = new Post.Builder().setTimePosted(new Date()).setText(viewBinding.postContent.getText().toString())
-                    .setOwnerId(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .setDisplayedUsers(exisedPeople).build();
-            byte[] byteCaptureImage = BitmapToByte.convertBitmapToByteArray(capturedImage, Bitmap.CompressFormat.PNG, 100);
-            presenter.uploadPost(post,byteCaptureImage);
+
         });
     }
     private void cancelCreatePost() {
@@ -124,6 +118,13 @@ public class CreatePostActivity extends AppCompatActivity implements ICreatePost
       viewBinding.imageViewSend.setVisibility(View.GONE);
       viewBinding.sendingProgressBar.setVisibility(View.VISIBLE);
       viewBinding.createPostBtn.setEnabled(false);
+        List<String> exisedPeople = currentUser.getFriendList();
+        exisedPeople.add(currentUser.getId());
+        Post post = new Post.Builder().setTimePosted(new Date()).setText(viewBinding.postContent.getText().toString())
+                .setOwnerId(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .setDisplayedUsers(exisedPeople).build();
+        byte[] byteCaptureImage = BitmapToByte.convertBitmapToByteArray(capturedImage, Bitmap.CompressFormat.PNG, 100);
+        presenter.uploadPost(post,byteCaptureImage);
     }
     private void disableSending(){
         viewBinding.imageViewSend.setVisibility(View.VISIBLE);

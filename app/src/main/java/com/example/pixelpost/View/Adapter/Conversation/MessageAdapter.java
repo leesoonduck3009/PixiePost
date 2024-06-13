@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pixelpost.Model.Message.Message;
 import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.Model.User.User;
@@ -61,15 +62,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Post currentPost = postItem.get(messages.get(position).getPostId());
         if(getItemViewType(position)==VIEW_TEXT_SENT)
         {
             ((SentMessageViewHolder) holder).setData(messages.get(position));
         }
         else if(getItemViewType(position) == VIEW_TEXT_RECEIVED)
             ((ReceivedMessageViewHolder) holder).setData((messages.get(position)));
+        else if(currentPost.getOwnerUser()==null)
+            ((ImageMessageViewHolder) holder).setData(currentPost, otherUser);
         else
-            ((ImageMessageViewHolder) holder).setData(postItem.get(messages.get(position).getPostId()), postItem.get(messages.get(position).getPostId()).getOwnerUser());
-
+            ((ImageMessageViewHolder) holder).setData(currentPost, currentPost.getOwnerUser());
 
     }
     @Override
@@ -178,7 +181,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 Glide.with(itemContainerImageMessageBinding.getRoot()).load(user.getAvatarUrl()).into(itemContainerImageMessageBinding.avatarImg);
             else
                 Glide.with(itemContainerImageMessageBinding.getRoot()).load(R.drawable.avatar3).into(itemContainerImageMessageBinding.avatarImg);
-            Glide.with(itemContainerImageMessageBinding.getRoot()).load(post.getUrl()).into(itemContainerImageMessageBinding.image);
+            Glide.with(itemContainerImageMessageBinding.getRoot()).load(post.getUrl()).apply(new RequestOptions()
+                    .placeholder(R.drawable.loading_image)).into(itemContainerImageMessageBinding.image);
             if(Objects.equals(post.getOwnerId(), Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()))
                 itemContainerImageMessageBinding.userName.setText("Bạn");
             else

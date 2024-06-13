@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.R;
 import com.example.pixelpost.databinding.CameraActivityBinding;
@@ -86,7 +87,8 @@ public class PostSliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if(post.getOwnerUser().getAvatarUrl()==null)
                 Glide.with(binding.getRoot()).load(R.drawable.avatar3).into(binding.ownAvatar);
             else
-                Glide.with(binding.getRoot()).load(post.getOwnerUser().getAvatarUrl()).into(binding.ownAvatar);
+                Glide.with(binding.getRoot()).load(post.getOwnerUser().getAvatarUrl()).apply(new RequestOptions()
+                        .placeholder(R.drawable.loading_image)).into(binding.ownAvatar);
             binding.ownLastname.setText(post.getOwnerUser().getFirstName() + " " + post.getOwnerUser().getLastName());
         }
     }

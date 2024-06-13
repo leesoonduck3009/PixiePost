@@ -95,7 +95,7 @@
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-                            <LinearLayout
+                            <androidx.constraintlayout.widget.ConstraintLayout
                                 android:visibility="visible"
                                 android:clickable="false"
                                 android:id="@+id/create_post_btn"
@@ -107,24 +107,32 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 android:background="@drawable/circle_image"
                                 android:backgroundTint="@color/grey"
-                                android:gravity="center"
-                                android:paddingTop="4dp"
-                                android:paddingRight="4dp">
+                               >
 
                                 <ImageView
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
                                     android:id="@+id/imageViewSend"
                                     android:layout_width="36dp"
                                     android:layout_height="36dp"
                                     android:elevation="2dp"
+                                    android:layout_marginTop="3dp"
+                                    android:layout_marginEnd="5dp"
                                     android:background="@drawable/ic_send"
+                                    android:visibility="visible"
                                    />
                                 <ProgressBar
-                                    android:layout_width="36dp"
-                                    android:layout_height="36dp"
-                                    android:elevation="2dp"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
                                     android:visibility="gone"
                                     android:id="@+id/sendingProgressBar"/>
-                            </LinearLayout>
+                            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

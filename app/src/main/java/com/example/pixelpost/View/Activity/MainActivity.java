@@ -50,6 +50,7 @@ import com.example.pixelpost.Model.Message.Message;
 import com.example.pixelpost.Model.Post.Post;
 import com.example.pixelpost.Contract.Activity.IMainActivityContract;
 import com.example.pixelpost.Model.FriendRequest.FriendRequest;
+import com.example.pixelpost.Model.PostReaction.PostReaction;
 import com.example.pixelpost.Model.User.User;
 import com.example.pixelpost.Presenter.Acitivity.MainActivityPresenter;
 import com.example.pixelpost.R;
@@ -187,12 +188,15 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 currentPosition = position;
-                if(Objects.equals(postList.get(position).getOwnerId(), FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                Post currentPost = postList.get(position);
+                if(Objects.equals(currentPost.getOwnerId(), FirebaseAuth.getInstance().getCurrentUser().getUid()))
                 {
                     viewBinding.inputContainer.setVisibility(View.GONE);
+                    setActionReaction();
                 }
                 else
                     viewBinding.inputContainer.setVisibility(View.VISIBLE);
+
             }
         });
         viewBinding.sendMessagePostFooter.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -200,13 +204,13 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     // Xử lý sự kiện ở đây
-                    String inputText =  viewBinding.sendMessagePostFooter.getText().toString();
+                    runEmojiAnimation(R.drawable.ic_message_circle_dots);
+                    viewBinding.sendMessagePostFooter.setEnabled(false);
                     // Ví dụ: Hiển thị Toast
                     Post currentPost = postList.get(currentPosition);
                     Message message = new Message.Builder().setSenderId(currentUser.getId()).setReceiverId(currentPost.getOwnerId())
                             .setPostId(currentPost.getId()).setTimeSent(new Date()).build();
                     presenter.sendMessagePost(message, currentPost.getOwnerUser());
-                    viewBinding.sendMessagePostFooter.setEnabled(false);
                     return true;
                 }
                 return false;
@@ -225,13 +229,47 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         viewBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
         viewBinding.changeCameraBtn.setOnClickListener(v -> flipCam());
         viewBinding.flashBtn.setOnClickListener(v -> changeFlash());
-        viewBinding.heartEmojiBtn.setOnClickListener(v -> runEmojiAnimation(R.drawable.ic_heart));
-        viewBinding.hahaEmojiBtn.setOnClickListener(v -> runEmojiAnimation(R.drawable.ic_haha));
-        viewBinding.sadEmojiBtn.setOnClickListener(v -> runEmojiAnimation(R.drawable.ic_sad));
-        viewBinding.angryEmojiBtn.setOnClickListener(v -> runEmojiAnimation(R.drawable.ic_angry));
+        viewBinding.heartEmojiBtn.setOnClickListener(v -> {
+            runEmojiAnimation(R.drawable.ic_heart);
+            presenter.sendReaction(PostReaction.HEART,postList.get(currentPosition).getId());
+        });
+        viewBinding.hahaEmojiBtn.setOnClickListener(v -> {
+            runEmojiAnimation(R.drawable.ic_haha);
+            presenter.sendReaction(PostReaction.HAHA,postList.get(currentPosition).getId());
+
+        });
+        viewBinding.sadEmojiBtn.setOnClickListener(v -> {
+            runEmojiAnimation(R.drawable.ic_sad);
+            presenter.sendReaction(PostReaction.SAD,postList.get(currentPosition).getId());
+
+        });
+        viewBinding.angryEmojiBtn.setOnClickListener(v -> {
+            runEmojiAnimation(R.drawable.ic_angry);
+            presenter.sendReaction(PostReaction.ANGRY,postList.get(currentPosition).getId());
+        });
 
         cameraExecutor = Executors.newSingleThreadExecutor();
         checkFromFriendRequest();
+    }
+    private void setActionReaction() {
+        Post currentPost = postList.get(currentPosition);
+        if(currentPost.getLastReaction()!=null ){
+            switch (currentPost.getLastReaction()){
+                case PostReaction.HAHA:
+                    runEmojiUpDownAnimation(R.drawable.ic_haha);
+                    break;
+                case PostReaction.ANGRY:
+                    runEmojiUpDownAnimation(R.drawable.ic_angry);
+                    break;
+                case PostReaction.HEART:
+                    runEmojiUpDownAnimation(R.drawable.ic_heart);
+                    break;
+                case PostReaction.SAD:
+                    runEmojiUpDownAnimation(R.drawable.ic_sad);
+                    break;
+            }
+            presenter.sendReaction(null,currentPost.getId());
+        }
     }
 
     /// Slider-related func
@@ -441,7 +479,58 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         super.onDestroy();
         cameraExecutor.shutdown();
     }
+    private void runEmojiUpDownAnimation(int res) {
+        // Tạo và áp dụng Animation cho các ImageView nhân bản
+        Random random = new Random();
+        int randomX;
+        int randomY;
+        int randomD;
+        float randomR;
+        int randomS;
+        for(int i = 0; i < 15; i++) {
+            randomX = random.nextInt(700 - (-200) + 1) - 200;
+            randomY = random.nextInt(2000 - 100 + 1) + 100;
+            randomD = random.nextInt(3000 - 900 + 1) + 900;
+            randomR = (float) (-60 + (120 * random.nextDouble()));
+            randomS = random.nextInt(100 - 60 + 1) + 60;
+            runSingleThreadUpDownAnimation(randomX, randomY, res, randomD, randomR, randomS);
+        }
+    }
+    private void runSingleThreadUpDownAnimation(int x, int y, int resource, int duration, float rotation, int size){
+        Animation anim_emoji = AnimationUtils.loadAnimation(this, R.anim.anim_emoji_updown);
+        anim_emoji.setDuration(duration);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
 
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageView imageView1 = new ImageView(getApplicationContext());
+                        imageView1.setImageResource(resource);
+                        imageView1.setX(x);
+                        imageView1.setY(y);
+                        imageView1.setRotation(rotation);
+                        imageView1.setLayoutParams(new ViewGroup.LayoutParams(size, size));
+                        viewBinding.mainContainer.addView(imageView1);
+                        imageView1.startAnimation(anim_emoji);
+                        Handler handler = new Handler();
+                        Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                viewBinding.mainContainer.removeView(imageView1);
+                            }
+                        };
+
+                        handler.postDelayed(runnable, duration);
+                    }
+                });
+
+
+            }
+        });
+        thread.start();
+    }
     /// Emoji animation
     private void runEmojiAnimation(int res) {
         // Tạo và áp dụng Animation cho các ImageView nhân bản
@@ -651,6 +740,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
             for(int i=0;i<postList.size();i++) {
                 if (postList.get(i).getId().equals(post.getId())) {
                     this.postList.get(i).setLastReaction(post.getLastReaction());
+                    this.postList.get(i).setUrl(post.getUrl());
                     postSliderAdapter.notifyItemChanged(i);
                     break;
                 }
@@ -658,6 +748,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
         }
         Collections.sort(postList, Comparator.comparing(Post::getTimePosted));
         postSliderAdapter.notifyDataSetChanged();
+        setActionReaction();
     }
 
     @Override

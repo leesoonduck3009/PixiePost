@@ -24,6 +24,7 @@ public interface IMainActivityContract {
     }
     interface Presenter{
         void sendMessagePost(Message message, User user);
+        void sendReaction(String reaction, String postId);
         void sendMessage(Message message, User user);
         void getUserFriendRequest(String id);
         void sendFriendRequest(String id);
