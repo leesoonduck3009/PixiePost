@@ -608,6 +608,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
 
     @Override
     public void getUserInformation(User user) {
+        user.setId(FirebaseAuth.getInstance().getCurrentUser().getUid());
         preferenceManager.putSerializable(User.FIREBASE_COLLECTION_NAME,user);
     }
 }

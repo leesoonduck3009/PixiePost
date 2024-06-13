@@ -77,7 +77,7 @@ public class ListExistingFriendAdapter extends RecyclerView.Adapter<ListExisting
                 }
             });
             binding.listImage.setOnClickListener(v -> {
-                sendMessageListener.OnSendMessageClick(user);
+                //sendMessageListener.OnSendMessageClick(user);
             });
         }
 
