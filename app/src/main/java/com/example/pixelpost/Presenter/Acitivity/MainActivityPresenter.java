@@ -4,11 +4,15 @@ import com.example.pixelpost.Contract.Activity.IMainActivityContract;
 import com.example.pixelpost.Model.FriendRequest.FriendRequest;
 import com.example.pixelpost.Model.FriendRequest.FriendRequestModel;
 import com.example.pixelpost.Model.FriendRequest.IFriendRequestModel;
+import com.example.pixelpost.Model.Post.IPostModel;
+import com.example.pixelpost.Model.Post.Post;
+import com.example.pixelpost.Model.Post.PostModel;
 import com.example.pixelpost.Model.User.IUserModel;
 import com.example.pixelpost.Model.User.UserModel;
 import com.example.pixelpost.View.Dialog.FriendRequestDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
@@ -17,10 +21,12 @@ public class MainActivityPresenter implements IMainActivityContract.Presenter {
     private IMainActivityContract.View view;
     private IUserModel userModel;
     private IFriendRequestModel friendRequestModel;
+    private IPostModel postModel;
     public MainActivityPresenter(IMainActivityContract.View view)
     {
         this.view = view;
         userModel = UserModel.getInstance();
+        postModel = PostModel.getInstance();
         friendRequestModel = FriendRequestModel.getInstance();
     }
     @Override
@@ -92,6 +98,19 @@ public class MainActivityPresenter implements IMainActivityContract.Presenter {
     public void getUserInformation() {
         userModel.getCurrentUser((user, e) -> {
             view.getUserInformation(user);
+        });
+    }
+
+    @Override
+    public void getPost() {
+        postModel.recievedPost(new IPostModel.OnFinishReceiveListener() {
+            @Override
+            public void onFinishReceivePost(Post post, DocumentChange.Type postType, Exception e) {
+                if(e==null)
+                    view.onGettingPost(post, postType);
+                else
+                    view.onGetPostFailed(e);
+            }
         });
     }
 

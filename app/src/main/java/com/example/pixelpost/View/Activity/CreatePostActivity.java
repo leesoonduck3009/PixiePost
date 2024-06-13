@@ -82,9 +82,11 @@ public class CreatePostActivity extends AppCompatActivity implements ICreatePost
 
             }
         });
+        setListener();
     }
     private void setListener(){
         viewBinding.createPostBtn.setOnClickListener(v->{
+            enableSending();
             List<String> exisedPeople = currentUser.getFriendList();
             exisedPeople.add(currentUser.getId());
             Post post = new Post.Builder().setTimePosted(new Date()).setText(viewBinding.postContent.getText().toString())
@@ -99,7 +101,8 @@ public class CreatePostActivity extends AppCompatActivity implements ICreatePost
         startActivity(intent);
         overridePendingTransition(0, 0);
     }
-
+    private void setLoading(){
+    }
     private void handleFocusPostContent() {
         viewBinding.postContent.setText("");
         viewBinding.postContent.setHint("Thêm một tin nhắn");
@@ -107,6 +110,7 @@ public class CreatePostActivity extends AppCompatActivity implements ICreatePost
 
     @Override
     public void uploadPostSuccess() {
+        disableSending();
         Toast.makeText(getApplicationContext(), "Create post success", Toast.LENGTH_SHORT).show();
         this.finish();
     }
@@ -115,5 +119,15 @@ public class CreatePostActivity extends AppCompatActivity implements ICreatePost
     public void uploadPostFailed(Exception e) {
         Toast.makeText(getApplicationContext(), "Upload post failed", Toast.LENGTH_SHORT).show();
         Log.e("create-post-failed", e.getMessage());
+    }
+    private void enableSending(){
+      viewBinding.imageViewSend.setVisibility(View.GONE);
+      viewBinding.sendingProgressBar.setVisibility(View.VISIBLE);
+      viewBinding.createPostBtn.setEnabled(false);
+    }
+    private void disableSending(){
+        viewBinding.imageViewSend.setVisibility(View.VISIBLE);
+        viewBinding.sendingProgressBar.setVisibility(View.GONE);
+        viewBinding.createPostBtn.setEnabled(true);
     }
 }

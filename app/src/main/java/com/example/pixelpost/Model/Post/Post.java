@@ -1,5 +1,7 @@
 package com.example.pixelpost.Model.Post;
 
+import com.example.pixelpost.Model.User.User;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,7 @@ public class Post {
     private Date timePosted; // timePost
     private List<String> displayedUsers; // userHienThi
     private String lastReaction; // lastReaction
+    private User ownerUser;
     //endregion
     //region Static variables for Firebase
     public static final String FIELD_URL = "url";
@@ -24,6 +27,15 @@ public class Post {
     public static final String FIREBASE_COLLECTION_NAME = "post";
     //endregion
     //region Constructor, getters, and setters
+
+    public User getOwnerUser() {
+        return ownerUser;
+    }
+
+    public void setOwnerUser(User ownerUser) {
+        this.ownerUser = ownerUser;
+    }
+
     public String getId() {
         return id;
     }

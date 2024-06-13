@@ -83,8 +83,11 @@ public class PostSliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             binding.postContent.setText(post.getText());
             String timeString = new SimpleDateFormat("yyyy-MM-dd").format(post.getTimePosted());
             binding.postTime.setText(timeString);
-            Glide.with(binding.getRoot()).load(R.drawable.avatar3).into(binding.ownAvatar);
-            binding.ownLastname.setText("Tâm");
+            if(post.getOwnerUser().getAvatarUrl()==null)
+                Glide.with(binding.getRoot()).load(R.drawable.avatar3).into(binding.ownAvatar);
+            else
+                Glide.with(binding.getRoot()).load(post.getOwnerUser().getAvatarUrl()).into(binding.ownAvatar);
+            binding.ownLastname.setText(post.getOwnerUser().getFirstName() + " " + post.getOwnerUser().getLastName());
         }
     }
 

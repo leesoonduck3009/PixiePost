@@ -56,6 +56,7 @@ import com.example.pixelpost.View.Dialog.FriendRequestDialog;
 import com.example.pixelpost.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     private PreferenceManager preferenceManager;
     private ImageView profile_btn;
     private LinearLayout friend_btn;
+    private User currentUser;
 
     private IMainActivityContract.Presenter presenter;
     private FriendRequestDialog tempFriendRequestDialog;
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
 
         /// Slider
         // Set up home slide layout
+        presenter = new MainActivityPresenter(this);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         LinearLayout cameraContainer = findViewById(R.id.camera_container);
@@ -140,15 +143,14 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
 
         postList = new ArrayList<>();
 
-        initPost();
+        //initPost();
         postSliderAdapter = new PostSliderAdapter(postList);
-
         postSlider.setAdapter(postSliderAdapter);
+        presenter.getPost();
         postSliderAdapter.notifyDataSetChanged();
 
 
         /// Other
-        presenter = new MainActivityPresenter(this);
 
         friend_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,16 +174,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
             }
         });
 
-        /// Camera
-        //Request camera permissions
-        cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
-        imageCapture = new ImageCapture.Builder().setFlashMode(ImageCapture.FLASH_MODE_OFF).build();
 
-        if(allPermissionsGranted()) {
-            startCamera();
-        } else {
-            requestPermissions();
-        }
 
         //Set up other button
         viewBinding.historyPost.setOnClickListener(v -> animateScroll(homeScrollView.getHeight()));
@@ -264,14 +257,14 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     }
 
     public void initPost(){
-        postList.add(new Post.Builder().setText("Đây là post 1").setTimePosted(new Date()).setUrl("https://file.hstatic.net/1000159991/file/doremon-min_d7fba7f7f60a41a0af6e67dcaeb75634_grande.jpg").build());
-        postList.add(new Post.Builder().setText("Đây là post 2").setTimePosted(new Date()).build());
-        postList.add(new Post.Builder().setText("Đây là post 3").setTimePosted(new Date()).build());
-        postList.add(new Post.Builder().setText("Đây là post 4").setTimePosted(new Date()).build());
-        postList.add(new Post.Builder().setText("Đây là post 5").setTimePosted(new Date()).build());
-        postList.add(new Post.Builder().setText("Đây là post 6").setTimePosted(new Date()).build());
-        postList.add(new Post.Builder().setText("Đây là post 7").setTimePosted(new Date()).build());
-        postList.add(new Post.Builder().setText("Đây là post 8").setTimePosted(new Date()).build());
+//        postList.add(new Post.Builder().setText("Đây là post 1").setTimePosted(new Date()).setUrl("https://file.hstatic.net/1000159991/file/doremon-min_d7fba7f7f60a41a0af6e67dcaeb75634_grande.jpg").build());
+//        postList.add(new Post.Builder().setText("Đây là post 2").setTimePosted(new Date()).build());
+//        postList.add(new Post.Builder().setText("Đây là post 3").setTimePosted(new Date()).build());
+//        postList.add(new Post.Builder().setText("Đây là post 4").setTimePosted(new Date()).build());
+//        postList.add(new Post.Builder().setText("Đây là post 5").setTimePosted(new Date()).build());
+//        postList.add(new Post.Builder().setText("Đây là post 6").setTimePosted(new Date()).build());
+//        postList.add(new Post.Builder().setText("Đây là post 7").setTimePosted(new Date()).build());
+//        postList.add(new Post.Builder().setText("Đây là post 8").setTimePosted(new Date()).build());
     }
 
     /// Camera-related func
@@ -487,7 +480,8 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
             finish();
         }
         else{
-            if(preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME)==null)
+            currentUser = (User)preferenceManager.getSerializable(User.FIREBASE_COLLECTION_NAME);
+            if(currentUser==null)
             {
                 presenter.getUserInformation();
             }
@@ -557,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     }
 
     @Override
-    public void getFriendRequestSuccess(User user,FriendRequest friendRequest, FriendRequestDialog.FriendRequestDialogType type) {
+        public void getFriendRequestSuccess(User user,FriendRequest friendRequest, FriendRequestDialog.FriendRequestDialogType type) {
             FriendRequestDialog.showDialog(this, user,friendRequest, type, new FriendRequestDialog.DialogClickListener() {
                 @Override
                 public void onAcceptFriendClick(FriendRequestDialog dialog) {
@@ -609,6 +603,47 @@ public class MainActivity extends AppCompatActivity implements IMainActivityCont
     @Override
     public void getUserInformation(User user) {
         user.setId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        currentUser = user;
         preferenceManager.putSerializable(User.FIREBASE_COLLECTION_NAME,user);
+    }
+
+    @Override
+    public void onGettingPost(Post post, DocumentChange.Type type) {
+        if(Objects.equals(post.getOwnerId(), currentUser.getId()))
+            post.setOwnerUser(currentUser);
+        if(type == DocumentChange.Type.ADDED)
+            postList.add(post);
+        else
+        {
+            for(int i=0;i<postList.size();i++) {
+                if (postList.get(i).getId().equals(post.getId())) {
+                    this.postList.get(i).setLastReaction(post.getLastReaction());
+                    postSliderAdapter.notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
+        postSliderAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onGetPostFailed(Exception e) {
+        Log.e("Load post failed",e.getMessage());
+        Toast.makeText(getApplicationContext(), "Load post failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /// Camera
+        //Request camera permissions
+        cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+        imageCapture = new ImageCapture.Builder().setFlashMode(ImageCapture.FLASH_MODE_OFF).build();
+        capturedImage = null;
+        if(allPermissionsGranted()) {
+            startCamera();
+        } else {
+            requestPermissions();
+        }
     }
 }

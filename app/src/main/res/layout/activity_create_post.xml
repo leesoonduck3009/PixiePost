@@ -112,11 +112,18 @@
                                 android:paddingRight="4dp">
 
                                 <ImageView
+                                    android:id="@+id/imageViewSend"
                                     android:layout_width="36dp"
                                     android:layout_height="36dp"
                                     android:elevation="2dp"
-                                    android:background="@drawable/ic_send"/>
-
+                                    android:background="@drawable/ic_send"
+                                   />
+                                <ProgressBar
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
+                                    android:elevation="2dp"
+                                    android:visibility="gone"
+                                    android:id="@+id/sendingProgressBar"/>
                             </LinearLayout>
 
 

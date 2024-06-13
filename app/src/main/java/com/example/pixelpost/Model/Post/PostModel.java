@@ -6,11 +6,13 @@ import com.example.pixelpost.Utils.SupportClass.Storage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class PostModel implements IPostModel{
     //region Singleton define
@@ -45,7 +47,7 @@ public class PostModel implements IPostModel{
             if(taskPost.isSuccessful())
             {
                 Storage.UploadImage(image,taskPost.getResult().getId(),Post.FIREBASE_COLLECTION_NAME,(url, e) -> {
-                    if(e!=null)
+                    if(e==null)
                     {
                         post.setId(taskPost.getResult().getId());
                         post.setUrl(url);
@@ -94,9 +96,21 @@ public class PostModel implements IPostModel{
                     {
                         case ADDED:
                         case MODIFIED:
-                            Post post = dc.getDocument().toObject(Post.class);
-                            post.setId(dc.getDocument().getId());
-                            listener.onFinishReceivePost(post, dc.getType(),null);
+                            DocumentSnapshot ds = dc.getDocument();
+                            Object displayUser = ds.get(Post.FIELD_DISPLAYED_USERS);
+
+                            Post post = new Post.Builder().setText(ds.getString(Post.FIELD_TEXT))
+                                    .setTimePosted(ds.getDate(Post.FIELD_TIME_POSTED))
+                                    .setDisplayedUsers(displayUser == null ? null : (ArrayList<String>) displayUser)
+                                    .setUrl(Post.FIELD_URL)
+                                    .setOwnerId(Post.FIELD_OWNER_ID)
+                                    .setId(ds.getId())
+                                    .setLastReaction(Post.FIELD_LAST_REACTION).build();
+                            if(!Objects.equals(post.getOwnerId(), auth.getCurrentUser().getUid())){
+                                loadUser(post,dc.getType(),listener);
+                            }
+                            else
+                                listener.onFinishReceivePost(post, dc.getType(),null);
                             break;
                         case REMOVED:
                             break;
@@ -105,7 +119,18 @@ public class PostModel implements IPostModel{
             }
         }));
     }
-
+    private void loadUser(Post post, DocumentChange.Type type,OnFinishReceiveListener listener){
+        db.collection(User.FIREBASE_COLLECTION_NAME).document(post.getId()).get().addOnCompleteListener(
+                task -> {
+                    if(!task.isSuccessful()){
+                        listener.onFinishReceivePost(null,null,task.getException());
+                    }
+                    else{
+                        listener.onFinishReceivePost(post,type,null);
+                    }
+                }
+        );
+    }
     private void initFirebase()
     {
         db = FirebaseFirestore.getInstance();
