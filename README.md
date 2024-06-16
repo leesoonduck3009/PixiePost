@@ -42,9 +42,10 @@ To install and run the project locally, follow these steps:
 ![Profile](./demo_ui/Profile.jpg)
 ![Friend](./demo_ui/Friend.jpg)
 ![ProfileDetail](./demo_ui/ProfileDetail.jpg)
+![Widget](./demo_ui/Widget.jpg)
 ![QR](./demo_ui/QR.jpg)
 ![Report](./demo_ui/Report.jpg)
-![Widget](./demo_ui/Widget.jpg)
+
 
 
 ## Authors
