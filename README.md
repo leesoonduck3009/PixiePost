@@ -54,4 +54,4 @@ To install and run the project locally, follow these steps:
 
 [Nguyễn Phúc Bình](https://github.com/leesoonduck3009)
 
-[Trần Đình Tâm](https://github.com/thanhpt1110)
+[Trần Đình Tâm](https://github.com/Griselda4774)
