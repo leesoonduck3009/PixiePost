@@ -36,11 +36,11 @@ To install and run the project locally, follow these steps:
 
 ## User Interface
 
-![Home](./demo_ui/Home.png)
-![Upload](./demo_ui/Upload.png)
-![UploadedSong](./demo_ui/UploadedSong.png)
-![SongPostComment](./demo_ui/Song%20post%20and%20comment.png)
-![Room](./demo_ui/Room.jpg)
+![Onboarding](./demo_ui/Onboarding.jpg)
+![Home](./demo_ui/Home.jpg)
+![Post](./demo_ui/Post.jpg)
+![Profile](./demo_ui/Profile.jpg)
+
 
 ## Authors
 
